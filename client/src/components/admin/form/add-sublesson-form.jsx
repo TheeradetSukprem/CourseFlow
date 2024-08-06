@@ -12,8 +12,8 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 function AddSubLessonFrom() {
   const [videoFiles, setVideoFiles] = useState([]);
   const [videoPreviewUrls, setVideoPreviewUrls] = useState([]);
-console.log(videoFiles)
-console.log(videoPreviewUrls)
+  console.log(videoFiles);
+  console.log(videoPreviewUrls);
   const params = useParams();
   const navigate = useNavigate();
   const { control, handleSubmit, register, reset } = useForm({
@@ -22,7 +22,7 @@ console.log(videoPreviewUrls)
       subLessons: [{ name: "" }],
     },
   });
-  const { fields, append, remove, move  } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: "subLessons",
   });
@@ -40,20 +40,20 @@ console.log(videoPreviewUrls)
     const tempFile = videoFilesClone[dragItem.current];
     const tempPreviewUrl = videoPreviewUrlsClone[dragItem.current];
 
-    videoFilesClone[dragItem.current] = videoFilesClone[draggedOverItem.current];
+    videoFilesClone[dragItem.current] =
+      videoFilesClone[draggedOverItem.current];
     videoFilesClone[draggedOverItem.current] = tempFile;
 
-    videoPreviewUrlsClone[dragItem.current] = videoPreviewUrlsClone[draggedOverItem.current];
+    videoPreviewUrlsClone[dragItem.current] =
+      videoPreviewUrlsClone[draggedOverItem.current];
     videoPreviewUrlsClone[draggedOverItem.current] = tempPreviewUrl;
 
     setVideoFiles(videoFilesClone);
     setVideoPreviewUrls(videoPreviewUrlsClone);
   };
 
-
   ///////VDO
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       // Upload videos and get URLs
       const videoUrls = await Promise.all(
@@ -64,19 +64,19 @@ console.log(videoPreviewUrls)
         ...subLesson,
         videoUrl: videoUrls[index] || "", // Ensure there's no undefined
       }));
-
+      console.log(data);
       // Send data to backend
-      await axios.post(
-        `http://localhost:4000/admin/${params.courseId}/lesson`,
-        {
-          modulename: data.lessonName,
-          sublessonname: data.subLessons.map((subLesson) => subLesson.name),
-          videos: data.subLessons.map((subLesson) => subLesson.videoUrl),
-        }
-      );
+      // await axios.post(
+      //   `http://localhost:4000/admin/${params.courseId}/lesson`,
+      //   {
+      //     modulename: data.lessonName,
+      //     sublessonname: data.subLessons.map((subLesson) => subLesson.name),
+      //     videos: data.subLessons.map((subLesson) => subLesson.videoUrl),
+      //   }
+      // );
 
       alert("Add Lesson and SubLesson Successfully");
-      navigate("/admin/courselist");
+      // navigate("/admin/courselist");
       reset();
     } catch (error) {
       console.error(
@@ -148,8 +148,8 @@ console.log(videoPreviewUrls)
     const newVideoPreviewUrls = [...videoPreviewUrls];
 
     // Remove the file and preview URL
-    newVideoFiles.splice(index, 1);
-    newVideoPreviewUrls.splice(index, 1);
+    newVideoFiles.splice(index, 1, "");
+    newVideoPreviewUrls.splice(index, 1, "");
 
     setVideoFiles(newVideoFiles);
     setVideoPreviewUrls(newVideoPreviewUrls);
