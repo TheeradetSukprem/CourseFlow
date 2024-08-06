@@ -94,7 +94,16 @@ function SectionDesireCourseDetail() {
 
   // Sort modules by moduleid and generate sequential numbers
   const sortedModules = [...modules].sort((a, b) => a.moduleid - b.moduleid);
-  const [courseDetail] = coursedetail;
+
+  const truncateText = (text, wordLimit) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    if (words.length <= wordLimit) {
+      return text;
+    }
+    const truncated = words.slice(0, wordLimit).join(" ");
+    return truncated + "...";
+  };
 
   return (
     <div>
@@ -118,10 +127,10 @@ function SectionDesireCourseDetail() {
                 </div>
               </button>
               <figure className="h-[213.5px] mt-[10px] flex flex-row gap-[24px]">
-                {courseDetail && (
+                {coursedetail.length > 0 && (
                   <img
                     className="w-[343px] h-[213.5px] md:w-[450px] md:h-[320px] xl:w-[739px] xl:h-[460px] rounded-[8px]"
-                    src={courseDetail.imagefile}
+                    src={coursedetail[0].imagefile}
                     alt="Course Detail"
                   ></img>
                 )}
@@ -133,38 +142,11 @@ function SectionDesireCourseDetail() {
               <h1 className="text-black text-Headline3 font-Headline3 mb-[25px] xl:text-Headline2 xl:font-Headline2">
                 Course Detail
               </h1>
-              <p className="text-Gray-700 text-Body3 font-Body3 xl:text-Body2 xl:font-Body2">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Elementum aenean fermentum, velit vel, scelerisque morbi
-                accumsan. Nec, tellus leo id leo id felis egestas. Quam sit
-                lorem quis vitae ut mus imperdiet. Volutpat placerat dignissim
-                dolor faucibus elit ornare fringilla. Vivamus amet risus
-                ullamcorper auctor nibh. Maecenas morbi nec vestibulum ac tempus
-                vehicula.
-              </p>
-              <br />
-              <p className="text-Gray-700 text-Body3 font-Body3 xl:text-Body2 xl:font-Body2">
-                Vel, sit magna nisl cras non cursus. Sed sed sit ullamcorper
-                neque. Dictum sapien amet, dictumst maecenas. Mattis nulla
-                tellus ut neque euismod cras amet, volutpat purus. Semper purus
-                viverra turpis in tempus ac nunc. Morbi ullamcorper sed elit
-                enim turpis. Scelerisque rhoncus morbi pulvinar donec at sed
-                fermentum. Duis non urna lacus, sit amet. Accumsan orci
-                elementum nisl tellus sit quis. Integer turpis lectus eu blandit
-                sit. At at cras viverra odio neque nisl consectetur. Arcu
-                senectus aliquet vulputate urna, ornare. Mi sem tellus elementum
-                at commodo blandit nunc. Viverra elit adipiscing ut dui, tellus
-                viverra nec.
-              </p>
-              <br />
-              <br />
-              <p className="text-Gray-700 text-Body3 font-Body3 xl:text-Body2 xl:font-Body2">
-                Lectus pharetra eget curabitur lobortis gravida gravida eget ut.
-                Nullam velit morbi quam a at. Sed eu orci, sociis nulla at sit.
-                Nunc quam integer metus vitae elementum pulvinar mattis nulla
-                molestie. Quis eget vestibulum, faucibus malesuada eu. Et lectus
-                molestie egestas faucibus auctor auctor.
-              </p>
+              {coursedetail.length > 0 && (
+                <p className="text-Gray-700 text-Body3 font-Body3 xl:text-Body2 xl:font-Body2">
+                  {coursedetail[0].description}
+                </p>
+              )}
             </div>
           </article>
           <article>
@@ -246,16 +228,17 @@ function SectionDesireCourseDetail() {
                 <div>
                   <div className="mb-[1px]">
                     <span className="text-black text-Headline3 font-Headline3">
-                      {courseDetail?.coursename}
+                    {coursedetail.length > 0 && coursedetail[0].coursename}
                     </span>
                   </div>
                   <p className="text-Body2 font-Body2 text-Gray-700">
-                    {courseDetail?.description}
+                  {coursedetail.length > 0 &&
+                      truncateText(coursedetail[0].description, 6)}
                   </p>
                 </div>
               </div>
               <div className="text-Gray-700 text-Headline3 font-Headline3 mb-[30px] mt-[10px]">
-                THB {courseDetail?.price}.00
+                THB {coursedetail.length > 0 && coursedetail[0].price}.00
               </div>
               <div className="border-solid border-t-[1px] border-Gray-400 flex flex-col justify-end gap-[16px] h-[176px] w-[309px]">
                 <button

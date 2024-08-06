@@ -21,7 +21,7 @@ function Navbarnonuser() {
             <img
               src={logo}
               alt="Logo"
-              className="sm:pl-[16px] md:p-[100px] xl:p-[160px]"
+              className="sm:pl-[16px] md:pl-[100px] xl:pl-[160px]"
             />
           </Link>
           <div className="menu sm:flex sm:flex-row sm:mr-[16px] md:w-[291px] md:h-[88px] md:flex md:flex-row md:items-center md:justify-center md:mr-[160px] md:gap-[32px] xl:w-[291px] xl:h-[88px] xl:flex xl:flex-row xl:items-center xl:justify-center xl:mr-[160px] xl:gap-[32px]">

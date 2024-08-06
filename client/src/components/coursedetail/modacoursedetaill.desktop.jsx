@@ -2,6 +2,7 @@ import React from "react";
 import { Modal } from "@mui/material";
 
 const ModalCoursedetail = ({ open, onClose, onConfirm }) => {
+  
   return (
     <Modal open={open} onClose={onClose}>
       <div className="flex items-center justify-center h-screen bg-[rgba(0,0,0,0.5)]">
