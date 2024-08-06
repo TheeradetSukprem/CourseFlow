@@ -111,30 +111,27 @@ function SectionDesireCourseDetail() {
         className={`h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]`}
       >
         <div>
-          <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px]">
-            <div className="flex flex-col">
+          <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px] xl:mb-[100px] sm:mb-[70px] md:mb-[0px]">
+            <div className="flex flex-col ">
               <button
                 onClick={handleBackClick}
-                className="w-[79px] h-[32px] flex items-center gap-[8px] pl-[4px] pr-[4px]"
+                className="w-[79px] h-[32px] flex items-center gap-[8px] pl-[4px] pr-[4px] mt-[50px]"
               >
-                <img
-                  className="w-[16px] h-[16px]"
-                  src={arrow_back}
-                  alt="Back"
-                ></img>
+                <img className="w-[16px] h-[16px]" src={arrow_back}></img>
                 <div className="w-[39px] h-[24px] text-[16px] font-[700] text-Blue-500">
                   Back
                 </div>
               </button>
-              <figure className="h-[213.5px] mt-[10px] flex flex-row gap-[24px]">
+              <label className="flex flex-row gap-[24px] ">
                 {coursedetail.length > 0 && (
-                  <img
-                    className="w-[343px] h-[213.5px] md:w-[450px] md:h-[320px] xl:w-[739px] xl:h-[460px] rounded-[8px]"
-                    src={coursedetail[0].imagefile}
+                  <video
+                    className="xl:w-[739px]  sm:w-[343px] sm:h-[215px] md:w-[450px] xl:h-[500px] md:h-[320px] rounded-[8px]"
+                    src={coursedetail[0].videofile}
                     alt="Course Detail"
-                  ></img>
+                    controls
+                  ></video>
                 )}
-              </figure>
+              </label>
             </div>
           </header>
           <article>
@@ -228,11 +225,11 @@ function SectionDesireCourseDetail() {
                 <div>
                   <div className="mb-[1px]">
                     <span className="text-black text-Headline3 font-Headline3">
-                    {coursedetail.length > 0 && coursedetail[0].coursename}
+                      {coursedetail.length > 0 && coursedetail[0].coursename}
                     </span>
                   </div>
                   <p className="text-Body2 font-Body2 text-Gray-700">
-                  {coursedetail.length > 0 &&
+                    {coursedetail.length > 0 &&
                       truncateText(coursedetail[0].description, 6)}
                   </p>
                 </div>
