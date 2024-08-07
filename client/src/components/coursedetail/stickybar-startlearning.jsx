@@ -15,7 +15,7 @@ function StickybarStartLearning() {
   useEffect(() => {
     const getCourses = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/${params.Id}`
+        `https://project-courseflow-server.vercel.app/courses/${params.Id}`
       );
       setCoursedetail(result.data.data);
     };

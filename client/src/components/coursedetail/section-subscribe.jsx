@@ -19,13 +19,13 @@ function UserSectionSubscribe() {
   useEffect(() => {
     const getCourses = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/${params.Id}`
+        `https://project-courseflow-server.vercel.app/courses/${params.Id}`
       );
       setCoursedetail(result.data.data);
     };
     const getModules = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/modules/${params.Id}`
+        `https://project-courseflow-server.vercel.app/courses/modules/${params.Id}`
       );
       setModules(result.data.data);
     };

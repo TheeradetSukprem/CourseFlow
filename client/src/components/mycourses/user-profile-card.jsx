@@ -13,7 +13,7 @@ function UserProfileCard() {
   const getCountCourseStatus = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/count/`
+        `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/count/`
       );
       // Assuming the response is an array with a single object
       const data = result.data[0] || {}; // Handle the case where result.data might be empty
@@ -26,7 +26,7 @@ function UserProfileCard() {
   const getUserData = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/profiles/${userId.UserIdFromLocalStorage}`
+        `https://project-courseflow-server.vercel.app/profiles/${userId.UserIdFromLocalStorage}`
       );
       setUserData(result.data);
     } catch (error) {

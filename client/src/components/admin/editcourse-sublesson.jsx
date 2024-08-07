@@ -12,15 +12,16 @@ function EditCourseSubLessonTable({ createCourse }) {
   const [draggedItemIndex, setDraggedItemIndex] = useState(null);
   const param = useParams();
 
-  
   useEffect(() => {
-      fetchSubLesson();
+    fetchSubLesson();
   }, []);
 
   const fetchSubLesson = async () => {
-    console.log(param.id)
+    console.log(param.id);
     try {
-      const res = await axios.get(`http://localhost:4000/admin/sublessonlist/${param.id}`);
+      const res = await axios.get(
+        `https://project-courseflow-server.vercel.app/admin/sublessonlist/${param.id}`
+      );
       setSublesson(res.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -28,10 +29,12 @@ function EditCourseSubLessonTable({ createCourse }) {
   };
 
   //Delete lesson
-  const deleteLesson = async (id,index) => {
+  const deleteLesson = async (id, index) => {
     try {
-      await axios.delete(`http://localhost:4000/admin/lesson/${id}`);
-      setSublesson(subLesson.toSpliced(index,1))
+      await axios.delete(
+        `https://project-courseflow-server.vercel.app/admin/lesson/${id}`
+      );
+      setSublesson(subLesson.toSpliced(index, 1));
     } catch (error) {
       console.error("Error deleting lesson:", error);
       console.log(error);
@@ -46,7 +49,9 @@ function EditCourseSubLessonTable({ createCourse }) {
   const fetchCourses = async () => {
     console.log(param.id);
     try {
-      const res = await axios.get(`http://localhost:4000/courses/list/${param.id}`);
+      const res = await axios.get(
+        `https://project-courseflow-server.vercel.app/courses/list/${param.id}`
+      );
       setCourses(res.data.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -54,11 +59,13 @@ function EditCourseSubLessonTable({ createCourse }) {
   };
 
   const deleteCourse = async () => {
-    console.log(param.id)
+    console.log(param.id);
     try {
-      await axios.delete(`http://localhost:4000/courses/${param.id}`);
+      await axios.delete(
+        `https://project-courseflow-server.vercel.app/courses/${param.id}`
+      );
       console.log("Course deleted successfully");
-      navigate("/admin/courselist")
+      navigate("/admin/courselist");
     } catch (error) {
       console.error("Error deleting course:", error);
     }
@@ -78,12 +85,14 @@ function EditCourseSubLessonTable({ createCourse }) {
     updatedSubLesson.splice(dropIndex, 0, draggedItem);
     setSublesson(updatedSubLesson);
     setDraggedItemIndex(null);
-    console.log(updatedSubLesson)
-    try{ await axios.put(`http://localhost:4000/admin/moduleorderlist/${param.id}`,updatedSubLesson)
-
-    }catch {
-
-    }fetchSubLesson()
+    console.log(updatedSubLesson);
+    try {
+      await axios.put(
+        `https://project-courseflow-server.vercel.app/admin/moduleorderlist/${param.id}`,
+        updatedSubLesson
+      );
+    } catch {}
+    fetchSubLesson();
   };
 
   const handleAddLessonClick = async (e) => {
@@ -98,7 +107,7 @@ function EditCourseSubLessonTable({ createCourse }) {
         <div className="text-lg justify-center">Lesson</div>
         <div className="justify-center">
           <button
-            onClick={()=>navigate(`/admin/${param.id}/addsublesson`)}
+            onClick={() => navigate(`/admin/${param.id}/addsublesson`)}
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition w-[171px] h-[60px]"
           >
             +Add lesson
@@ -129,17 +138,21 @@ function EditCourseSubLessonTable({ createCourse }) {
                   onDragOver={onDragOver}
                   onDrop={() => onDrop(index)}
                 >
-                  <td className="w-[56px] h-[88px]"><img src={drag} alt="drag" /></td>
+                  <td className="w-[56px] h-[88px]">
+                    <img src={drag} alt="drag" />
+                  </td>
                   <td className="w-[56px]">{index + 1}</td>
                   <td className="w-[500px]">{item.modulename}</td>
                   <td className="w-[396px]">{item.count_sublesson}</td>
                   <td>
-                    <button onClick={()=>deleteLesson(item.moduleid,index)}>
+                    <button onClick={() => deleteLesson(item.moduleid, index)}>
                       <img src={bin} alt="delete" />
                     </button>
-                    
+
                     <button>
-                      <Link to={`/admin/${param.id}/${item.moduleid}/editsublesson`}>
+                      <Link
+                        to={`/admin/${param.id}/${item.moduleid}/editsublesson`}
+                      >
                         <img src={edit} alt="edit" />
                       </Link>
                     </button>
@@ -149,7 +162,11 @@ function EditCourseSubLessonTable({ createCourse }) {
             </tbody>
           </table>
         </div>
-        <div className="mt-12 flex flex-row justify-end"><button onClick={deleteCourse} className="text-blue-900 text-sm">Delete Course</button></div>
+        <div className="mt-12 flex flex-row justify-end">
+          <button onClick={deleteCourse} className="text-blue-900 text-sm">
+            Delete Course
+          </button>
+        </div>
       </div>
     </div>
   );

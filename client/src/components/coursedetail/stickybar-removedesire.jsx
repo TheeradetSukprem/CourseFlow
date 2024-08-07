@@ -8,7 +8,7 @@ function StickybarRemoveDesire() {
   const params = useParams();
   const [coursedetail, setCoursedetail] = useState([]);
   const [isCoursevisible, setIsCourseVisible] = useState(false);
-  
+
   const toggleCourse = () => {
     setIsCourseVisible(!isCoursevisible);
   };
@@ -16,7 +16,7 @@ function StickybarRemoveDesire() {
   useEffect(() => {
     const getCourses = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/${params.Id}`
+        `https://project-courseflow-server.vercel.app/courses/${params.Id}`
       );
       setCoursedetail(result.data.data);
     };
@@ -24,7 +24,9 @@ function StickybarRemoveDesire() {
   }, []);
 
   const deleteDesireCourse = async () => {
-    await axios.delete(`http://localhost:4000/courses/desire/${params.Id}`);
+    await axios.delete(
+      `https://project-courseflow-server.vercel.app/courses/desire/${params.Id}`
+    );
     navigate("/user/desire");
   };
   const handleRemoveDesire = (event) => {

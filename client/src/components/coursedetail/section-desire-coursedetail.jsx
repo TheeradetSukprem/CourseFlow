@@ -20,19 +20,19 @@ function SectionDesireCourseDetail() {
   useEffect(() => {
     const getCourses = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/${params.Id}`
+        `https://project-courseflow-server.vercel.app/courses/${params.Id}`
       );
       setCoursedetail(result.data.data);
     };
     const getModules = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/modules/${params.Id}`
+        `https://project-courseflow-server.vercel.app/courses/modules/${params.Id}`
       );
       setModules(result.data.data);
     };
     const subscribedCourses = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
+        `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
       );
       console.log(result);
       setSubscribedCourses(result.data);
@@ -43,7 +43,9 @@ function SectionDesireCourseDetail() {
   }, []);
 
   const deleteDesireCourse = async () => {
-    await axios.delete(`http://localhost:4000/courses/desire/${params.Id}`);
+    await axios.delete(
+      `https://project-courseflow-server.vercel.app/courses/desire/${params.Id}`
+    );
     navigate("/user/desire");
   };
   const handleRemoveDesire = (event) => {
@@ -53,7 +55,7 @@ function SectionDesireCourseDetail() {
 
   const postSubscribe = async () => {
     await axios.post(
-      `http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`
+      `https://project-courseflow-server.vercel.app/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`
     ),
       {};
     handleCloseModal();

@@ -7,7 +7,10 @@ import { Link } from "react-router-dom";
 function SectionDesireCourses() {
   const [desireCourse, setDesireCourse] = useState([]);
   const getDesirecourse = async () => {
-    const result = await axios.get(`http://localhost:4000/courses/desire`);
+    const result = await axios.get(
+      `https://project-courseflow-server.vercel.app/courses/desire`
+    );
+    console.log(result);
     setDesireCourse(result.data);
   };
   useEffect(() => {

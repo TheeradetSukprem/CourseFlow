@@ -66,15 +66,15 @@ function AddSubLessonFrom() {
       }));
       console.log(data);
       // Send data to backend
-      // await axios.post(
-      //   `http://localhost:4000/admin/${params.courseId}/lesson`,
-      //   {
-      //     modulename: data.lessonName,
-      //     sublessonname: data.subLessons.map((subLesson) => subLesson.name),
-      //     videos: data.subLessons.map((subLesson) => subLesson.videoUrl),
-      //   }
-      // );
 
+      await axios.post(
+        `https://project-courseflow-server.vercel.app/admin/${params.courseId}/lesson`,
+        {
+          modulename: data.lessonName,
+          sublessonname: data.subLessons.map((subLesson) => subLesson.name),
+          videos: data.subLessons.map((subLesson) => subLesson.videoUrl),
+        }
+      );
       alert("Add Lesson and SubLesson Successfully");
       // navigate("/admin/courselist");
       reset();

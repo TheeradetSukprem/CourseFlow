@@ -12,21 +12,23 @@ function Modal() {
   useEffect(() => {
     const subscribedCourses = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
+        `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
       );
       setSubscribedCourses(result.data);
     };
     subscribedCourses();
   }, []);
-  
+
   const postSubscribe = async () => {
-    await axios.post(`http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`),
+    await axios.post(
+      `https://project-courseflow-server.vercel.app/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`
+    ),
       {};
     navigate(`/user/subscribe/coursedetail/${params.Id}`);
   };
 
   const handlePostSubscribe = () => {
-     const subscribedCourseIds = subscribedCourses.map(
+    const subscribedCourseIds = subscribedCourses.map(
       (course) => course.courseid
     );
     const uniqueSubscribedCourseIds = [...new Set(subscribedCourseIds)];

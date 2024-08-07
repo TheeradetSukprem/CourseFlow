@@ -18,7 +18,7 @@ function StickybarCoursedetail() {
   useEffect(() => {
     const getCourses = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/${params.Id}`
+        `https://project-courseflow-server.vercel.app/courses/${params.Id}`
       );
       setCoursedetail(result.data.data);
     };
@@ -27,7 +27,7 @@ function StickybarCoursedetail() {
 
   const postDesireCourse = async () => {
     await axios.post(
-      `http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/desire`
+      `https://project-courseflow-server.vercel.app/courses/${userId.UserIdFromLocalStorage}/${params.Id}/desire`
     ),
       {};
     navigate(`/user/desire/coursedetail/${params.Id}`);
