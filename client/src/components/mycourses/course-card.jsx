@@ -22,7 +22,7 @@ function CourseCard(props) {
               />
               <p className="text-yellow-500 text-Body4 pt-3 px-4">Course</p>
               <p className="text-[20px] px-4">{props.coursename}</p>
-              <p className="text-Gray-700 text-Body3 pt-2 pb-5 px-4 max-w-[330px]">
+              <p className="text-Gray-700 text-Body3 pt-2 pb-5 px-4 max-w-[350px]">
                 {props.description}
               </p>
             </div>

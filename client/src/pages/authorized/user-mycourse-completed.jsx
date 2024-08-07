@@ -67,7 +67,11 @@ function UserMycourseCompleted() {
                     courseid={course.courseid}
                     photo={course.imagefile}
                     coursename={course.coursename}
-                    description={course.description}
+                    description={
+                      course.description.length > 85
+                        ? course.description.substring(0, 85) + "..."
+                        : course.description
+                    }
                     coursesummary={course.coursesummary}
                     courselearningtime={course.courselearningtime}
                   />
