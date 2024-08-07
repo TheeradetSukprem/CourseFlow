@@ -8,18 +8,18 @@ import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import supabase from "../../../utils/supabaseClient";
 import ConfirmationModal from "../../../components/admin/modal/delete-course-confirmation";
+import PendingSvg from "../../shared/pending-svg";
 
 function EditSubLessonFrom() {
   const [lessons, setLessons] = useState([]);
   const [subLessons, setSubLessons] = useState([]);
   const [videoFiles, setVideoFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [videoPreviewUrls, setVideoPreviewUrls] = useState([]);
   const params = useParams();
   const navigate = useNavigate();
-  // console.log(subLessons);
-  // console.log(videoPreviewUrls);
   const getLesson = async () => {
     try {
       const result = await axios.get(
@@ -142,6 +142,7 @@ function EditSubLessonFrom() {
 
   ///VDO
   const onSubmit = async (data) => {
+    setLoading(true); // Start the spinner
     try {
       // Upload videos and get URLs
       const videoUrls = await Promise.all(
@@ -150,8 +151,6 @@ function EditSubLessonFrom() {
       // Send data to backend
       const editLesson = lessons;
       const editSublesson = subLessons;
-      // console.log(editLesson);
-      console.log(editSublesson);
       try {
         await axios.put(
           `https://project-courseflow-server.vercel.app/admin/sublesson/${params.lessonId}`,
@@ -167,6 +166,8 @@ function EditSubLessonFrom() {
         "There was an error adding the lesson and sublesson:",
         error
       );
+    } finally {
+      setLoading(false); // Stop the spinner
     }
   };
 
@@ -244,9 +245,12 @@ function EditSubLessonFrom() {
 
   return (
     <div className="flex flex-col justify-between w-full h-full">
-      <button onClick={onSubmit}>
-        <NavbarEditSubLesson text="Edit" />
-      </button>
+      {/* Loading Section */}
+      {loading && <PendingSvg text="Editing Lesson and Sublesson..." />}
+      <nav >
+        <NavbarEditSubLesson text="Edit"
+        handleSubmit={onSubmit} />
+      </nav>
       <div
         className={`mt-[50px] mx-8 w-[1120px] h-fit bg-white rounded-[16px] border-[1px] mb-[80px]`}
       >
