@@ -169,6 +169,7 @@ function EditSubLessonFrom() {
       );
     }
   };
+
   async function uploadVideoFile(file) {
     try {
       if (!file) {
@@ -233,6 +234,12 @@ function EditSubLessonFrom() {
     // Remove the file and preview URL
     setVideoFiles(videoFiles.toSpliced(index, 1, ""));
     setVideoPreviewUrls(videoPreviewUrls.toSpliced(index, 1, ""));
+    setSubLessons([
+      ...subLessons.toSpliced(index, 1, {
+        ...subLessons[index],
+        videofile: "",
+      }),
+    ]);
   };
 
   return (

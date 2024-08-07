@@ -2,12 +2,10 @@ import othercourselesson1 from "../../assets/icons/coursedetail/othercourselesso
 import othercourselesson2 from "../../assets/icons/coursedetail/othercourselesson2.png";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function SectionDesireCourses() {
-  const navigate = useNavigate();
   const [desireCourse, setDesireCourse] = useState([]);
-
   const getDesirecourse = async () => {
     const result = await axios.get(
       `https://project-courseflow-server.vercel.app/courses/desire`
@@ -15,7 +13,6 @@ function SectionDesireCourses() {
     console.log(result);
     setDesireCourse(result.data);
   };
-
   useEffect(() => {
     getDesirecourse();
   }, []);
@@ -31,20 +28,17 @@ function SectionDesireCourses() {
         <section className="flex flex-row items-center justify-center gap-[32px] sm:mb-[50px] xl:flex-row xl:w-[1440px] flex-wrap p-[16px] ">
           {desireCourse.map((item, index) => {
             return (
-              <article
+              <Link
+                to={`/user/desire/coursedetail/${item.courseid}`}
                 key={index}
-                className="shadow-md rounded-[8px] flex flex-col justify-between mb-10 xl:h-[475px]"
+                className="hover:scale-105 hover:shadow-2xl shadow-md rounded-[8px] flex flex-col justify-between mb-10 xl:h-[475px]"
               >
-                <button
-                  onClick={() => {
-                    navigate(`/user/desire/coursedetail/${item.courseid}`);
-                  }}
-                >
+                <div>
                   <img
-                    className="w-[343px] h-[240px] rounded-t-[8px]"
+                    className="w-[343px] h-[240px] rounded-t-[8px] "
                     src={item.imagefile}
                   ></img>
-                </button>
+                </div>
                 <div className="flex flex-col pl-[16px] mt-[15px] mb-[10px] sm:w-[343px] xl:mt-[20px]">
                   <h1 className="text-Body4 font-Body4 text-Orange-500 xl:text-Body3 xl:font-Body3 xl:mb-[10px]">
                     Course
@@ -76,7 +70,7 @@ function SectionDesireCourses() {
                     </h1>
                   </div>
                 </div>
-              </article>
+              </Link>
             );
           })}
         </section>

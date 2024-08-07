@@ -22,7 +22,16 @@ function StickybarStartLearning() {
     getCourses();
   }, []);
 
-  const [courseDetail] = coursedetail;
+  const truncateText = (text, wordLimit) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    if (words.length <= wordLimit) {
+      return text;
+    }
+    const truncated = words.slice(0, wordLimit).join(" ");
+    return truncated + "...";
+  };
+
   return (
     <div>
       <footer className="flex items-center justify-center shadow-md bg-white h-fit sticky bottom-0 xl:hidden">
@@ -39,7 +48,7 @@ function StickybarStartLearning() {
               <div className="flex flex-row justify-between">
                 <div>
                   <span className="text-black text-Body2 font-Body2">
-                    {courseDetail?.coursename}
+                    {coursedetail.length > 0 && coursedetail[0].coursename}
                   </span>
                 </div>
                 <button onClick={toggleCourse}>
@@ -52,11 +61,12 @@ function StickybarStartLearning() {
                   isCoursevisible ? "block" : "hidden"
                 } pt-[8px] text-Gray-700 text-Body4 font-Body4`}
               >
-                {courseDetail?.description}
+                {coursedetail.length > 0 &&
+                  truncateText(coursedetail[0].description, 6)}
               </h1>
             </div>
             <div className="text-Gray-700 text-Body2 font-Body2">
-              THB {courseDetail?.price}.00
+              THB {coursedetail.length > 0 && coursedetail[0].price}.00
             </div>
             <div className="flex flex-row">
               <button

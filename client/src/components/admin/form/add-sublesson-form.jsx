@@ -54,7 +54,6 @@ function AddSubLessonFrom() {
 
   ///////VDO
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       // Upload videos and get URLs
       const videoUrls = await Promise.all(
@@ -65,8 +64,9 @@ function AddSubLessonFrom() {
         ...subLesson,
         videoUrl: videoUrls[index] || "", // Ensure there's no undefined
       }));
-
+      console.log(data);
       // Send data to backend
+
       await axios.post(
         `https://project-courseflow-server.vercel.app/admin/${params.courseId}/lesson`,
         {
@@ -75,9 +75,8 @@ function AddSubLessonFrom() {
           videos: data.subLessons.map((subLesson) => subLesson.videoUrl),
         }
       );
-
       alert("Add Lesson and SubLesson Successfully");
-      navigate("/admin/courselist");
+      // navigate("/admin/courselist");
       reset();
     } catch (error) {
       console.error(
@@ -149,8 +148,8 @@ function AddSubLessonFrom() {
     const newVideoPreviewUrls = [...videoPreviewUrls];
 
     // Remove the file and preview URL
-    newVideoFiles.splice(index, 1);
-    newVideoPreviewUrls.splice(index, 1);
+    newVideoFiles.splice(index, 1, "");
+    newVideoPreviewUrls.splice(index, 1, "");
 
     setVideoFiles(newVideoFiles);
     setVideoPreviewUrls(newVideoPreviewUrls);
