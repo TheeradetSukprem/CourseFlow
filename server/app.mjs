@@ -14,7 +14,7 @@ import assignmentRouter from "./routes/assignments.mjs";
 const app = express();
 app.use(express.json());
 app.use(cors());
-const port = 4000;
+const port = process.env.PORT || 4000;
 
 //Connection test
 async function connect() {
