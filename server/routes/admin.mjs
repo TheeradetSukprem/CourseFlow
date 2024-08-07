@@ -357,11 +357,8 @@ adminRouter.post("/assignments", async (req, res) => {
   }
 
   try {
-    await connectionPool.query("BEGIN");
-
-    // Insert assignment and capture the assignmentid
-    const { rows: assignmentRows } = await connectionPool.query(
-      `WITH inserted_assignment AS (
+    const query = `
+      WITH inserted_assignment AS (
         INSERT INTO assignments (courseid, moduleid, sublessonid, title)
         VALUES ($1, $2, $3, $4)
         RETURNING assignmentid, sublessonid
@@ -369,34 +366,17 @@ adminRouter.post("/assignments", async (req, res) => {
       UPDATE sublesson
       SET assignmentid = ia.assignmentid
       FROM inserted_assignment ia
-      WHERE sublesson.sublessonid = ia.sublessonid
-      RETURNING ia.assignmentid`,
-      [course, lesson, sub_lesson, title]
-    );
+      WHERE sublesson.sublessonid = ia.sublessonid`;
 
-    const assignmentId = assignmentRows[0].assignmentid;
+    const result = await connectionPool.query(query, [
+      course,
+      lesson,
+      sub_lesson,
+      title,
+    ]);
 
-    // Fetch all user IDs
-    const { rows: users } = await connectionPool.query(
-      `SELECT userid FROM users`
-    );
-
-    // Insert a submission for each user
-    for (const user of users) {
-      await connectionPool.query(
-        `INSERT INTO submissions (assignmentid, userid, submissiondate, status, grade, answer)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [assignmentId, user.userid, new Date(), "Pending", null, null]
-      );
-    }
-
-    await connectionPool.query("COMMIT");
-
-    res
-      .status(201)
-      .json({ message: "Assignment and submissions created successfully" });
+    res.status(201).json({ message: "Assignment created successfully" });
   } catch (error) {
-    await connectionPool.query("ROLLBACK");
     console.error("Error occurred while saving the assignment:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
