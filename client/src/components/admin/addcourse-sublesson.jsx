@@ -10,17 +10,17 @@ function AddCourseSubLessonTable({ createCourse }) {
   const [subLesson, setSublesson] = useState([]);
   const [draggedItemIndex, setDraggedItemIndex] = useState(null);
   const param = useParams();
-
-  useEffect(() => {
-    const savedOrder = localStorage.getItem("subLessonOrder");
+  
+  /*useEffect(() => {
+    const savedOrder = localStorage.getItem('subLessonOrder');
     if (savedOrder) {
       setSublesson(JSON.parse(savedOrder));
     } else {
       fetchSubLesson();
     }
-  }, []);
+  }, []);*/
 
-  const fetchSubLesson = async () => {
+  /*const fetchSubLesson = async () => {
     try {
       const res = await axios.get(
         "https://project-courseflow-server.vercel.app/admin/sublessonlist"
@@ -30,7 +30,7 @@ function AddCourseSubLessonTable({ createCourse }) {
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
-  };
+  };*/
 
   /*const deleteLesson = async (id) => {
     try {

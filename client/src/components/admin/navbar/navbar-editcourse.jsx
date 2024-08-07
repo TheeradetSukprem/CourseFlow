@@ -30,15 +30,15 @@ function NavbarEditCourse({ text, handleSubmit }) {
 
   return (
     <div className="w-full">
-      <nav className="border-b-2 border-gray-300 md:p-4 bg-white text-base text-slate-800 flex flex-col md:flex-row md:justify-between items-center">
-        <div className="flex items-center space-x-2 ml-8 mb-2 md:mb-0 flex-1">
+      <nav className="order-b-2 py-2 border-gray-300 bg-white text-base text-slate-800 flex flex-row justify-center items-center">
+        <div className="flex items-center space-x-2 ml-8 mb-2 md:mb-0 flex-1 ">
           <span className="flex items-center">
             <img src={arrowback} className="inline-block mr-2" />
             <span>Course</span>
           </span>
           <p className="mb-0 font-bold">‘{courseData.coursename}’</p>
         </div>
-        <div className="flex flex-col md:flex-row items-center space-x-2">
+        <div className="flex flex-col md:flex-row items-center space-x-2 mr-[5rem]">
           <Link to="/admin/courselist">
             <CancelButton text="Cancel" />
           </Link>
