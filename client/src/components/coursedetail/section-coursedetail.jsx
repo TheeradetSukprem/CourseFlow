@@ -16,8 +16,6 @@ function SectionCourseDetail() {
   const [expandedModuleId, setExpandedModuleId] = useState(null);
   const [subscribedCourses, setSubscribedCourses] = useState([]);
   const [desireCourse, setDesireCourse] = useState([]);
-  console.log(desireCourse)
-  console.log(subscribedCourses)
   useEffect(() => {
     const getCourses = async () => {
       const result = await axios.get(
@@ -40,7 +38,6 @@ function SectionCourseDetail() {
     };
     const getDesirecourse = async () => {
       const result = await axios.get(`https://project-courseflow-server.vercel.app/courses/desire`)
-      console.log(result)
       setDesireCourse(result.data)
     }
     getCourses();
