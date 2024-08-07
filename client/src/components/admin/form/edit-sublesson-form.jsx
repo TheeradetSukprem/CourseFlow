@@ -23,7 +23,7 @@ function EditSubLessonFrom() {
   const getLesson = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/admin/lesson/${params.lessonId}`
+        `https://project-courseflow-server.vercel.app/admin/lesson/${params.lessonId}`
       );
       setLessons(result.data.data[0]);
     } catch (error) {
@@ -38,7 +38,7 @@ function EditSubLessonFrom() {
   const getSublesson = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/admin/sublesson/${params.lessonId}`
+        `https://project-courseflow-server.vercel.app/admin/sublesson/${params.lessonId}`
       );
       getVideoSublesson(result.data.data);
       setSubLessons(result.data.data);
@@ -49,7 +49,9 @@ function EditSubLessonFrom() {
 
   ///modal
   const deleteLesson = async () => {
-    await axios.delete(`http://localhost:4000/admin/lesson/${params.lessonId}`);
+    await axios.delete(
+      `https://project-courseflow-server.vercel.app/admin/lesson/${params.lessonId}`
+    );
     navigate("/admin/courselist");
     handleCloseModal();
   };
@@ -57,7 +59,7 @@ function EditSubLessonFrom() {
     console.log(sublessonid);
     try {
       await axios.delete(
-        `http://localhost:4000/admin/sublesson/${sublessonid}`
+        `https://project-courseflow-server.vercel.app/admin/sublesson/${sublessonid}`
       );
       getSublesson();
     } catch (error) {
@@ -81,7 +83,7 @@ function EditSubLessonFrom() {
   const postSublesson = async () => {
     try {
       const sublesson = await axios.post(
-        `http://localhost:4000/admin/sublesson/${params.lessonId}`
+        `https://project-courseflow-server.vercel.app/admin/sublesson/${params.lessonId}`
       );
       setSubLessons([...subLessons, sublesson.data.data]);
       setVideoFiles([...videoFiles, ""]);
@@ -95,7 +97,7 @@ function EditSubLessonFrom() {
     const editSublesson = newSublesson;
     try {
       await axios.put(
-        `http://localhost:4000/admin/sublessondrag/${params.lessonId}`,
+        `https://project-courseflow-server.vercel.app/admin/sublessondrag/${params.lessonId}`,
         [editSublesson]
       );
     } catch (error) {
@@ -152,7 +154,7 @@ function EditSubLessonFrom() {
       console.log(editSublesson);
       try {
         await axios.put(
-          `http://localhost:4000/admin/sublesson/${params.lessonId}`,
+          `https://project-courseflow-server.vercel.app/admin/sublesson/${params.lessonId}`,
           [editLesson, editSublesson, videoUrls]
         );
       } catch (error) {
@@ -167,6 +169,7 @@ function EditSubLessonFrom() {
       );
     }
   };
+
   async function uploadVideoFile(file) {
     try {
       if (!file) {
@@ -231,6 +234,12 @@ function EditSubLessonFrom() {
     // Remove the file and preview URL
     setVideoFiles(videoFiles.toSpliced(index, 1, ""));
     setVideoPreviewUrls(videoPreviewUrls.toSpliced(index, 1, ""));
+    setSubLessons([
+      ...subLessons.toSpliced(index, 1, {
+        ...subLessons[index],
+        videofile: "",
+      }),
+    ]);
   };
 
   return (
@@ -264,118 +273,115 @@ function EditSubLessonFrom() {
                 Sub-Lesson
               </div>
             </div>
-            {subLessons
-              .map((item, index) => {
-                return (
-                  <article
-                    key={index}
-                    className="relative mt-[30px] mx-[40px] w-[920px] h-[340px] bg-Gray-100 flex justify-center items-center rounded-[16px] border-[1px]"
-                    draggable
-                    onDragStart={() => (dragItem.current = index)}
-                    onDragEnter={() => (draggedOverItem.current = index)}
-                    onDragEnd={handleSort}
-                    onDragOver={(e) => e.preventDefault()}
-                  >
-                    <div className="w-[888px] h-[292px] flex gap-[24px]">
-                      <div className="w-[26px] h-[76px] text-[#C8CCDB]">
-                        <img src={drag1} alt="drag icon" />
+            {subLessons.map((item, index) => {
+              return (
+                <article
+                  key={index}
+                  className="relative mt-[30px] mx-[40px] w-[920px] h-[340px] bg-Gray-100 flex justify-center items-center rounded-[16px] border-[1px]"
+                  draggable
+                  onDragStart={() => (dragItem.current = index)}
+                  onDragEnter={() => (draggedOverItem.current = index)}
+                  onDragEnd={handleSort}
+                  onDragOver={(e) => e.preventDefault()}
+                >
+                  <div className="w-[888px] h-[292px] flex gap-[24px]">
+                    <div className="w-[26px] h-[76px] text-[#C8CCDB]">
+                      <img src={drag1} alt="drag icon" />
+                    </div>
+                    <div className="w-[747px] flex flex-col justify-center gap-[23px]">
+                      <div className="flex flex-col gap-[4px]">
+                        <label className="text-Body2 font-Body2 text-[#08090D]">
+                          Sub-Lesson name *
+                        </label>
+                        <input
+                          id="sub-lesson-name"
+                          type="text"
+                          className="w-[530px] h-[48px] bg-white text-black border-[1px] border-[#D6D9E4] rounded-[8px] pl-[20px] placeholder:text-black"
+                          value={item.sublessonname}
+                          onChange={(e) => {
+                            // const newSublesson = [...subLessons]
+                            setSubLessons([
+                              ...subLessons.toSpliced(index, 1, {
+                                ...subLessons[index],
+                                sublessonname: e.target.value,
+                              }),
+                            ]);
+                          }}
+                        />
                       </div>
-                      <div className="w-[747px] flex flex-col justify-center gap-[23px]">
-                        <div className="flex flex-col gap-[4px]">
-                          <label className="text-Body2 font-Body2 text-[#08090D]">
-                            Sub-Lesson name *
-                          </label>
-                          <input
-                            id="sub-lesson-name"
-                            type="text"
-                            className="w-[530px] h-[48px] bg-white text-black border-[1px] border-[#D6D9E4] rounded-[8px] pl-[20px] placeholder:text-black"
-                            value={item.sublessonname}
-                            onChange={(e) => {
-                              // const newSublesson = [...subLessons]
-                              setSubLessons([
-                                ...subLessons.toSpliced(index, 1, {
-                                  ...subLessons[index],
-                                  sublessonname: e.target.value,
-                                }),
-                              ]);
-                            }}
-                          />
-                        </div>
-                        <div className="flex flex-col gap-[8px]">
-                          <h1 className="font-[400] text-[16px] text-[#07090D]">
-                            Video *
-                          </h1>
-                          {item.videofile || videoPreviewUrls[index] ? (
-                            <label className="cursor-pointer w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
-                              <video
-                                src={item.videofile || videoPreviewUrls[index]}
-                                alt="upload"
-                                className="absolute m-auto rounded-md"
-                                style={{
-                                  maxWidth: "240px",
-                                  maxHeight: "240px",
-                                  objectFit: "cover",
-                                }}
-                                controls
-                              />
+                      <div className="flex flex-col gap-[8px]">
+                        <h1 className="font-[400] text-[16px] text-[#07090D]">
+                          Video *
+                        </h1>
+                        {item.videofile || videoPreviewUrls[index] ? (
+                          <label className="cursor-pointer w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
+                            <video
+                              src={item.videofile || videoPreviewUrls[index]}
+                              alt="upload"
+                              className="absolute m-auto rounded-md"
+                              style={{
+                                maxWidth: "240px",
+                                maxHeight: "240px",
+                                objectFit: "cover",
+                              }}
+                              controls
+                            />
 
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  deleteVideoFile(index);
-                                  // Also remove the sub-lesson
-                                }}
-                                className="absolute"
-                              >
-                                <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[3.5rem] left-[6.5rem]" />
-                              </button>
-                            </label>
-                          ) : (
-                            <label
-                              className="cursor-pointer w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center"
-                              id="drop"
+                            <button
+                              type="button"
+                              onClick={() => {
+                                deleteVideoFile(index);
+                                // Also remove the sub-lesson
+                              }}
+                              className="absolute"
                             >
-                              <img src={Uploadvideo} alt="upload" />
-                              <input
-                                type="file"
-                                name="videofile"
-                                className="hidden"
-                                accept="video/mp4"
-                                id="input"
-                                onChange={(e) =>
-                                  handleVideoFileChange(e, index)
-                                }
-                              />
-                            </label>
-                          )}
-                        </div>
-                      </div>
-                      <div className="w-[67px] h-[32px] text-center text-[16px] font-[700] text-Blue-500 cursor-pointer">
-                        {subLessons.length > 1 ? (
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              deleteVideoFile(index);
-                              deleteSublesson(item.sublessonid);
-                            }}
-                          >
-                            Delete
-                          </button>
+                              <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[3.5rem] left-[6.5rem]" />
+                            </button>
+                          </label>
                         ) : (
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              alert("Cannot delete sub-lesson");
-                            }}
+                          <label
+                            className="cursor-pointer w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center"
+                            id="drop"
                           >
-                            Delete
-                          </button>
+                            <img src={Uploadvideo} alt="upload" />
+                            <input
+                              type="file"
+                              name="videofile"
+                              className="hidden"
+                              accept="video/mp4"
+                              id="input"
+                              onChange={(e) => handleVideoFileChange(e, index)}
+                            />
+                          </label>
                         )}
                       </div>
                     </div>
-                  </article>
-                );
-              })}
+                    <div className="w-[67px] h-[32px] text-center text-[16px] font-[700] text-Blue-500 cursor-pointer">
+                      {subLessons.length > 1 ? (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            deleteVideoFile(index);
+                            deleteSublesson(item.sublessonid);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            alert("Cannot delete sub-lesson");
+                          }}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
 
             <button
               className="mx-[40px] mt-[32px] border-[1px] border-Orange-500 shadow-md bg-white text-Orange-500 rounded-[12px] w-[208px] h-[60px] text-[16px] font-[700]"

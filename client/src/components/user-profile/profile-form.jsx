@@ -32,7 +32,7 @@ function ProfileForm() {
   const getUserData = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/profiles/${UserIdFromLocalStorage}`
+        `https://project-courseflow-server.vercel.app/profiles/${UserIdFromLocalStorage}`
       );
       const dateOfBirth = result.data.age;
       // Format the date as yyyy-mm-dd if necessary
@@ -121,7 +121,7 @@ function ProfileForm() {
       };
 
       await axios.put(
-        `http://localhost:4000/profiles/${UserIdFromLocalStorage}/update`,
+        `https://project-courseflow-server.vercel.app/profiles/${UserIdFromLocalStorage}/update`,
         updatedProfile
       );
 
@@ -209,7 +209,7 @@ function ProfileForm() {
       console.log(updatedProfile);
 
       await axios.put(
-        `http://localhost:4000/profiles/${UserIdFromLocalStorage}/update`,
+        `https://project-courseflow-server.vercel.app/profiles/${UserIdFromLocalStorage}/update`,
         updatedProfile
       );
 

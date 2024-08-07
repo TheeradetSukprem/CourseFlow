@@ -10,9 +10,9 @@ function AddCourseSubLessonTable({ createCourse }) {
   const [subLesson, setSublesson] = useState([]);
   const [draggedItemIndex, setDraggedItemIndex] = useState(null);
   const param = useParams();
-  
+
   useEffect(() => {
-    const savedOrder = localStorage.getItem('subLessonOrder');
+    const savedOrder = localStorage.getItem("subLessonOrder");
     if (savedOrder) {
       setSublesson(JSON.parse(savedOrder));
     } else {
@@ -22,9 +22,11 @@ function AddCourseSubLessonTable({ createCourse }) {
 
   const fetchSubLesson = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/admin/sublessonlist");
+      const res = await axios.get(
+        "https://project-courseflow-server.vercel.app/admin/sublessonlist"
+      );
       setSublesson(res.data);
-      localStorage.setItem('subLessonOrder', JSON.stringify(res.data));
+      localStorage.setItem("subLessonOrder", JSON.stringify(res.data));
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -32,7 +34,7 @@ function AddCourseSubLessonTable({ createCourse }) {
 
   /*const deleteLesson = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/admin/lesson/${id}`);
+      await axios.delete(`https://project-courseflow-server.vercel.app/admin/lesson/${id}`);
       const updatedSubLesson = subLesson.filter((lesson) => lesson.moduleid !== id);
       setSublesson(updatedSubLesson);
       localStorage.setItem('subLessonOrder', JSON.stringify(updatedSubLesson));
@@ -56,13 +58,15 @@ function AddCourseSubLessonTable({ createCourse }) {
     updatedSubLesson.splice(dropIndex, 0, draggedItem);
     setSublesson(updatedSubLesson);
     setDraggedItemIndex(null);
-    localStorage.setItem('subLessonOrder', JSON.stringify(updatedSubLesson));
+    localStorage.setItem("subLessonOrder", JSON.stringify(updatedSubLesson));
   };
 
   const handleAddLessonClick = async (e) => {
     const courseid = await createCourse(e);
     console.log(courseid);
-    if(typeof courseid === "number"){navigate(`/admin/editcourse/${courseid}`);}
+    if (typeof courseid === "number") {
+      navigate(`/admin/editcourse/${courseid}`);
+    }
   };
 
   return (
@@ -102,7 +106,9 @@ function AddCourseSubLessonTable({ createCourse }) {
                   onDragOver={onDragOver}
                   onDrop={() => onDrop(index)}
                 >
-                  <td className="w-[56px] h-[88px]">{/*<img src={drag} alt="drag" />*/}</td>
+                  <td className="w-[56px] h-[88px]">
+                    {/*<img src={drag} alt="drag" />*/}
+                  </td>
                   <td className="w-[56px]">{/*index + 1*/}</td>
                   <td className="w-[500px]">{/*item.modulename*/}</td>
                   <td className="w-[396px]">{/*item.count_sublesson*/}</td>

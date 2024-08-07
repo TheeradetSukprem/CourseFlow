@@ -21,7 +21,9 @@ function AddAssignmentForm() {
 
   const fetchCourses = async () => {
     try {
-      const result = await axios.get(`http://localhost:4000/courses`);
+      const result = await axios.get(
+        `https://project-courseflow-server.vercel.app/courses`
+      );
       setCourses(result.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -30,7 +32,9 @@ function AddAssignmentForm() {
 
   const fetchLessons = async () => {
     try {
-      const result = await axios.get(`http://localhost:4000/admin/lesson`);
+      const result = await axios.get(
+        `https://project-courseflow-server.vercel.app/admin/lesson`
+      );
       setLessons(result.data);
     } catch (error) {
       console.error("Error fetching lessons:", error);
@@ -39,10 +43,15 @@ function AddAssignmentForm() {
 
   const fetchSubLessons = async (moduleid) => {
     try {
-      const result = await axios.get(`http://localhost:4000/admin/sublesson`, {
-        params: { moduleid },
-      });
-      const sortedSubLessons = result.data.sort((a, b) => a.sublessonid - b.sublessonid);
+      const result = await axios.get(
+        `https://project-courseflow-server.vercel.app/admin/sublesson`,
+        {
+          params: { moduleid },
+        }
+      );
+      const sortedSubLessons = result.data.sort(
+        (a, b) => a.sublessonid - b.sublessonid
+      );
       setSubLessons(sortedSubLessons);
     } catch (error) {
       console.error("Error fetching sublessons:", error);
@@ -64,24 +73,29 @@ function AddAssignmentForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (!selectedCourse || !selectedLesson || !selectedSubLesson || !assignmentDetail ) {
+
+    if (
+      !selectedCourse ||
+      !selectedLesson ||
+      !selectedSubLesson ||
+      !assignmentDetail
+    ) {
       setErrorMessage("All fields are required");
       return;
     }
-  
+
     try {
       const response = await axios.post(
-        "http://localhost:4000/admin/assignments",
+        "https://project-courseflow-server.vercel.app/admin/assignments",
         {
           course: selectedCourse,
-          lesson: selectedLesson, 
+          lesson: selectedLesson,
           sub_lesson: selectedSubLesson,
           title: assignmentDetail,
           userId: UserIdFromLocalStorage,
         }
       );
-  
+
       if (response.status === 201) {
         console.log("Data sent:", response);
         alert("Assignment created successfully");

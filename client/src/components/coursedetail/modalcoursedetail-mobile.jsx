@@ -9,36 +9,36 @@ function Modal() {
   const params = useParams();
   const userId = useAuth();
   const [subscribedCourses, setSubscribedCourses] = useState([]); // State to track subscribed courses // State to track expanded module
-  
   useEffect(() => {
     const subscribedCourses = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
+        `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
       );
-      console.log(result);
       setSubscribedCourses(result.data);
     };
     subscribedCourses();
   }, []);
-  
+
   const postSubscribe = async () => {
-    await axios.post(`http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`),
+    await axios.post(
+      `https://project-courseflow-server.vercel.app/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`
+    ),
       {};
     navigate(`/user/subscribe/coursedetail/${params.Id}`);
   };
 
   const handlePostSubscribe = () => {
-     const subscribedCourseIds = subscribedCourses.map(
+    const subscribedCourseIds = subscribedCourses.map(
       (course) => course.courseid
     );
     const uniqueSubscribedCourseIds = [...new Set(subscribedCourseIds)];
-
     if (uniqueSubscribedCourseIds.includes(Number(params.Id))) {
       alert("You have already subscribed to this course.");
     } else {
       postSubscribe();
     }
   };
+  
   return (
     <div>
       <div className="flex items-center justify-center h-screen bg-[rgba(0,0,0,0.5)]">

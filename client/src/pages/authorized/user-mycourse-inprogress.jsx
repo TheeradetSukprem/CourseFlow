@@ -17,7 +17,7 @@ function UserMycourseInprogress() {
   const getInprogressCourses = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/inprogress`
+        `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/inprogress`
       );
       console.log(result.data);
       setCourses(result.data);

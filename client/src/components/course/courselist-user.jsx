@@ -20,14 +20,15 @@ function CourselistUser() {
 
   const getCourseData = async () => {
     try {
-      const result = await axios.get(`http://localhost:4000/courses`);
+      const result = await axios.get(
+        `https://project-courseflow-server.vercel.app/courses`
+      );
       console.log(result);
       setCourse(result.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
   };
-
 
   useEffect(() => {
     getCourseData();
@@ -39,7 +40,7 @@ function CourselistUser() {
 
   const handleNavigate = () => {
     navigate("/courselistuser");
-    window.scrollTo(0, 0); 
+    window.scrollTo(0, 0);
   };
 
   const gradientStyle = {
@@ -60,7 +61,7 @@ function CourselistUser() {
 
   return (
     <>
-      <NavbarUser className=" sticky top-0"/>
+      <NavbarUser className=" sticky top-0" />
       <section
         id="search"
         className="sm:w-full sm:h-[198px] xl:flex xl:flex-col"
@@ -99,7 +100,7 @@ function CourselistUser() {
             to={`/user/coursedetail/${course.courseid}`}
             className="sm:w-[343px] sm:flex sm:flex-col items-center mb-8 mx-4 xl:w-[30%] shadow-2xl xl:mt-[60px] rounded-xl xl:mb-5 transition-transform transform hover:scale-105 hover:shadow-2xl "
           >
-           <img
+            <img
               src={course.imagefile}
               alt={course.coursename}
               className="w-[343px] h-[190px] sm:object-cover md:object-cover xl:object-cover rounded-lg "
@@ -167,7 +168,7 @@ function CourselistUser() {
           className="sm:hidden md:block md:w-[500px] md:h-[350px] md:mr-[159px] md:mt-[153px] xl:block xl:w-[592px] xl:h-[448.59px] xl:mr-[159px] xl:mt-[53px]"
         />
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }

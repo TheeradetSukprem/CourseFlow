@@ -41,7 +41,7 @@ function EditCourseForm() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/courses/list/${id}`)
+      .get(`https://project-courseflow-server.vercel.app/courses/list/${id}`)
       .then((res) => {
         // console.log("Response received:", res.data.data[0]);
         // console.log(id);
@@ -90,7 +90,10 @@ function EditCourseForm() {
       console.log("Updated data being sent to backend:", updatedData);
 
       console.log("Update data", updatedData);
-      await axios.put(`http://localhost:4000/courses/${id}`, updatedData);
+      await axios.put(
+        `https://project-courseflow-server.vercel.app/courses/${id}`,
+        updatedData
+      );
       setLoading(false);
       alert("Data Updated Successfully!");
       navigate("/admin/courselist");
@@ -295,7 +298,10 @@ function EditCourseForm() {
         pdffile: "",
       };
 
-      await axios.put(`http://localhost:4000/courses/${id}`, updatedData);
+      await axios.put(
+        `https://project-courseflow-server.vercel.app/courses/${id}`,
+        updatedData
+      );
 
       if (error) {
         throw error;

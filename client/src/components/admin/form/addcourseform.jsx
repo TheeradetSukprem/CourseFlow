@@ -46,7 +46,9 @@ function AddCourseFrom() {
   }, []);
 
   const fetchCourse = async () => {
-    const result = await axios.get("http://localhost:4000/courses");
+    const result = await axios.get(
+      "https://project-courseflow-server.vercel.app/courses"
+    );
     setCourses(result.data.courses);
   };
 
@@ -124,7 +126,10 @@ function AddCourseFrom() {
         videofile: videoUrl,
       };
 
-      const res = await axios.post("http://localhost:4000/courses", formData);
+      const res = await axios.post(
+        "https://project-courseflow-server.vercel.app/courses",
+        formData
+      );
       const { courseid } = res.data.data[0];
       console.log(res.data.data[0]); //log data
       collectCourseid = courseid;
@@ -155,7 +160,9 @@ function AddCourseFrom() {
   };
 
   const deletecourse = async (_id) => {
-    const res = await axios.delete(`http://localhost:4000/courses/${_id}`);
+    const res = await axios.delete(
+      `https://project-courseflow-server.vercel.app/courses/${_id}`
+    );
     console.log(res);
 
     const newCourses = [...courses].filter((course) => {
