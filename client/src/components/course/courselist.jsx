@@ -96,7 +96,9 @@ function Course() {
                 {course.coursename}
               </h1>
               <p className="sm:text-black sm:text-sm font-normal">
-                {course.description}
+                {course.description.length > 85
+                  ? `${course.description.substring(0, 85)}...`
+                  : course.description}
               </p>
             </div>
             <div className="w-full sm:h-[53px] border-t-[1px] border-Gray-500 text-Gray-700 text-Body3 font-Body3  flex flex-row  p-4 gap-5 ">

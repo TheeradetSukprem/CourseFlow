@@ -31,8 +31,8 @@ function SectionDesireCourses() {
       >
         {desireCourse.map((item, index) => (
           <Link
-          to={`/user/desire/coursedetail/${item.courseid}`}
-          key={index}
+            to={`/user/desire/coursedetail/${item.courseid}`}
+            key={index}
             className="sm:w-[343px] sm:flex sm:flex-col items-center mb-8 mx-4 xl:w-[30%] shadow-2xl xl:mt-[60px] rounded-xl xl:mb-5 transition-transform transform hover:scale-105 hover:shadow-2xl "
           >
             <img
@@ -48,7 +48,9 @@ function SectionDesireCourses() {
                 {item.coursename}
               </h1>
               <p className="sm:text-black sm:text-sm font-normal">
-                {item.description}
+                {item.description.length > 85
+                  ? item.description.substring(0, 85) + "..."
+                  : item.description}
               </p>
             </div>
             <div className="w-full sm:h-[53px] border-t-[1px] border-Gray-500 text-Gray-700 text-Body3 font-Body3  flex flex-row  p-4 gap-5 ">
