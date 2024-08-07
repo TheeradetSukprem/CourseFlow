@@ -31,7 +31,7 @@ function UserSectionSubscribe() {
     };
     const getPdffile = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/list/${params.Id}`
+        `https://project-courseflow-server.vercel.app/courses/list/${params.Id}`
       );
       setPdfFile(result.data.data[0]);
 
