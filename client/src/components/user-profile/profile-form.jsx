@@ -6,8 +6,10 @@ import supabase from "../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import LoadingCircle from "./loading-circle";
+import { Alert, Snackbar } from "@mui/material"; // Import MUI components
 
 function ProfileForm() {
+  const [updating, setUpdating] = useState(false);
   const [userData, setUserData] = useState({});
   const { UserIdFromLocalStorage } = useAuth();
   const [uploading, setUploading] = useState(false);
@@ -23,6 +25,8 @@ function ProfileForm() {
     name: "",
     educationalBackground: "",
   });
+  const [alert, setAlert] = useState({ message: "", severity: "" }); // Alert state
+  const [open, setOpen] = useState(false); // Snackbar open state
 
   const currentYear = new Date().getFullYear();
   const maxDate = `${currentYear}-12-31`;
@@ -51,6 +55,8 @@ function ProfileForm() {
       setAvatarUrl(result.data.profilepicture || "");
     } catch (error) {
       console.error("Error Fetching", error);
+      setAlert({ message: "Error fetching user data.", severity: "error" });
+      setOpen(true);
     }
   };
 
@@ -71,7 +77,11 @@ function ProfileForm() {
       // Check file size (2MB = 2 * 1024 * 1024 bytes)
       const maxSize = 1 * 1024 * 1024;
       if (file.size > maxSize) {
-        alert("File size exceeds 1MB. Please select a smaller file.");
+        setAlert({
+          message: "File size exceeds 1MB. Please select a smaller file.",
+          severity: "error",
+        });
+        setOpen(true);
         setUploading(false);
         return;
       }
@@ -95,7 +105,8 @@ function ProfileForm() {
 
       setFormData((prevData) => ({ ...prevData, avatarUrl: profileUrl }));
     } catch (error) {
-      alert(error.message);
+      setAlert({ message: error.message, severity: "error" });
+      setOpen(true);
     } finally {
       setUploading(false);
     }
@@ -124,11 +135,8 @@ function ProfileForm() {
         `https://project-courseflow-server.vercel.app/profiles/${UserIdFromLocalStorage}/update`,
         updatedProfile
       );
-
-      alert("Avatar deleted successfully");
     } catch (error) {
       console.error("Error deleting avatar", error);
-      alert("Error deleting avatar");
     }
   }
 
@@ -186,9 +194,14 @@ function ProfileForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (errors.name || errors.educationalBackground || errors.age) {
-      alert("Please correct the errors before submitting.");
+      setAlert({
+        message: "Please correct the errors before submitting.",
+        severity: "error",
+      });
+      setOpen(true);
       return;
     }
+    setUpdating(true);
 
     try {
       // Extract the date part from formData.dateOfBirth and set time to 17:00:00.000Z
@@ -213,12 +226,25 @@ function ProfileForm() {
         updatedProfile
       );
 
-      alert("Profile updated successfully");
-      window.location.reload();
+      setAlert({
+        message: "Profile updated successfully",
+        severity: "success",
+      });
+      setOpen(true);
+      setUpdating(false);
     } catch (error) {
       console.error("Error updating profile", error);
-      alert("Error updating profile");
+      setAlert({ message: "Error updating profile", severity: "error" });
+      setOpen(true);
+      setUpdating(false);
     }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
   return (
     <>
@@ -360,10 +386,22 @@ function ProfileForm() {
             type="submit"
             className="text-white bg-Blue-500 font-medium rounded-xl text-sm w-full md:w-auto px-4 py-4 text-center hover:bg-Blue-400 duration-75 md:mt-3"
           >
-            Update Profile
+            {updating ? "Updating..." : "Update Profile"}
           </button>
         </div>
       </form>
+
+      {/* MUI Snackbar and Alert */}
+      <Snackbar
+        open={open}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleClose} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
