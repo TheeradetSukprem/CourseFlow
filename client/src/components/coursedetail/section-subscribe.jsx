@@ -1,7 +1,7 @@
 import arrow_back from "../../assets/icons/coursedetail/arrow_back.png";
 import attachfile from "../../assets/icons/coursedetail/attachfile.png";
 import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
@@ -12,8 +12,9 @@ function UserSectionSubscribe() {
   const params = useParams();
   const [coursedetail, setCoursedetail] = useState([]);
   const [modules, setModules] = useState([]);
-  const [selectedCourseId, setSelectedCourseId] = useState(null);
-  const [expandedModuleId, setExpandedModuleId] = useState(null); // State to track expanded module
+  const [expandedModuleId, setExpandedModuleId] = useState(null);
+  const [pdfFile, setPdfFile] = useState([]);
+  const [pdfFileSizeMB, setPdfFileSizeMB] = useState(null); // State to store PDF size in MB
 
   useEffect(() => {
     const getCourses = async () => {
@@ -28,8 +29,31 @@ function UserSectionSubscribe() {
       );
       setModules(result.data.data);
     };
+    const getPdffile = async () => {
+      const result = await axios.get(
+        `http://localhost:4000/courses/list/${params.Id}`
+      );
+      setPdfFile(result.data.data[0]);
+
+      // Fetch the file size using a HEAD request
+      const fileUrl = result.data.data[0].pdffile;
+      try {
+        const response = await axios.head(fileUrl);
+        const contentLength = response.headers["content-length"];
+        if (contentLength) {
+          const fileSizeInMB = (contentLength / (1024 * 1024)).toFixed(2);
+          setPdfFileSizeMB(fileSizeInMB);
+        } else {
+          setPdfFileSizeMB("Size unknown");
+        }
+      } catch (error) {
+        console.error("Error fetching file size:", error);
+        setPdfFileSizeMB("Error fetching size");
+      }
+    };
     getCourses();
     getModules();
+    getPdffile();
   }, []);
 
   const toggleModuleDetails = (moduleId) => {
@@ -37,97 +61,86 @@ function UserSectionSubscribe() {
       prevModuleId === moduleId ? null : moduleId
     );
   };
-
   const handleBackClick = () => {
-    // navigate(`/users/startlearning/${params.Id}`);
     navigate(`/user/my_course`);
   };
 
   // Sort modules by moduleid and generate sequential numbers
   const sortedModules = [...modules].sort((a, b) => a.moduleid - b.moduleid);
-  const [courseDetail] = coursedetail;
+
+  const truncateText = (text, wordLimit) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    if (words.length <= wordLimit) {
+      return text;
+    }
+    const truncated = words.slice(0, wordLimit).join(" ");
+    return truncated + "...";
+  };
 
   return (
     <div>
       <section className="h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
         <div>
-          <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px]">
-            <div className="flex flex-col">
+          <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px] xl:mb-[100px] sm:mb-[70px] md:mb-[0px]">
+            <div className="flex flex-col ">
               <button
                 onClick={handleBackClick}
-                className="w-[79px] h-[32px] flex items-center gap-[8px] pl-[4px] pr-[4px]"
+                className="w-[79px] h-[32px] flex items-center gap-[8px] pl-[4px] pr-[4px] mt-[50px]"
               >
                 <img className="w-[16px] h-[16px]" src={arrow_back}></img>
                 <div className="w-[39px] h-[24px] text-[16px] font-[700] text-Blue-500">
                   Back
                 </div>
               </button>
-              <figure className="h-[213.5px] mt-[10px] flex flex-row gap-[24px]">
-                {courseDetail && (
-                  <img
-                    className="w-[343px] h-[213.5px] md:w-[450px] md:h-[320px] xl:w-[739px] xl:h-[460px] rounded-[8px]"
-                    src={courseDetail.imagefile}
+              <label className="flex flex-row gap-[24px] ">
+                {coursedetail.length > 0 && (
+                  <video
+                    className="xl:w-[739px]  sm:w-[343px] sm:h-[215px] md:w-[450px] xl:h-[500px] md:h-[320px] rounded-[8px]"
+                    src={coursedetail[0].videofile}
                     alt="Course Detail"
-                  ></img>
+                    controls
+                  ></video>
                 )}
-              </figure>
+              </label>
             </div>
           </header>
           <article>
-            <div className="w-[100%] h-fit mb-[15px] mt-[15px] xl:w-[739px] md:mt-[10px] xl:mt-[70px] xl:mb-[70px]">
+            <div className="w-[100%] h-fit xl:w-[739px] mb-[70px]">
               <h1 className="text-black text-Headline3 font-Headline3 mb-[5px] xl:text-Headline2 xl:font-Headline2">
                 Course Detail
               </h1>
-              <p className="text-Gray-700 text-Body3 font-Body3 xl:text-Body2 xl:font-Body2">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Elementum aenean fermentum, velit vel, scelerisque morbi
-                accumsan. Nec, tellus leo id leo id felis egestas. Quam sit
-                lorem quis vitae ut mus imperdiet. Volutpat placerat dignissim
-                dolor faucibus elit ornare fringilla. Vivamus amet risus
-                ullamcorper auctor nibh. Maecenas morbi nec vestibulum ac tempus
-                vehicula.
-              </p>
-              <br />
-              <p className="text-Gray-700 text-Body3 font-Body3 xl:text-Body2 xl:font-Body2">
-                Vel, sit magna nisl cras non cursus. Sed sed sit ullamcorper
-                neque. Dictum sapien amet, dictumst maecenas. Mattis nulla
-                tellus ut neque euismod cras amet, volutpat purus. Semper purus
-                viverra turpis in tempus ac nunc. Morbi ullamcorper sed elit
-                enim turpis. Scelerisque rhoncus morbi pulvinar donec at sed
-                fermentum. Duis non urna lacus, sit amet. Accumsan orci
-                elementum nisl tellus sit quis. Integer turpis lectus eu blandit
-                sit. At at cras viverra odio neque nisl consectetur. Arcu
-                senectus aliquet vulputate urna, ornare. Mi sem tellus elementum
-                at commodo blandit nunc. Viverra elit adipiscing ut dui, tellus
-                viverra nec.
-              </p>
-              <br />
-              <br />
-              <p className="text-Gray-700 text-Body3 font-Body3 xl:text-Body2 xl:font-Body2">
-                Lectus pharetra eget curabitur lobortis gravida gravida eget ut.
-                Nullam velit morbi quam a at. Sed eu orci, sociis nulla at sit.
-                Nunc quam integer metus vitae elementum pulvinar mattis nulla
-                molestie. Quis eget vestibulum, faucibus malesuada eu. Et lectus
-                molestie egestas faucibus auctor auctor.
-              </p>
+              {coursedetail.length > 0 && (
+                <p className="text-Gray-700 text-Body3 font-Body3 xl:text-Body2 xl:font-Body2">
+                  {coursedetail[0].description}
+                </p>
+              )}
             </div>
           </article>
+
           <article>
             <div className="flex flex-col justify-between w-[100%] sm:w-[343px] sm:h-[128px]">
               <h1 className="text-Headline3 font-Headline3 text-black">
                 Attach File
               </h1>
               <div className="bg-Blue-100 rounded-[8px] w-[100%] sm:w-[343px] sm:h-[82px] flex items-center gap-[16px] pl-[16px]">
-                <img className="w-[50px] h-[50px]" src={attachfile}></img>
+                <Link to={pdfFile.pdffile} target="_blank">
+                  <img src={attachfile} alt="pdf" />
+                </Link>
                 <div className="w-[144px] h-[46px]">
-                  <h1 className="text-Body2 font-Body2 text-black">
-                    Service Design.pdf
+                  <h1 className="text-Body2 font-Body2 text-black w-[260px]">
+                    {pdfFile.coursename}.pdf
                   </h1>
-                  <h1 className="text-Body4 font-Body4 text-Blue-400">68 mb</h1>
+                  {pdfFileSizeMB && (
+                    <h1 className="text-Body4 font-Body4 text-Blue-400">
+                      {pdfFileSizeMB} MB
+                    </h1>
+                  )}
                 </div>
               </div>
             </div>
           </article>
+
           <article>
             <div className="h-[924px] mt-[70px] xl:w-[739px]">
               <h1 className="text-black text-Headline3 font-Headline3 xl:text-Headline2 xl:font-Headline2 xl:mb-[20px]">
@@ -204,16 +217,17 @@ function UserSectionSubscribe() {
               <div>
                 <div className="mb-[1px]">
                   <span className="text-black text-Headline3 font-Headline3">
-                    {courseDetail?.coursename}
+                    {coursedetail.length > 0 && coursedetail[0].coursename}
                   </span>
                 </div>
                 <p className="text-Body2 font-Body2 text-Gray-700">
-                  {courseDetail?.description}
+                  {coursedetail.length > 0 &&
+                    truncateText(coursedetail[0].description, 6)}
                 </p>
               </div>
             </div>
             <div className="text-Gray-700 text-Headline3 font-Headline3 mb-[30px] mt-[10px]">
-              THB {courseDetail?.price}.00
+              THB {coursedetail.length > 0 && coursedetail[0].price}.00
             </div>
             <div className="border-solid border-t-[1px] border-Gray-400 flex flex-col justify-end h-[100px] w-[309px] ">
               <button

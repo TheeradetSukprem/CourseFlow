@@ -18,15 +18,25 @@ function SectionOtherCourse() {
     let results = [filteredCourses[0], filteredCourses[1], filteredCourses[2]];
     setOtherCourse(results);
   };
+
   useEffect(() => {
     getOtherCourse();
   }, []);
 
+  const truncateText = (text, wordLimit) => {
+    const words = text.split(' ');
+    if (words.length <= wordLimit) {
+      return text;
+    }
+    const truncated = words.slice(0, wordLimit).join(' ');
+    return truncated + '...';
+  };
+
   return (
     <div>
-      <section className="h-[1410px] bg-Gray-100 pl-[16px] pr-[16px] xl:h-[792px]">
-        <div className=" flex flex-col items-center w-[100%] xl:mt-[121px]">
-          <h1 className=" text-black text-Headline3 font-Headline3 mt-4 xl:mt-[140px]  mb-6 xl:text-Headline2 xl:font-Headline2 xl:mb-[40px]">
+      <section className="h-[1410px] bg-Gray-100 pl-[16px] pr-[16px] xl:h-[792px] mb-[50px]">
+        <div className="flex flex-col items-center w-[100%] xl:mt-[121px]">
+          <h1 className="text-black text-Headline3 font-Headline3 mt-4 xl:mt-[140px] mb-6 xl:text-Headline2 xl:font-Headline2 xl:mb-[40px]">
             Other Interesting Course
           </h1>
           <div className="flex flex-col xl:flex-row xl:w-[1119px] justify-between">
@@ -34,11 +44,10 @@ function SectionOtherCourse() {
               return (
                 <article
                   key={index}
-                  className="shadow-md rounded-[8px] flex flex-col justify-between mb-10 xl:h-[475px]"
+                  className="hover:scale-105 hover:shadow-2xl shadow-md rounded-[8px] flex flex-col justify-between mb-10 xl:h-[475px]"
                 >
                   <button
                     onClick={() => {
-                      // navigate(`/user/coursedetail/${item.courseid}`);
                       window.location.href = `/user/coursedetail/${item.courseid}`;
                     }}
                   >
@@ -52,10 +61,10 @@ function SectionOtherCourse() {
                       Course
                     </h1>
                     <h1 className="text-Body1 font-Body1 text-black xl:text-Headline3 xl:font-Headline3">
-                      {item.coursename}
+                      {truncateText(item.coursename, 2)}
                     </h1>
                     <p className="text-Body3 font-Body3 text-Gray-700 xl:text-Body2 xl:font-Body2 xl:mt-[10px]">
-                      {item.description}
+                      {truncateText(item.description, 6)}
                     </p>
                   </div>
                   <div className="flex flex-row border-t-[1px] border-t-Gray-500 h-[53px] p-[16px] mt-[30px]">
