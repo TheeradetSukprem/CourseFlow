@@ -572,8 +572,8 @@ const UserLearningPage = () => {
       return;
     }
 
-    if (userAnswer.length < 20) {
-      alert("Please type at least 20 characters before submitting.");
+    if (userAnswer.length < 5) {
+      alert("Please type at least 5 characters before submitting.");
       return;
     }
 
