@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import uploadfile from "../../../assets/image/uploadfile.png";
 import upload from "../../../assets/image/upload.png";
+import Uploadvideo from "../../../assets/image/Uploadvideo.png";
 import pdf from "../../../assets/image/pdf.png";
 import axios from "axios";
 import { useNavigate, useParams, Link } from "react-router-dom";
@@ -515,7 +517,7 @@ function EditCourseForm() {
                       className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                       id="drop"
                     >
-                      <img src={upload} alt="upload" />
+                      <img src={Uploadvideo} alt="upload" />
                       <input
                         type="file"
                         name="videofile"
@@ -557,7 +559,7 @@ function EditCourseForm() {
                   id="drop"
                 >
                   <span>
-                    <img src={upload} alt="upload" />
+                    <img src={uploadfile} alt="upload" />
                     <input
                       type="file"
                       name="pdffile"
