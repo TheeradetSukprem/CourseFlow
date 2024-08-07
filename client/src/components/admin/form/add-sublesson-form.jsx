@@ -8,12 +8,12 @@ import { useState, useRef, useEffect } from "react";
 import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import PendingSvg from "../../shared/pending-svg";
 
 function AddSubLessonFrom() {
   const [videoFiles, setVideoFiles] = useState([]);
   const [videoPreviewUrls, setVideoPreviewUrls] = useState([]);
-  console.log(videoFiles);
-  console.log(videoPreviewUrls);
+  const [loading, setLoading] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const { control, handleSubmit, register, reset } = useForm({
@@ -54,6 +54,7 @@ function AddSubLessonFrom() {
 
   ///////VDO
   const onSubmit = async (data) => {
+    setLoading(true); // Start the spinner
     try {
       // Upload videos and get URLs
       const videoUrls = await Promise.all(
@@ -83,6 +84,8 @@ function AddSubLessonFrom() {
         "There was an error adding the lesson and sublesson:",
         error
       );
+    } finally {
+      setLoading(false); // Stop the spinner
     }
   };
 
@@ -157,6 +160,8 @@ function AddSubLessonFrom() {
 
   return (
     <div className="flex flex-col justify-between w-full h-full">
+      {/* Loading Section */}
+      {loading && <PendingSvg text="Creating Lesson and Sublesson..." />}
       <nav>
         <NavbarAddSubLesson
           handleSubmit={handleSubmit(onSubmit)}
