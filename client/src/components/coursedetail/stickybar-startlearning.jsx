@@ -15,7 +15,7 @@ function StickybarStartLearning() {
   useEffect(() => {
     const getCourses = async () => {
       const result = await axios.get(
-        `http://localhost:4000/courses/${params.Id}`
+        `https://project-courseflow-server.vercel.app/courses/${params.Id}`
       );
       setCoursedetail(result.data.data);
     };
@@ -39,7 +39,7 @@ function StickybarStartLearning() {
               <div className="flex flex-row justify-between">
                 <div>
                   <span className="text-black text-Body2 font-Body2">
-                  {courseDetail?.coursename}
+                    {courseDetail?.coursename}
                   </span>
                 </div>
                 <button onClick={toggleCourse}>

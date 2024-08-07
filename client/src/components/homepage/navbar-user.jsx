@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate ,useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from "/src/assets/icons/logo.png";
 import Profile from "/src/assets/images/sm/profile/profile.png";
 import iconProfile from "/src/assets/icons/icon-profile.png";
@@ -16,7 +16,6 @@ function NavbarUser() {
   const [isOpen, setIsOpen] = useState(false);
   const [userData, setUserData] = useState({});
 
-
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -27,7 +26,7 @@ function NavbarUser() {
   const getUserData = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/profiles/${userId.UserIdFromLocalStorage}`
+        `https://project-courseflow-server.vercel.app/profiles/${userId.UserIdFromLocalStorage}`
       );
       setUserData(result.data);
     } catch (error) {

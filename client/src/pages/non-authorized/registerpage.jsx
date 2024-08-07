@@ -117,7 +117,7 @@ function Register() {
 
     try {
       const response = await axios.post(
-        `http://localhost:4000/users/register`,
+        `https://project-courseflow-server.vercel.app/users/register`,
         values
       );
 

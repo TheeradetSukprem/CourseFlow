@@ -12,7 +12,7 @@ function NavbarAddSubLesson({ text, handleSubmit }) {
   const getCourse = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/courses/list/${params.courseId}`
+        `https://project-courseflow-server.vercel.app/courses/list/${params.courseId}`
       );
       setCourse(result.data.data[0]);
     } catch (error) {

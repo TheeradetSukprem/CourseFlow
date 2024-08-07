@@ -182,7 +182,7 @@ const UserLearningPage = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/users/courseinfo/${courseid}`
+          `https://project-courseflow-server.vercel.app/users/courseinfo/${courseid}`
         );
         const data = response.data;
         setSidebarData(data);
@@ -247,7 +247,7 @@ const UserLearningPage = () => {
   //     try {
   //       console.log(`Fetching assignment data for ID: ${assignmentid}`);
   //       const response = await axios.get(
-  //         `http://localhost:4000/users/assignment/${assignmentid}`
+  //         `https://project-courseflow-server.vercel.app/users/assignment/${assignmentid}`
   //       );
   //       const assignmentData = response.data;
 
@@ -399,7 +399,7 @@ const UserLearningPage = () => {
   const handleSendAssignmentClick = async () => {
     // if (assignment) {
     //   try {
-    //     await axios.post(`http://localhost:4000/users/submit-assignment`, {
+    //     await axios.post(`https://project-courseflow-server.vercel.app/users/submit-assignment`, {
     //       assignmentId: assignment.assignmentid,
     //       userAnswer: userAnswer,
     //     });
@@ -468,7 +468,7 @@ const UserLearningPage = () => {
   const fetchUserSubmissions = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/submissions/user/${userId}`
+        `https://project-courseflow-server.vercel.app/submissions/user/${userId}`
       );
 
       if (response.status === 200) {
@@ -502,7 +502,7 @@ const UserLearningPage = () => {
   const fetchAssignmentData = async (assignmentid) => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/users/assignment/${assignmentid}`
+        `https://project-courseflow-server.vercel.app/users/assignment/${assignmentid}`
       );
       const assignmentData = response.data;
 
@@ -579,7 +579,7 @@ const UserLearningPage = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:4000/submissions/user/${userId}/assignment/${assignment.assignmentid}/submit`,
+        `https://project-courseflow-server.vercel.app/submissions/user/${userId}/assignment/${assignment.assignmentid}/submit`,
         {
           answer: userAnswer,
         }

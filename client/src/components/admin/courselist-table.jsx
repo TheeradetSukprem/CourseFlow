@@ -40,7 +40,9 @@ function CourseListTable() {
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/courses");
+      const res = await axios.get(
+        "https://project-courseflow-server.vercel.app/courses"
+      );
       setCourses(res.data);
       console.log(res.data);
     } catch (error) {
@@ -50,7 +52,9 @@ function CourseListTable() {
 
   const deleteCourse = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/courses/${id}`);
+      await axios.delete(
+        `https://project-courseflow-server.vercel.app/courses/${id}`
+      );
       setCourses(courses.filter((course) => course.courseid !== id));
       handleCloseModal(); // Close the modal after successful deletion
     } catch (error) {
