@@ -1,19 +1,43 @@
 import modal_vector from "../../assets/icons/coursedetail/modal_vector.png";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../contexts/authentication";
+import React, { useState, useEffect } from "react";
 
 function Modal() {
   const navigate = useNavigate();
   const params = useParams();
-
+  const userId = useAuth();
+  const [subscribedCourses, setSubscribedCourses] = useState([]); // State to track subscribed courses // State to track expanded module
+  
+  useEffect(() => {
+    const subscribedCourses = async () => {
+      const result = await axios.get(
+        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
+      );
+      console.log(result);
+      setSubscribedCourses(result.data);
+    };
+    subscribedCourses();
+  }, []);
+  
   const postSubscribe = async () => {
-    await axios.post(`http://localhost:4000/courses/${params.Id}/subscribe`),
+    await axios.post(`http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`),
       {};
     navigate(`/user/subscribe/coursedetail/${params.Id}`);
   };
-  const handlePostSubscribe = (event) => {
-    event.preventDefault();
-    postSubscribe();
+
+  const handlePostSubscribe = () => {
+     const subscribedCourseIds = subscribedCourses.map(
+      (course) => course.courseid
+    );
+    const uniqueSubscribedCourseIds = [...new Set(subscribedCourseIds)];
+
+    if (uniqueSubscribedCourseIds.includes(Number(params.Id))) {
+      alert("You have already subscribed to this course.");
+    } else {
+      postSubscribe();
+    }
   };
   return (
     <div>

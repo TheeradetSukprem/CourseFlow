@@ -24,6 +24,13 @@ function Login() {
     console.log("Password:", password);
     setState({ ...state, loading: true, error: "" });
     try {
+      //Validate password
+      if (password.length < 12) {
+        return setState({
+          ...state,
+          error: "Password should be more than 12 or equal",
+        });
+      }
       const user = await login({ email, password });
       setState({ ...state, loading: false, user });
     } catch (error) {
@@ -114,14 +121,14 @@ function Login() {
             <path
               d="M13.843 1.99998L8.83754 20.6805"
               stroke="#2FAC61"
-              stroke-width="3"
-              stroke-linecap="round"
+              strokeWidth="3"
+              strokeLinecap="round"
             />
             <path
               d="M1.99986 8.83751L20.6804 13.8429"
               stroke="#2FAC61"
-              stroke-width="3"
-              stroke-linecap="round"
+              strokeWidth="3"
+              strokeLinecap="round"
             />
           </svg>
         </div>{" "}
@@ -136,7 +143,8 @@ function Login() {
               <p>
                 <input
                   type="email"
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Orange-500 block w-full p-3 "
+                  id="email"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-3 "
                   required
                   placeholder="Enter Email"
                   onChange={(e) => {
@@ -153,7 +161,8 @@ function Login() {
                 {" "}
                 <input
                   type="password"
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Orange-500  block w-full p-3"
+                  id="password"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500  block w-full p-3"
                   placeholder="Enter Password"
                   onChange={(e) => {
                     setPassword(e.target.value);

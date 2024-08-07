@@ -25,7 +25,7 @@ function Section3() {
         "Start with something simple and small, then expand over time. If people call it a ‘toy’ you’re definitely onto something. If you’re waiting for encouragement from others, you’re doing it wrong. By the time people think an idea is good, it’s probably too late.",
     },
     {
-      name: "John Doe",
+      name: "Joy Doe",
       image: people2,
       description:
         "Innovation is the key to success. Always stay curious and never stop learning. By the time you realize it, you’ll be ahead of the curve.",
@@ -50,17 +50,17 @@ function Section3() {
   };
 
   return (
-    <section className=" sm:w-full sm:h-[716px] md:w-full md:h-[742px] xl:w-full xl:h-[742px] flex flex-col items-center">
+    <section className=" sm:w-full sm:h-[716px] md:w-full md:h-[742px] xl:w-full xl:h-[742px] flex flex-col items-center sm:mb-10 sm:mt-10 md:mb-0 md:mt-0">
       <img src={ellipse1} alt="" className=" absolute sm:right-0 md:hidden"/>
       <img src={ellipse2} alt="" className=" absolute sm:right-8 sm:mt-8 md:hidden"/>
       <img src={ellipse3} alt="" className=" absolute sm:left-0 sm:ml-5 sm:mt-[660px] md:hidden"/>
-      <img src={qrtop} alt="" className=" absolute sm:mt-12 sm:mr-44 md:hidden"/>
-      <img src={qrbottom} alt="" className=" absolute  sm:mt-[580px] sm:ml-56 z-10 md:hidden"/>
+      <img src={qrtop} alt="" className=" absolute sm:mt-10 sm:mr-60 md:hidden"/>
+      <img src={qrbottom} alt="" className=" absolute  sm:mt-[650px] sm:ml-60 z-10 md:hidden"/>
       <img src={ellipse1xl} alt="" className=" absolute sm:hidden md:block md:right-0 xl:right-0"/>
-      <img src={ellipse2xl} alt="" className=" absolute sm:hidden md:block md:right-16 md:mt-14 xl:right-16 xl:mt-14"/>
-      <img src={ellipse3xl} alt="" className=" absolute md:left-0 md:mt-[609px] md:ml-48 xl:left-0 xl:mt-[609px] xl:ml-48"/>
-      {/* <img src={qrtopxl} alt="" className=" absolute z-10 sm:hidden md:block xl:mt-48 xl:mr-[580px]"/>
-      <img src={qrbottomxl} alt="" className=" absolute z-20 sm:hidden md:block xl:mt-[450px] xl:ml-[600px]"/> */}
+      <img src={ellipse2xl} alt="" className=" absolute sm:hidden md:block md:right-16 md:mt-14 xl:right-16 xl:mt-14 "/>
+      <img src={ellipse3xl} alt="" className=" absolute sm:hidden md:left-0 md:mt-[609px] md:ml-48 xl:left-0 xl:mt-[609px] xl:ml-48"/>
+      <img src={qrtopxl} alt="" className=" absolute z-10 sm:hidden md:block md:mt-36 md:mr-[600px] xl:mt-36 xl:mr-[600px]"/>
+      <img src={qrbottomxl} alt="" className=" absolute z-20 sm:hidden md:block md:mt-[530px] md:ml-[650px] xl:mt-[530px] xl:ml-[650px]"/>
       <h1 className=" relative text-black text-center z-0 sm:font-medium sm:text-2xl sm:text-center md:mt-[109px] md:font-medium md:text-4xl xl:mt-[109px] xl:font-medium xl:text-4xl ">
         Our Graduates
       </h1>
@@ -78,7 +78,7 @@ function Section3() {
                 <img
                   src={person.image}
                   alt={person.name}
-                  className="sm:w-[248px] sm:h-[297.99px] md:h-[240px] md:w-[200px] md:relative md:left-10 xl:h-[240px] xl:w-[200px] xl:relative xl:left-10"
+                  className=" object-cover sm:w-[248px] sm:h-[297.99px] md:h-[240px] md:w-[200px] md:relative md:left-10 xl:h-[240px] xl:w-[200px] xl:relative xl:left-10"
                 />
                 <div className="text-black bg-Blue-100 md:w-[578.78px] md:h-[309.48px] md:flex md:items-center md:justify-center md:pl-8 xl:w-[578.78px] xl:h-[309.48px] xl:flex xl:items-center xl:justify-center  xl:pl-8 ">
                   <div className="sm:mt-[14px] sm:w-[248px] sm:h-[206px] md:mt-0 md:px-6 md:w-[481.14px] md:h-[174px] xl:mt-0 xl:px-6 xl:w-[481.14px] xl:h-[174px]">

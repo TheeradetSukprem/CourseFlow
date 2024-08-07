@@ -12,7 +12,7 @@ function Header() {
   return (
     <section
       id="header"
-      className="relative sm:w-full sm:h-[704px] bg-Blue-100 sm:flex sm:justify-center xl:h-[700px]"
+      className="relative sm:w-full sm:h-[704px] bg-Blue-100 sm:flex sm:justify-center  xl:h-[700px]"
     >
       <img
         src={Ellipse}
@@ -22,7 +22,7 @@ function Header() {
       <img src={Vector1} alt="" className=" absolute sm:hidden md:hidden xl:block xl:top-44 xl:ml-52"/>
       <img src={Vector2} alt="" className=" absolute sm:hidden md:hidden xl:block xl:top-[520px] xl:mr-32 z-20"/>
       <img src={Vector3} alt="" className=" absolute sm:hidden md:hidden xl:block xl:top-[570px] xl:ml-[1100px] z-20"/>
-      <div className="relative z-10 sm:w-[343px] sm:h-[270px] sm:mt-14 md:p-0 md:mt-[165px] md:w-[643px] md:h-[370px] xl:p-0 xl:mt-[165px] xl:w-[643px] xl:h-[370px] xl:ml-[] xl:mr-[350px]">
+      <div className="relative z-10 sm:w-[343px] sm:h-[270px] sm:mt-14 md:p-0 md:mt-[165px] md:w-[643px] md:h-[370px] xl:p-0 xl:mt-[165px] xl:w-[643px] xl:h-[370px]  xl:mr-[350px]">
         <h1 className="relative text-black z-30 sm:w-[343px] sm:text-4xl sm:font-medium md:text-[66px] md:font-Headline3 md:w-[643px] md:h-[166px] md:leading-tight xl:text-[66px] xl:font-Headline3 xl:w-[643px] xl:h-[166px] xl:leading-tight">
           Best Virtual Classroom Software
         </h1>

@@ -1,5 +1,7 @@
+import UserLearningPage from "../../components/courselearning/userlearningpage";
+
 function StartLearning() {
-  return <div>Start Learning Course</div>;
+  return <UserLearningPage />;
 }
 
 export default StartLearning;

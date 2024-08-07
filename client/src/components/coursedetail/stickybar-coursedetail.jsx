@@ -1,25 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../contexts/authentication";
 import axios from "axios";
 
 function StickybarCoursedetail() {
   const navigate = useNavigate();
   const params = useParams();
+  const userId = useAuth();
+  const [coursedetail, setCoursedetail] = useState([]);
   const [isCoursevisible, setIsCourseVisible] = useState(false);
+  
   const toggleCourse = () => {
     setIsCourseVisible(!isCoursevisible);
   };
 
+  useEffect(() => {
+    const getCourses = async () => {
+      const result = await axios.get(
+        `http://localhost:4000/courses/${params.Id}`
+      );
+      setCoursedetail(result.data.data);
+    };
+    getCourses();
+  }, []);
+
   const postDesireCourse = async () => {
-    await axios.post(`http://localhost:4000/courses/${params.Id}/desire`), {};
-    navigate("/user/desire");
+    await axios.post(
+      `http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/desire`
+    ),
+      {};
+    navigate(`/user/desire/coursedetail/${params.Id}`);
   };
   const handlePostDesire = (event) => {
     event.preventDefault();
     postDesireCourse();
   };
-
+  const [courseDetail] = coursedetail;
   return (
     <div>
       <footer className="bg-white flex items-center justify-center shadow-md h-fit sticky bottom-0 xl:hidden">
@@ -37,7 +54,7 @@ function StickybarCoursedetail() {
                 <div className="flex flex-row justify-between">
                   <div>
                     <span className="text-black text-Body2 font-Body2">
-                      Service Design Essentials
+                    {courseDetail?.coursename}
                     </span>
                   </div>
                   <button onClick={toggleCourse}>
@@ -45,17 +62,17 @@ function StickybarCoursedetail() {
                   </button>
                 </div>
 
-                <h1
+                <p
                   className={`${
                     isCoursevisible ? "block" : "hidden"
                   } pt-[8px] text-Gray-700 text-Body4 font-Body4`}
                 >
-                  Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
-                </h1>
+                  {courseDetail?.description}
+                </p>
               </div>
             </div>
             <div className="text-Gray-700 text-Body2 font-Body2">
-              THB 3,559.00
+              THB {courseDetail?.price}.00
             </div>
             <div className="flex flex-row gap-[8px]">
               <button

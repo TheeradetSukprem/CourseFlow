@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
 import Buttons from "../../components/mycourses/buttons";
-import AllCourseCard from "../../components/mycourses/all-courses";
+import CourseCard from "../../components/mycourses/course-card";
 import UserProfileCard from "../../components/mycourses/user-profile-card";
-import Navbarnonuser from "../../components/homepage/navbar-user";
+import NavbarUser from "../../components/homepage/navbar-user";
 import Footer from "../../components/homepage/footer";
 import axios from "axios";
+import { useAuth } from "../../contexts/authentication";
+import emptyFolder from "../../assets/image/empty-folder.png";
 
 function UserMycourse() {
+  const userId = useAuth();
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  //=============Get all user subscribed courses
   const getAllCourses = async () => {
     try {
-      const result = await axios.get("http://localhost:4000/courses");
-      console.log(result);
+      const result = await axios.get(
+        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
+      );
+      console.log(result.data);
       setCourses(result.data);
     } catch (error) {
       console.error("Error Fetching", error);
@@ -20,11 +27,72 @@ function UserMycourse() {
   };
 
   useEffect(() => {
-    getAllCourses();
+    const fetchData = async () => {
+      await getAllCourses();
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
+      <nav className="sticky top-0 bg-white z-10 lg:block">
+        <NavbarUser />
+      </nav>
+
+      {/* User profile card for lg up */}
+      <div className="lg:flex">
+        <div className="hidden lg:block lg:sticky lg:top-[22rem] lg:left-[15rem] lg:self-start lg:w-[200px]">
+          <UserProfileCard />
+        </div>
+
+        <div className="flex-grow">
+          <div className="mt-[5rem] mb-4 lg:mb-0 lg:ml-[-4rem] z-20 flex flex-col justify-center items-center">
+            <p className="text-black text-Headline2 mb-9 font-medium bg-white p-2">
+              My Courses
+            </p>
+            <Buttons />
+          </div>
+
+          <div className="mx-auto py-2 lg:ml-[27rem]">
+            {courses.length > 0 ? (
+              <div className="flex flex-wrap gap-4 lg:max-w-[740px] justify-center lg:justify-start">
+                {courses.map((course) => (
+                  <CourseCard
+                    key={course.courseid}
+                    courseid={course.courseid}
+                    photo={course.imagefile}
+                    coursename={course.coursename}
+                    description={course.description}
+                    coursesummary={course.coursesummary}
+                    courselearningtime={course.courselearningtime}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center w-[343px] h-auto md:ml-[13rem] lg:md:ml-[3rem]">
+                <img src={emptyFolder} alt="No courses available" />
+                <p className="text-black text-2xl">This page is empty.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* User profile card for sm */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-10 bg-white">
+        <UserProfileCard />
+      </div>
+
+      <div className="lg:mb-[0rem] mb-[8rem] mt-[8rem]">
+        <Footer />
+      </div>
+
       {/* SVG section for bg */}
       <div className="absolute top-[13rem] right-[5rem] md:top-[8rem] ">
         <svg
@@ -63,7 +131,7 @@ function UserMycourse() {
           <circle cx="13.1741" cy="13.1741" r="13.1741" fill="#C6DCFF" />
         </svg>
       </div>
-      <div className="absolute top-[100rem] md:right-0 md:top-[12rem] ">
+      <div className="absolute top-[-10rem] md:right-0 md:top-[12rem] ">
         <svg
           width="53"
           height="74"
@@ -74,7 +142,7 @@ function UserMycourse() {
           <circle cx="37" cy="37" r="37" fill="#C6DCFF" />
         </svg>
       </div>
-      <div className="absolute top-[100rem] md:left-[23rem] md:top-[12rem] z-10">
+      <div className="absolute top-[-10rem] md:left-[23rem] md:top-[12rem] -z-10">
         <svg
           width="23"
           height="23"
@@ -97,38 +165,6 @@ function UserMycourse() {
         </svg>
       </div>
       {/* SVG section for bg */}
-
-      <Navbarnonuser />
-
-      <div className="realative md:-mb-[26rem] ">
-        <div className="mt-[5rem] mb-4 lg:ml-[5rem] z-20 flex flex-col justify-center items-center">
-          <p className="text-black text-Headline2 mb-9 font-medium bg-white px-2">
-            My Courses
-          </p>
-          <div className="flex justify-center">{<Buttons />}</div>
-        </div>
-
-        <div className="mx-auto p-4 lg:ml-[40rem]">
-          <div className="flex flex-wrap gap-4 lg:max-w-[740px] justify-center lg:justify-start">
-            {courses.map((course) => {
-              return (
-                <AllCourseCard
-                  key={course.courseid}
-                  photo={course.imagefile}
-                  coursename={course.coursename}
-                  description={course.description}
-                  coursesummary={course.coursesummary}
-                  courselearningtime={course.courselearningtime}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {<UserProfileCard />}
-      <Footer />
-      <div className="mb-[8rem] lg:mb-0 "></div>
     </>
   );
 }

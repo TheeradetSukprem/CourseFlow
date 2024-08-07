@@ -1,14 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 function StickybarStartLearning() {
+  const navigate = useNavigate();
+  const params = useParams();
+  const [coursedetail, setCoursedetail] = useState([]);
   const [isCoursevisible, setIsCourseVisible] = useState(false);
   const toggleCourse = () => {
     setIsCourseVisible(!isCoursevisible);
   };
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getCourses = async () => {
+      const result = await axios.get(
+        `http://localhost:4000/courses/${params.Id}`
+      );
+      setCoursedetail(result.data.data);
+    };
+    getCourses();
+  }, []);
+
+  const [courseDetail] = coursedetail;
   return (
     <div>
       <footer className="flex items-center justify-center shadow-md bg-white h-fit sticky bottom-0 xl:hidden">
@@ -25,7 +39,7 @@ function StickybarStartLearning() {
               <div className="flex flex-row justify-between">
                 <div>
                   <span className="text-black text-Body2 font-Body2">
-                    Service Design Essentials
+                  {courseDetail?.coursename}
                   </span>
                 </div>
                 <button onClick={toggleCourse}>
@@ -38,16 +52,16 @@ function StickybarStartLearning() {
                   isCoursevisible ? "block" : "hidden"
                 } pt-[8px] text-Gray-700 text-Body4 font-Body4`}
               >
-                Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
+                {courseDetail?.description}
               </h1>
             </div>
             <div className="text-Gray-700 text-Body2 font-Body2">
-              THB 3,559.00
+              THB {courseDetail?.price}.00
             </div>
             <div className="flex flex-row">
               <button
                 onClick={() => {
-                  navigate("/user/startlearning");
+                  navigate(`/users/startlearning/${params.Id}`);
                 }}
                 className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] p-[8px] text-[12px] font-[700] text-white text-center sm:w-[343px] sm:h-[34px]"
               >

@@ -54,7 +54,8 @@ profileRouter.put(
   [updateProfileValidation],
   async (req, res) => {
     const { id } = req.params;
-    const { profilepicture, fullname, educationalbackground, email } = req.body;
+    const { profilepicture, fullname, educationalbackground, email, age } =
+      req.body;
     try {
       // Start a transaction
       await connectionPool.query("BEGIN");
@@ -73,8 +74,15 @@ profileRouter.put(
       }
 
       // Update user information in users table
-      const updateUserQuery = `UPDATE users SET fullname = $1, educationalbackground = $2, email = $3 WHERE userid = (SELECT userid FROM profiles WHERE profileid = $4) RETURNING *`;
-      const updateUserValues = [fullname, educationalbackground, email, id];
+      const updateUserQuery = `UPDATE users SET fullname = $1, educationalbackground = $2, email = $3, age = $4 WHERE userid = (SELECT userid FROM profiles WHERE profileid = $5) RETURNING *`;
+
+      const updateUserValues = [
+        fullname,
+        educationalbackground,
+        email,
+        age,
+        id,
+      ];
       const userResult = await connectionPool.query(
         updateUserQuery,
         updateUserValues

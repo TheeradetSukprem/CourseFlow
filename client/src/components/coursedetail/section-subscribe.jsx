@@ -4,62 +4,72 @@ import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../../contexts/authentication";
 
 function UserSectionSubscribe() {
   const navigate = useNavigate();
+  const userId = useAuth();
   const params = useParams();
-  const [coursedetail, setCoursedetail] = useState({});
-  const getCourses = async () => {
-    const result = await axios.get(
-      `http://localhost:4000/courses/${params.Id}`
-    );
-    setCoursedetail(result.data.data[0]);
-  };
+  const [coursedetail, setCoursedetail] = useState([]);
+  const [modules, setModules] = useState([]);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [expandedModuleId, setExpandedModuleId] = useState(null); // State to track expanded module
+
   useEffect(() => {
+    const getCourses = async () => {
+      const result = await axios.get(
+        `http://localhost:4000/courses/${params.Id}`
+      );
+      setCoursedetail(result.data.data);
+    };
+    const getModules = async () => {
+      const result = await axios.get(
+        `http://localhost:4000/courses/modules/${params.Id}`
+      );
+      setModules(result.data.data);
+    };
     getCourses();
+    getModules();
   }, []);
 
-  const [isCoursevisible1, setIsCourseVisible1] = useState(false);
-  const toggleCourse1 = () => {
-    setIsCourseVisible1(!isCoursevisible1);
+  const toggleModuleDetails = (moduleId) => {
+    setExpandedModuleId((prevModuleId) =>
+      prevModuleId === moduleId ? null : moduleId
+    );
   };
-  const [isCoursevisible2, setIsCourseVisible2] = useState(false);
-  const toggleCourse2 = () => {
-    setIsCourseVisible2(!isCoursevisible2);
+
+  const handleBackClick = () => {
+    // navigate(`/users/startlearning/${params.Id}`);
+    navigate(`/user/my_course`);
   };
-  const [isCoursevisible3, setIsCourseVisible3] = useState(false);
-  const toggleCourse3 = () => {
-    setIsCourseVisible3(!isCoursevisible3);
-  };
-  const [isCoursevisible4, setIsCourseVisible4] = useState(false);
-  const toggleCourse4 = () => {
-    setIsCourseVisible4(!isCoursevisible4);
-  };
-  const [isCoursevisible5, setIsCourseVisible5] = useState(false);
-  const toggleCourse5 = () => {
-    setIsCourseVisible5(!isCoursevisible5);
-  };
-  const [isCoursevisible6, setIsCourseVisible6] = useState(false);
-  const toggleCourse6 = () => {
-    setIsCourseVisible6(!isCoursevisible6);
-  };
+
+  // Sort modules by moduleid and generate sequential numbers
+  const sortedModules = [...modules].sort((a, b) => a.moduleid - b.moduleid);
+  const [courseDetail] = coursedetail;
+
   return (
     <div>
       <section className="h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
         <div>
           <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px]">
             <div className="flex flex-col">
-              <div className="w-[79px] h-[32px] flex items-center gap-[8px] pl-[4px] pr-[4px]">
+              <button
+                onClick={handleBackClick}
+                className="w-[79px] h-[32px] flex items-center gap-[8px] pl-[4px] pr-[4px]"
+              >
                 <img className="w-[16px] h-[16px]" src={arrow_back}></img>
                 <div className="w-[39px] h-[24px] text-[16px] font-[700] text-Blue-500">
                   Back
                 </div>
-              </div>
+              </button>
               <figure className="h-[213.5px] mt-[10px] flex flex-row gap-[24px]">
-                <img
-                  className="w-[343px] h-[213.5px] md:w-[450px] md:h-[320px] xl:w-[739px] xl:h-[460px] rounded-[8px]"
-                  src={coursedetail.imagefile}
-                ></img>
+                {courseDetail && (
+                  <img
+                    className="w-[343px] h-[213.5px] md:w-[450px] md:h-[320px] xl:w-[739px] xl:h-[460px] rounded-[8px]"
+                    src={courseDetail.imagefile}
+                    alt="Course Detail"
+                  ></img>
+                )}
               </figure>
             </div>
           </header>
@@ -127,200 +137,57 @@ function UserSectionSubscribe() {
                 <article>
                   <div className="h-[924px] mt-[15px] xl:w-[739px]">
                     <div>
-                      <aside>
-                        <div className="h-fit">
-                          <div className="border-b-[1px] border-b-Gray-400 h-[62px] flex fel-col items-center justify-between">
-                            <div>
-                              <span className="mr-[20px] text-Gray-700 text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                01
-                              </span>
-                              <span className="text-black text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                Introduction
-                              </span>
+                      {sortedModules
+                        .filter(
+                          (module, index, self) =>
+                            self.findIndex(
+                              (mod) => mod.moduleid === module.moduleid
+                            ) === index
+                        )
+                        .map((module, index) => (
+                          <aside key={module.moduleid}>
+                            <div className="h-fit">
+                              <div className="border-b-[1px] border-b-Gray-400 h-[62px] flex items-center justify-between">
+                                <div>
+                                  <span className="mr-[20px] text-Gray-700 text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
+                                    {String(index + 1).padStart(2, "0")}
+                                  </span>
+                                  <span className="text-black text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
+                                    {module.modulename}
+                                  </span>
+                                </div>
+                                <button
+                                  onClick={() =>
+                                    toggleModuleDetails(module.moduleid)
+                                  }
+                                >
+                                  <img
+                                    className="w-[24px] h-[24px]"
+                                    src={arrow_drop}
+                                    alt="Toggle"
+                                  ></img>
+                                </button>
+                              </div>
+                              <div
+                                className={`${
+                                  expandedModuleId === module.moduleid
+                                    ? "block"
+                                    : "hidden"
+                                } text-Gray-700 text-Body2 font-Body2 mt-[20px] pl-[40px] pb-[20px]`}
+                              >
+                                <div>
+                                  {modules
+                                    .filter(
+                                      (mod) => mod.moduleid === expandedModuleId
+                                    )
+                                    .map((mod, idx) => (
+                                      <li key={idx}>{mod.sublessonname}</li>
+                                    ))}
+                                </div>
+                              </div>
                             </div>
-                            <button onClick={toggleCourse1}>
-                              <img
-                                className="w-[24px] h-[24px]"
-                                src={arrow_drop}
-                              ></img>
-                            </button>
-                          </div>
-                          <div
-                            className={`${
-                              isCoursevisible1 ? "block" : "hidden"
-                            } text-Gray-700 text-Body2 font-Body2 mt-[20px] pl-[40px] pb-[20px]`}
-                          >
-                            <li>Welcome to the Course</li>
-                            <li>Course Overview</li>
-                            <li>Getting to Know You</li>
-                            <li>What is Service Design ?</li>
-                            <li>
-                              Service Design vs. UX vs. UI vs Design Thinking
-                            </li>
-                            <li>
-                              4 Levels of Service Design in an Organization
-                            </li>
-                            <li>Scope of Service Design</li>
-                            <li>
-                              Develop an Entirely New Service - U Drink I Drive
-                            </li>
-                            <li>Improving Existing Services - Credit Cards</li>
-                            <li>Improving Existing Services MK</li>
-                            <li>Levels of Impact</li>
-                          </div>
-                        </div>
-                      </aside>
-                      <aside>
-                        <div className="h-fit">
-                          <div className="border-b-[1px] border-b-Gray-400 h-[92px] flex fel-col items-center justify-between">
-                            <div>
-                              <span className="mr-[20px] text-Gray-700 text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                02
-                              </span>
-                              <span className="text-black text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                Service Design Theories and Principles
-                              </span>
-                            </div>
-                            <button onClick={toggleCourse2}>
-                              <img src={arrow_drop}></img>
-                            </button>
-                          </div>
-                          <p
-                            className={`${
-                              isCoursevisible2 ? "block" : "hidden"
-                            } text-Gray-700 text-Body2 font-Body2 mt-[20px] pl-[40px] pb-[20px]`}
-                          >
-                            <li>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat.
-                            </li>
-                          </p>
-                        </div>
-                      </aside>
-                      <aside>
-                        <div className="h-fit">
-                          <div className="border-b-[1px] border-b-Gray-400 h-[92px] flex fel-col items-center justify-between">
-                            <div>
-                              <span className="mr-[20px] text-Gray-700 text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                03
-                              </span>
-                              <span className="text-black text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                Understanding Users and Finding Opportunities
-                              </span>
-                            </div>
-                            <button onClick={toggleCourse3}>
-                              <img src={arrow_drop}></img>
-                            </button>
-                          </div>
-                          <p
-                            className={`${
-                              isCoursevisible3 ? "block" : "hidden"
-                            } text-Gray-700 text-Body2 font-Body2 mt-[20px] pl-[40px] pb-[20px]`}
-                          >
-                            <li>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat.
-                            </li>
-                          </p>
-                        </div>
-                      </aside>
-                      <aside>
-                        <div className="h-fit">
-                          <div className="border-b-[1px] border-b-Gray-400 h-[92px] flex fel-col items-center justify-between">
-                            <div>
-                              <span className="mr-[20px] text-Gray-700 text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                04
-                              </span>
-                              <span className="text-black text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                Identifying and Validating Opportunities for
-                                Design
-                              </span>
-                            </div>
-                            <button onClick={toggleCourse4}>
-                              <img src={arrow_drop}></img>
-                            </button>
-                          </div>
-                          <p
-                            className={`${
-                              isCoursevisible4 ? "block" : "hidden"
-                            } text-Gray-700 text-Body2 font-Body2 mt-[20px] pl-[40px] pb-[20px]`}
-                          >
-                            <li>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat.
-                            </li>
-                          </p>
-                        </div>
-                      </aside>
-                      <aside>
-                        <div className=" h-fit">
-                          <div className="border-b-[1px] border-b-Gray-400 h-[62px] flex fel-col items-center justify-between">
-                            <div>
-                              <span className="mr-[20px] text-Gray-700 text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                05
-                              </span>
-                              <span className="text-black text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                Prototyping
-                              </span>
-                            </div>
-                            <button onClick={toggleCourse5}>
-                              <img src={arrow_drop}></img>
-                            </button>
-                          </div>
-                          <p
-                            className={`${
-                              isCoursevisible5 ? "block" : "hidden"
-                            } text-Gray-700 text-Body2 font-Body2 mt-[20px] pl-[40px] pb-[20px]`}
-                          >
-                            <li>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat.
-                            </li>
-                          </p>
-                        </div>
-                      </aside>
-                      <aside>
-                        <div className=" h-fit">
-                          <div className="border-b-[1px] border-b-Gray-400 h-[62px] flex fel-col items-center justify-between">
-                            <div>
-                              <span className="mr-[20px] text-Gray-700 text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                06
-                              </span>
-                              <span className="text-black text-Body1 font-Body1 xl:text-Headline3 xl:font-Headline3">
-                                Course Summary
-                              </span>
-                            </div>
-                            <button onClick={toggleCourse6}>
-                              <img src={arrow_drop}></img>
-                            </button>
-                          </div>
-                          <p
-                            className={`${
-                              isCoursevisible6 ? "block" : "hidden"
-                            } text-Gray-700 text-Body2 font-Body2 mt-[20px] pl-[40px] pb-[20px]`}
-                          >
-                            <li>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat.
-                            </li>
-                          </p>
-                        </div>
-                      </aside>
+                          </aside>
+                        ))}
                     </div>
                   </div>
                 </article>
@@ -337,21 +204,21 @@ function UserSectionSubscribe() {
               <div>
                 <div className="mb-[1px]">
                   <span className="text-black text-Headline3 font-Headline3">
-                    Service Design Essentials
+                    {courseDetail?.coursename}
                   </span>
                 </div>
                 <p className="text-Body2 font-Body2 text-Gray-700">
-                  Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
+                  {courseDetail?.description}
                 </p>
               </div>
             </div>
-            <div className="text-Gray-700 text-Headline3 font-Headline3 w-[309px] h-[30px]">
-              THB 3,559.00
+            <div className="text-Gray-700 text-Headline3 font-Headline3 mb-[30px] mt-[10px]">
+              THB {courseDetail?.price}.00
             </div>
             <div className="border-solid border-t-[1px] border-Gray-400 flex flex-col justify-end h-[100px] w-[309px] ">
               <button
                 onClick={() => {
-                  navigate("/user/startlearning");
+                  navigate(`/users/startlearning/${params.Id}`);
                 }}
                 className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]"
               >
