@@ -196,6 +196,7 @@ courseRouter.post("/:userid/:id/subscribe", async (req, res) => {
   });
 });
 
+//========Get all desire
 courseRouter.get("/desire", async (req, res) => {
   let result;
   try {
@@ -211,6 +212,22 @@ courseRouter.get("/desire", async (req, res) => {
     res.status(500).json({ message: `Internal server error` });
   }
 });
+
+//========Get all desire by id
+// courseRouter.get("/user/:id/desire", async (req, res) => {
+//   const courseId = req.params.id;
+//   let result;
+//   try{
+//     result = await connectionPool.query(
+//       `select * from desirecourses
+//       where courseid =$1`,
+//       [courseId]
+//     );
+//     res.status(200).json(result.rows);
+//   } catch {
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// })
 
 //===========Post
 courseRouter.post("/:userid/:id/desire", async (req, res) => {
