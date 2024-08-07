@@ -11,7 +11,7 @@ function NavbarAddCourse({ createCourse }) {
         <span className="flex-1 ml-8 text-xl font-semibold">
           Add Course
         </span>
-        <div className="flex flex-col md:flex-row items-center space-x-2 ">
+        <div className="flex flex-col md:flex-row items-center space-x-2 mr-[5rem] ">
           <Link to="/admin/courselist">
             <CancelButton text="Cancel" />
           </Link>

@@ -502,4 +502,21 @@ courseRouter.get("/list/:id", async (req, res) => {
   });
 });
 
+//Desire course
+
+courseRouter.get("/user/:id/desire", async (req, res) => {
+  const courseId = req.params.id;
+  let result;
+  try{
+    result = await connectionPool.query(
+      `select * from desirecourses
+      where courseid =$1`,
+      [courseId]
+    );
+    res.status(200).json(result.rows);
+  } catch {
+    res.status(500).json({ message: "Internal server error" });
+  }
+})
+
 export default courseRouter;

@@ -35,7 +35,7 @@ function CourseListTable() {
 
   useEffect(() => {
     fetchCourses();
-    console.log(courses);
+
   }, []);
 
   const fetchCourses = async () => {
@@ -44,7 +44,7 @@ function CourseListTable() {
         "https://project-courseflow-server.vercel.app/courses"
       );
       setCourses(res.data);
-      console.log(res.data);
+
     } catch (error) {
       console.error("Error fetching courses:", error);
     }

@@ -51,7 +51,7 @@ function AssignmentListTable() {
       const res = await axios.get(
         "https://project-courseflow-server.vercel.app/admin/assignments"
       );
-      console.log(res);
+
       setAssignments(res.data);
     } catch (error) {
       console.error("Error fetching assignments:", error);

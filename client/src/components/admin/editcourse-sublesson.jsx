@@ -17,7 +17,7 @@ function EditCourseSubLessonTable({ createCourse }) {
   }, []);
 
   const fetchSubLesson = async () => {
-    console.log(param.id);
+
     try {
       const res = await axios.get(
         `https://project-courseflow-server.vercel.app/admin/sublessonlist/${param.id}`
@@ -47,7 +47,7 @@ function EditCourseSubLessonTable({ createCourse }) {
   }, []);
 
   const fetchCourses = async () => {
-    console.log(param.id);
+
     try {
       const res = await axios.get(
         `https://project-courseflow-server.vercel.app/courses/list/${param.id}`
@@ -59,7 +59,7 @@ function EditCourseSubLessonTable({ createCourse }) {
   };
 
   const deleteCourse = async () => {
-    console.log(param.id);
+
     try {
       await axios.delete(
         `https://project-courseflow-server.vercel.app/courses/${param.id}`
@@ -85,7 +85,7 @@ function EditCourseSubLessonTable({ createCourse }) {
     updatedSubLesson.splice(dropIndex, 0, draggedItem);
     setSublesson(updatedSubLesson);
     setDraggedItemIndex(null);
-    console.log(updatedSubLesson);
+
     try {
       await axios.put(
         `https://project-courseflow-server.vercel.app/admin/moduleorderlist/${param.id}`,
@@ -97,7 +97,7 @@ function EditCourseSubLessonTable({ createCourse }) {
 
   const handleAddLessonClick = async (e) => {
     const courseid = await createCourse(e);
-    console.log(courseid);
+
     navigate(`/admin/editcourse/${courseid}`);
   };
 

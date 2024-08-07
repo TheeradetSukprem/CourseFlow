@@ -11,38 +11,7 @@ function AddCourseSubLessonTable({ createCourse }) {
   const [draggedItemIndex, setDraggedItemIndex] = useState(null);
   const param = useParams();
   
-  /*useEffect(() => {
-    const savedOrder = localStorage.getItem('subLessonOrder');
-    if (savedOrder) {
-      setSublesson(JSON.parse(savedOrder));
-    } else {
-      fetchSubLesson();
-    }
-  }, []);*/
-
-  /*const fetchSubLesson = async () => {
-    try {
-      const res = await axios.get(
-        "https://project-courseflow-server.vercel.app/admin/sublessonlist"
-      );
-      setSublesson(res.data);
-      localStorage.setItem("subLessonOrder", JSON.stringify(res.data));
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-    }
-  };*/
-
-  /*const deleteLesson = async (id) => {
-    try {
-      await axios.delete(`https://project-courseflow-server.vercel.app/admin/lesson/${id}`);
-      const updatedSubLesson = subLesson.filter((lesson) => lesson.moduleid !== id);
-      setSublesson(updatedSubLesson);
-      localStorage.setItem('subLessonOrder', JSON.stringify(updatedSubLesson));
-    } catch (error) {
-      console.error("Error deleting lesson:", error);
-      console.log(error);
-    }
-  };*/
+  
 
   const onDragStart = (index) => {
     setDraggedItemIndex(index);
@@ -63,7 +32,7 @@ function AddCourseSubLessonTable({ createCourse }) {
 
   const handleAddLessonClick = async (e) => {
     const courseid = await createCourse(e);
-    console.log(courseid);
+
     if (typeof courseid === "number") {
       navigate(`/admin/editcourse/${courseid}`);
     }

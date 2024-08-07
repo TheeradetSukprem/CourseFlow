@@ -133,7 +133,7 @@ function AddCourseFrom() {
         formData
       );
       const { courseid } = res.data.data[0];
-      console.log(res.data.data[0]); //log data
+
       collectCourseid = courseid;
 
       setCreateForm({
@@ -147,7 +147,7 @@ function AddCourseFrom() {
         pdffile: "",
       });
 
-      console.log(setCreateForm);
+
       alert("Course added successfully");
 
       // Navigate to the edit course page
@@ -165,7 +165,7 @@ function AddCourseFrom() {
     const res = await axios.delete(
       `https://project-courseflow-server.vercel.app/courses/${_id}`
     );
-    console.log(res);
+
 
     const newCourses = [...courses].filter((course) => {
       return course._id !== _id;
@@ -177,7 +177,7 @@ function AddCourseFrom() {
     let collectCourseid;
     if (formRef.current) {
       collectCourseid = formRef.current.requestSubmit(); // Trigger form submission
-      console.log(collectCourseid);
+
     }
     return collectCourseid || null;
   };
@@ -235,10 +235,7 @@ function AddCourseFrom() {
     };
     fileReader.readAsDataURL(selectedFile);
 
-    // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
+
   };
 
   //uplaod pdf file
@@ -287,7 +284,7 @@ function AddCourseFrom() {
 
     // Upload PDF file and set URL
     try {
-      console.log("Uploaded PDF URL:", pdfUrl);
+
     } catch (error) {
       console.error("PDF Upload Error:", error);
     }
@@ -301,9 +298,7 @@ function AddCourseFrom() {
     fileReader.readAsDataURL(selectedFile);
 
     // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
+
   };
 
   async function uploadVideoFile(file) {
@@ -355,9 +350,7 @@ function AddCourseFrom() {
     fileReader.readAsDataURL(selectedFile);
 
     // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
+
   };
 
   // Delete preview image
