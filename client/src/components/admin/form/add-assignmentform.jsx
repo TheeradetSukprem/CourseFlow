@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import SubButton from "../button/sub-button";
 import CancelButton from "../button/cancel-button";
 import { useAuth } from "../../../contexts/authentication.jsx";
+import arrowback from "../../../assets/image/arrowback.png";
 
 function AddAssignmentForm() {
   const navigate = useNavigate();
@@ -124,12 +125,15 @@ function AddAssignmentForm() {
   );
 
   return (
-    <div className="bg-gray-100 w-full h-full flex flex-col ">
-      <nav className="w-full h-[92px] bg-white border-gray-400 border-l-0 border-[1px] flex justify-between items-center">
-        <span className="text-black font-medium text-2xl pl-10">
+    <div className="w-full ">
+      <nav className="order-b-2 py-2 border-gray-300 bg-white text-base text-slate-800 flex flex-row justify-center items-center">
+      <div className="flex items-center space-x-2 ml-8 mb-2 md:mb-0 flex-1 ">
+        <span className="flex-1 text-xl font-semibold">
           Add Assignment
         </span>
-        <div className="flex gap-4 pr-10">
+        </div>
+
+        <div className="flex gap-4 pr-10 mr-[5rem]">
           <Link to="/admin/assignmentlist">
             <CancelButton text="Cancel" />
           </Link>

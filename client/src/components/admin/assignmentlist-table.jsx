@@ -51,7 +51,7 @@ function AssignmentListTable() {
       const res = await axios.get(
         "https://project-courseflow-server.vercel.app/admin/assignments"
       );
-      console.log(res);
+
       setAssignments(res.data);
     } catch (error) {
       console.error("Error fetching assignments:", error);
@@ -104,7 +104,7 @@ function AssignmentListTable() {
             </tr>
           </thead>
         </table>
-        <div className="overflow-y-scroll max-h-[700px]">
+        <div className="overflow-y-scroll max-h-[550px]">
           <table className="text-black text-sm rounded-xl w-full">
             <tbody>
               {assignments

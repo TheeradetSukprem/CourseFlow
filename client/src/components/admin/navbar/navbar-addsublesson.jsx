@@ -24,7 +24,7 @@ function NavbarAddSubLesson({ text, handleSubmit }) {
   }, []);
   return (
     <div>
-      <nav className="w-full h-[92px] bg-white border-gray-300 border-b-2 border-[1px] flex justify-between items-center p-4 pr-[32px]">
+      <nav className="w-full h-[92px] bg-white flex justify-between items-center p-4 pr-[32px]">
         <div className="flex flex-row items-center gap-[20px] pl-[40px]">
           <img className="w-[24px] h-[24px]" src={vector}></img>
           <div className="flex flex-col">
@@ -39,7 +39,7 @@ function NavbarAddSubLesson({ text, handleSubmit }) {
             </h1>
           </div>
         </div>
-        <div className="flex flex-row items-center gap-[16px]">
+        <div className="flex flex-row items-center gap-[16px] mr-[5rem]">
           <CancelButton
             onClick={() => {
               navigate("/admin/courselist");
