@@ -14,7 +14,8 @@ function SectionCourseDetail() {
   const [modules, setModules] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [expandedModuleId, setExpandedModuleId] = useState(null);
-  const [subscribedCourses, setSubscribedCourses] = useState([]); // State to track subscribed courses // State to track expanded module
+  const [subscribedCourses, setSubscribedCourses] = useState([]);
+  const [desireCourse, setDesireCourse] = useState([]);
   useEffect(() => {
     const getCourses = async () => {
       const result = await axios.get(
@@ -35,10 +36,15 @@ function SectionCourseDetail() {
       );
       setSubscribedCourses(result.data);
     };
+    const getDesirecourse = async () => {
+      const result = await axios.get(`https://project-courseflow-server.vercel.app/courses/desire`)
+      setDesireCourse(result.data)
+    }
     getCourses();
     getModules();
     subscribedCourses();
-  }, [params.Id, userId.UserIdFromLocalStorage]);
+    getDesirecourse();
+  }, []);
 
   const postDesireCourse = async () => {
     await axios.post(
@@ -52,7 +58,15 @@ function SectionCourseDetail() {
     if (!userId.UserIdFromLocalStorage) {
       navigate("/login");
     }
-    postDesireCourse();
+    const desireCourseIds = desireCourse.map(
+      (course) => course.courseid
+    );
+    const uniqueDesireCourseIds = [...new Set(desireCourseIds)];
+    if (uniqueDesireCourseIds.includes(Number(params.Id))) {
+      alert("You have already get in desire course.");
+    } else {
+      postDesireCourse();
+    }
   };
 
   const postSubscribe = async () => {

@@ -24,57 +24,46 @@ function SectionDesireCourses() {
           Desired Courses
         </h1>
       </div>
-      <main className="flex flex-col items-center">
-        <section className="flex flex-row items-center justify-center gap-[32px] sm:mb-[50px] xl:flex-row xl:w-[1440px] flex-wrap p-[16px] ">
-          {desireCourse.map((item, index) => {
-            return (
-              <Link
-                to={`/user/desire/coursedetail/${item.courseid}`}
-                key={index}
-                className="hover:scale-105 hover:shadow-2xl shadow-md rounded-[8px] flex flex-col justify-between mb-10 xl:h-[475px]"
-              >
-                <div>
-                  <img
-                    className="w-[343px] h-[240px] rounded-t-[8px] "
-                    src={item.imagefile}
-                  ></img>
-                </div>
-                <div className="flex flex-col pl-[16px] mt-[15px] mb-[10px] sm:w-[343px] xl:mt-[20px]">
-                  <h1 className="text-Body4 font-Body4 text-Orange-500 xl:text-Body3 xl:font-Body3 xl:mb-[10px]">
-                    Course
-                  </h1>
-                  <h1 className="text-Body1 font-Body1 text-black xl:text-Headline3 xl:font-Headline3">
-                    {item.coursename}
-                  </h1>
-                  <p className="text-Body3 font-Body3 text-Gray-700 xl:text-Body2 xl:font-Body2 xl:mt-[10px]">
-                    {item.description}
-                  </p>
-                </div>
-                <div className="flex flex-row border-t-[1px] border-t-Gray-500 h-[53px] p-[16px] mt-[30px]">
-                  <div className="flex w-[88px] gap-2">
-                    <img
-                      className="w-[20px] h-[20px]"
-                      src={othercourselesson1}
-                    ></img>
-                    <h1 className="text-Body3 font-Body3 text-Gray-700">
-                      {item.coursesummary} Lesson
-                    </h1>
-                  </div>
-                  <div className="flex ml-[20px] w-[88px] gap-2">
-                    <img
-                      className="w-[20px] h-[20px]"
-                      src={othercourselesson2}
-                    ></img>
-                    <h1 className="text-Body3 font-Body3 text-Gray-700">
-                      {item.courselearningtime} Hours
-                    </h1>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </section>
-      </main>
+
+      <section
+        id="course"
+        className=" mt-10 sm:w-full sm:h-auto sm:rounded-lg flex flex-wrap justify-center xl:w-[1119px] xl:flex xl:flex-wrap xl:justify-center xl:pb-[187px] xl:mx-auto "
+      >
+        {desireCourse.map((item, index) => (
+          <Link
+          to={`/user/desire/coursedetail/${item.courseid}`}
+          key={index}
+            className="sm:w-[343px] sm:flex sm:flex-col items-center mb-8 mx-4 xl:w-[30%] shadow-2xl xl:mt-[60px] rounded-xl xl:mb-5 transition-transform transform hover:scale-105 hover:shadow-2xl "
+          >
+            <img
+              src={item.imagefile}
+              // alt={item.imagefile}
+              className="w-[343px] h-[190px] sm:object-cover md:object-cover xl:object-cover rounded-lg "
+            />
+            <div className="sm:w-[343px] sm:h-[140px] sm:p-4 ">
+              <p className="sm:text-xs sm:font-medium text-Orange-500">
+                Course
+              </p>
+              <h1 className="sm:text-black sm:text-xl sm:font-normal">
+                {item.coursename}
+              </h1>
+              <p className="sm:text-black sm:text-sm font-normal">
+                {item.description}
+              </p>
+            </div>
+            <div className="w-full sm:h-[53px] border-t-[1px] border-Gray-500 text-Gray-700 text-Body3 font-Body3  flex flex-row  p-4 gap-5 ">
+              <p className="flex flex-row gap-2">
+                <img src={othercourselesson1} alt="" className="w-[20px]" />
+                {item.coursesummary} Lessons
+              </p>
+              <p className="flex flex-row gap-2">
+                <img src={othercourselesson2} alt="" className="w-[20px]" />
+                {item.courselearningtime} Hours
+              </p>
+            </div>
+          </Link>
+        ))}
+      </section>
     </div>
   );
 }
