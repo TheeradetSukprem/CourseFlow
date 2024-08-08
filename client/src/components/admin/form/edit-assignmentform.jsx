@@ -5,10 +5,12 @@ import CancelButton from "../button/cancel-button";
 import SubButton from "../button/sub-button";
 import ConfirmationModal from "../modal/delete-course-confirmation";
 import arrowback from "../../../assets/image/arrowback.png";
+import PendingSvg from "../../shared/pending-svg";
 
 function EditAssignmentForm() {
   const navigate = useNavigate();
   const [assignment, setAssignment] = useState({});
+  const [loading, setLoading] = useState(false);
   const [courses, setCourses] = useState([]);
   const [lessons, setLessons] = useState([]);
   const [subLessons, setSubLessons] = useState([]);
@@ -93,6 +95,7 @@ function EditAssignmentForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const updatedAssignment = {
         course: selectedCourse,
@@ -117,8 +120,11 @@ function EditAssignmentForm() {
     } catch (error) {
       console.error("Error updating assignment:", error);
       setErrorMessage("Failed to update assignment.");
+    } finally {
+      setLoading(false);
     }
   };
+
   const filteredLessons = lessons.filter(
     (lesson) => lesson.courseid === parseInt(selectedCourse)
   );
@@ -154,6 +160,7 @@ function EditAssignmentForm() {
 
   return (
     <>
+     {loading && <PendingSvg text="Edit Assignment..." />}
       <div className="w-full">
         <nav className="order-b-2 py-2 border-gray-300 bg-white text-base text-slate-800 flex flex-row justify-center items-center">
           <div className="flex items-center space-x-2 ml-8 mb-2 md:mb-0 flex-1 ">

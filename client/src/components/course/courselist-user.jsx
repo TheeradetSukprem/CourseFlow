@@ -12,11 +12,13 @@ import vector1 from "/src/assets/images/sm/section4/vector1.png";
 import vector2 from "/src/assets/images/sm/section4/vector2.png";
 import Ellipse1 from "/src/assets/icons/section4/xl/Ellipse1.png";
 import Ellipse2 from "/src/assets/icons/section4/xl/Ellipse2.png";
+import LoadingPageSvg from "../shared/loading-page";
 
 function CourselistUser() {
   const [searchCourse, setSearchCourse] = useState("");
   const [course, setCourse] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const getCourseData = async () => {
     try {
@@ -27,6 +29,8 @@ function CourselistUser() {
       setCourse(result.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -94,42 +98,48 @@ function CourselistUser() {
         id="course"
         className=" mt-10 sm:w-full sm:h-auto sm:rounded-lg flex flex-wrap justify-center xl:w-[1119px] xl:flex xl:flex-wrap xl:justify-center xl:pb-[187px] xl:mx-auto "
       >
-        {filteredCourses.map((course) => (
-          <Link
-            key={course.courseid}
-            to={`/user/coursedetail/${course.courseid}`}
-            className="sm:w-[343px] sm:flex sm:flex-col items-center mb-8 mx-4 xl:w-[30%] shadow-2xl xl:mt-[60px] rounded-xl xl:mb-5 transition-transform transform hover:scale-105 hover:shadow-2xl "
-          >
-            <img
-              src={course.imagefile}
-              alt={course.coursename}
-              className="w-[343px] h-[190px] sm:object-cover md:object-cover xl:object-cover rounded-lg "
-            />
-            <div className="sm:w-[343px] sm:h-[140px] sm:p-4 ">
-              <p className="sm:text-xs sm:font-medium text-Orange-500">
-                Course
-              </p>
-              <h1 className="sm:text-black sm:text-xl sm:font-normal">
-                {course.coursename}
-              </h1>
-              <p className="sm:text-black sm:text-sm font-normal">
-                {course.description.length > 85 
-                ? `${course.description.substring(0, 85)}...`
-                : course.description}
-              </p>
-            </div>
-            <div className="w-full sm:h-[53px] border-t-[1px] border-Gray-500 text-Gray-700 text-Body3 font-Body3  flex flex-row  p-4 gap-5 ">
-              <p className="flex flex-row gap-2">
-                <img src={book} alt="" className="w-[20px]" />
-                {course.coursesummary} Lessons
-              </p>
-              <p className="flex flex-row gap-2">
-                <img src={clock} alt="" className="w-[20px]" />
-                {course.courselearningtime} Hours
-              </p>
-            </div>
-          </Link>
-        ))}
+        {loading ? (
+          <div className="flex justify-center items-center w-full h-full">
+            <LoadingPageSvg text="Loading..." />
+          </div>
+        ) : (
+          filteredCourses.map((course) => (
+            <Link
+              key={course.courseid}
+              to={`/user/coursedetail/${course.courseid}`}
+              className="sm:w-[343px] sm:flex sm:flex-col items-center mb-8 mx-4 xl:w-[30%] shadow-2xl xl:mt-[60px] rounded-xl xl:mb-5 transition-transform transform hover:scale-105 hover:shadow-2xl "
+            >
+              <img
+                src={course.imagefile}
+                alt={course.coursename}
+                className="w-[343px] h-[190px] sm:object-cover md:object-cover xl:object-cover rounded-lg "
+              />
+              <div className="sm:w-[343px] sm:h-[140px] sm:p-4 ">
+                <p className="sm:text-xs sm:font-medium text-Orange-500">
+                  Course
+                </p>
+                <h1 className="sm:text-black sm:text-xl sm:font-normal">
+                  {course.coursename}
+                </h1>
+                <p className="sm:text-black sm:text-sm font-normal">
+                  {course.description.length > 85 
+                    ? `${course.description.substring(0, 85)}...`
+                    : course.description}
+                </p>
+              </div>
+              <div className="w-full sm:h-[53px] border-t-[1px] border-Gray-500 text-Gray-700 text-Body3 font-Body3 flex flex-row p-4 gap-5 ">
+                <p className="flex flex-row gap-2">
+                  <img src={book} alt="" className="w-[20px]" />
+                  {course.coursesummary} Lessons
+                </p>
+                <p className="flex flex-row gap-2">
+                  <img src={clock} alt="" className="w-[20px]" />
+                  {course.courselearningtime} Hours
+                </p>
+              </div>
+            </Link>
+          ))
+        )}
       </section>
 
       <div
