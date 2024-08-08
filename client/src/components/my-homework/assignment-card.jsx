@@ -25,6 +25,13 @@ function AssignmentCard({
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
     setIsSubmitting(true);
+
+    if (currentAnswer.length < 5) {
+      alert("Please type at least 5 characters before submitting.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       await onSubmit(currentAnswer); // Call the onSubmit prop function
       setCurrentStatus("submitted");

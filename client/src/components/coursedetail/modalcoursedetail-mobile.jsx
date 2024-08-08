@@ -38,7 +38,7 @@ function Modal() {
       postSubscribe();
     }
   };
-  
+
   return (
     <div>
       <div className="flex items-center justify-center h-screen bg-[rgba(0,0,0,0.5)]">

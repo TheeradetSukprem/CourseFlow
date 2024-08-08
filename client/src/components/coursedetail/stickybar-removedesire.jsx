@@ -43,7 +43,7 @@ function StickybarRemoveDesire() {
     const truncated = words.slice(0, wordLimit).join(" ");
     return truncated + "...";
   };
-  
+
   return (
     <div>
       <footer className="bg-white flex items-center justify-center shadow-md h-fit sticky bottom-0 xl:hidden">
@@ -62,7 +62,7 @@ function StickybarRemoveDesire() {
                   <div className="flex flex-row justify-between">
                     <div>
                       <span className="text-black text-Body2 font-Body2">
-                      {coursedetail.length > 0 && coursedetail[0].coursename}
+                        {coursedetail.length > 0 && coursedetail[0].coursename}
                       </span>
                     </div>
                     <button onClick={toggleCourse}>

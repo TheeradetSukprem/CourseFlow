@@ -50,8 +50,8 @@ courses.courseid,
 assignments.title , 
 submissions.status ,
 submissions.answer,
-assignments.assignmentid;
-      `,
+assignments.assignmentid
+order by assignments.assignmentid ASC `,
       [userId]
     );
 
