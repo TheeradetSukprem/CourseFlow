@@ -43,6 +43,10 @@ function NavbarUser() {
     window.scrollTo(0, 0);
   };
 
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="navbar z-40  sticky top-0 bg-white">
       <section
@@ -54,6 +58,7 @@ function NavbarUser() {
             src={logo}
             alt="Logo"
             className="sm:pl-[16px] md:pl-[100px] xl:pl-[160px]"
+            onClick={handleLogoClick}
           />
         </Link>
 

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import React from "react";
 import Ellipse from "/src/assets/icons/header/sm/ellipse-sm.png";
 import Book from "/src/assets/icons/header/sm/book-sm.png";
@@ -8,8 +8,23 @@ import Vector2 from "/src/assets/icons/header/xl/vector2.png";
 import Vector3 from "/src/assets/icons/header/xl/vector3.png";
 import BookXl from "/src/assets/icons/header/xl/vector4.png";
 import VectorXl from "/src/assets/images/xl/vector-xl.png";
+import FadeIn from "./fade/fadein";
 
 function Header() {
+
+  const navigate = useNavigate()
+  const handleClick = () => {
+    const Token = localStorage.getItem('token'); 
+    console.log(Token);
+    if (Token) {
+      navigate('/courselistuser');
+    } else {
+      navigate('/courselist');
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <section
       id="header"
@@ -24,6 +39,7 @@ function Header() {
       <img src={Vector2} alt="" className=" absolute sm:hidden md:hidden xl:block xl:top-[520px] xl:mr-32 z-20"/>
       <img src={Vector3} alt="" className=" absolute sm:hidden md:hidden xl:block xl:top-[570px] xl:ml-[1100px] z-20"/>
       <div className="relative z-10 sm:w-[343px] sm:h-[270px] sm:mt-14 md:p-0 md:mt-[165px] md:w-[643px] md:h-[370px] xl:p-0 xl:mt-[165px] xl:w-[643px] xl:h-[370px]  xl:mr-[350px]">
+        <FadeIn>
         <h1 className="relative text-black z-30 sm:w-[343px] sm:text-4xl sm:font-medium md:text-[66px] md:font-Headline3 md:w-[643px] md:h-[166px] md:leading-tight xl:text-[66px] xl:font-Headline3 xl:w-[643px] xl:h-[166px] xl:leading-tight">
           Best Virtual Classroom Software
         </h1>
@@ -31,11 +47,11 @@ function Header() {
           Welcome to Schooler! The one-stop online class management system that
           caters to all your educational needs!
         </p>
-        <Link to="/courselist">
-        <button className="font-bold text-base text-white bg-Blue-500 sm:px-8 sm:py-[18px] sm:rounded-xl sm:mt-8 md:mt-[60px] md:font-bold md:text-base xl:mt-[60px]">
+        <button className="font-bold text-base text-white bg-Blue-500 sm:px-8 sm:py-[18px] sm:rounded-xl sm:mt-8 md:mt-[60px] md:font-bold md:text-base xl:mt-[60px]"
+        onClick={handleClick}>
           Explore Courses
-        </button>
-        </Link>
+        </button> 
+        </FadeIn>
         <img
           src={Book}
           alt=""
