@@ -109,13 +109,10 @@ userRouter.post("/register", [userRegisterValidation], async (req, res) => {
 
 // user login
 userRouter.post("/login", [userLoginValidation], async (req, res) => {
-  console.log("SECRET_KEY: ", process.env.SECRET_KEY);
-  console.log("Request Body: ", req.body);
   const { email } = req.body;
 
   try {
     console.log(`Attempting to log in with email: ${email}`);
-
     const result = await connectionPool.query(
       `SELECT * FROM users WHERE email = $1`,
       [email]
