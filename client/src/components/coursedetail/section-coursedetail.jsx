@@ -37,9 +37,11 @@ function SectionCourseDetail() {
       setSubscribedCourses(result.data);
     };
     const getDesirecourse = async () => {
-      const result = await axios.get(`https://project-courseflow-server.vercel.app/courses/desire`)
-      setDesireCourse(result.data)
-    }
+      const result = await axios.get(
+        `https://project-courseflow-server.vercel.app/courses/desire`
+      );
+      setDesireCourse(result.data);
+    };
     getCourses();
     getModules();
     subscribedCourses();
@@ -58,9 +60,7 @@ function SectionCourseDetail() {
     if (!userId.UserIdFromLocalStorage) {
       navigate("/login");
     }
-    const desireCourseIds = desireCourse.map(
-      (course) => course.courseid
-    );
+    const desireCourseIds = desireCourse.map((course) => course.courseid);
     const uniqueDesireCourseIds = [...new Set(desireCourseIds)];
     if (uniqueDesireCourseIds.includes(Number(params.Id))) {
       alert("You have already get in desire course.");
@@ -252,7 +252,7 @@ function SectionCourseDetail() {
                   </div>
                   <p className="text-Body2 font-Body2 text-Gray-700">
                     {coursedetail.length > 0 &&
-                      truncateText(coursedetail[0].description, 6)}
+                      truncateText(coursedetail[0].description, 4)}
                   </p>
                 </div>
               </div>
