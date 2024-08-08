@@ -11,6 +11,7 @@ import CustomSnackbar from "../../shared/custom-snackbar.jsx";
 function AddAssignmentForm() {
   const navigate = useNavigate();
   const { UserIdFromLocalStorage } = useAuth();
+
   const [courses, setCourses] = useState([]);
   const [lessons, setLessons] = useState([]);
   const [subLessons, setSubLessons] = useState([]);
@@ -84,7 +85,7 @@ function AddAssignmentForm() {
       setErrorMessage("All fields are required");
       return;
     }
-    setLoading(true);
+  
     try {
       const response = await axios.post(
         "https://project-courseflow-server.vercel.app/admin/assignments",
@@ -132,7 +133,6 @@ function AddAssignmentForm() {
 
   return (
     <>
-    {loading && <PendingSvg text="Creating Assignment..." />}
     <div className="w-full ">
       <nav className="order-b-2 py-2 border-gray-300 bg-white text-base text-slate-800 flex flex-row justify-center items-center">
       <div className="flex items-center space-x-2 ml-8 mb-2 md:mb-0 flex-1 ">

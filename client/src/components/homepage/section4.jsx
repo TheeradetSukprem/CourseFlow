@@ -14,15 +14,16 @@ function Section4() {
 
   const handleClick = () => {
     const Token = localStorage.getItem('token'); 
-    console.log(Token);
     if (Token) {
       navigate('/courselistuser');
     } else {
       navigate('/courselist');
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 0);
+};
 
   return (
     <section>

@@ -7,8 +7,11 @@ function Navbarnonuser() {
 
   const handleNavigate = () => {
     navigate("/courselist");
-    window.scrollTo(0, 0);
-  };
+    setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+};
+
 
   const handleLogoClick = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
