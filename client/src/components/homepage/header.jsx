@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React from "react";
 import Ellipse from "/src/assets/icons/header/sm/ellipse-sm.png";
 import Book from "/src/assets/icons/header/sm/book-sm.png";
@@ -30,9 +31,11 @@ function Header() {
           Welcome to Schooler! The one-stop online class management system that
           caters to all your educational needs!
         </p>
+        <Link to="/courselist">
         <button className="font-bold text-base text-white bg-Blue-500 sm:px-8 sm:py-[18px] sm:rounded-xl sm:mt-8 md:mt-[60px] md:font-bold md:text-base xl:mt-[60px]">
           Explore Courses
         </button>
+        </Link>
         <img
           src={Book}
           alt=""
