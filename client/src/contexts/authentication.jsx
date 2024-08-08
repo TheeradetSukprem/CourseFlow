@@ -35,6 +35,32 @@ function AuthProvider(props) {
     }
   };
 
+  //========Login For Admin
+  const adminLogin = async ({ email, password }) => {
+    try {
+      const result = await axios.post(
+        "https://project-courseflow-server.vercel.app/admin/login",
+        { email, password } // Pass email and password as object
+      );
+
+      const token = result.data.token;
+      const userDataFromToken = jwtDecode(token);
+
+      if (userDataFromToken.role !== "Admin") {
+        throw new Error("Unauthorized access. Admins only.");
+      }
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("userData", JSON.stringify(userDataFromToken));
+      setState({ loading: false, user: userDataFromToken, error: null });
+      navigate("/admin/courselist");
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message;
+      setState({ loading: false, error: errorMsg });
+      throw new Error(errorMsg); // Throw error to be caught by the component
+    }
+  };
+
   //===========Register
   const register = async (data) => {
     await axios.post(
@@ -63,6 +89,7 @@ function AuthProvider(props) {
       value={{
         state,
         login,
+        adminLogin,
         logout,
         register,
         UserIdFromLocalStorage,

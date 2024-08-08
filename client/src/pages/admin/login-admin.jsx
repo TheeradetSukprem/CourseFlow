@@ -1,39 +1,41 @@
-import * as React from "react";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/authentication";
 
 function LoginAdmin() {
-  // FOR TEST ONLY
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { adminLogin } = useAuth();
 
   const [state, setState] = useState({
-    loading: null,
+    loading: false,
     error: null,
     user: null,
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setState({ ...state, loading: true, error: null });
 
     try {
-      const result = await axios.post(
-        "https://project-courseflow-server.vercel.app/admin/login",
-        { email, password } // Pass email and password as object
-      );
+      if (password.length < 12) {
+        return setState({
+          ...state,
+          loading: false,
+          error: "Password should be 12 characters or more",
+        });
+      }
 
-      const token = result.data.token;
-      localStorage.setItem("token", token);
+      await adminLogin({ email, password });
 
-      const userDataFromToken = jwtDecode(token);
-      setState({ ...state, user: userDataFromToken });
-      navigate("/admin/courselist");
+      // If adminLogin is successful, user will be redirected to /admin/courselist
     } catch (error) {
-      setState({ ...state, error: error.message });
+      setState({
+        ...state,
+        loading: false,
+        error: error.message || "An error occurred",
+      });
     }
   };
 
@@ -41,7 +43,7 @@ function LoginAdmin() {
     <>
       <section className="bg-gradient-to-r from-blue-700 to-blue-400 h-screen overflow-hidden flex items-center justify-center">
         <div className="max-w-[566px] w-full md:max-w-[568px] p-6 shadow-lg bg-white rounded-md">
-          <div className="">
+          <div>
             <h1 className="mt-6 text-6xl md:text-6xl lg:text-6xl font-bold bg-gradient-to-l from-blue-700 to-blue-200 bg-clip-text text-transparent flex items-center justify-center">
               CourseFlow
             </h1>
@@ -62,14 +64,12 @@ function LoginAdmin() {
                   type="email"
                   placeholder="Enter Email"
                   value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="mb-6">
                 <label
-                  className="mx-8 mt-10 block text-base mb-2 text-black "
+                  className="mx-8 mt-10 block text-base mb-2 text-black"
                   htmlFor="password"
                 >
                   Password
@@ -80,22 +80,21 @@ function LoginAdmin() {
                   type="password"
                   placeholder="Enter Password"
                   value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
+                {state.error && (
+                  <div className="text-red-500 text-sm flex justify-start items-start pt-4 pl-8">
+                    {state.error}
+                  </div>
+                )}
               </div>
               <div className="flex items-center justify-between">
                 <button
                   className="mx-8 mb-6 bg-blue-500 hover:bg-blue-700 text-white w-[446px] h-[60px] font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                   type="submit"
                 >
-                  Login
+                  {state.loading ? "Logging in..." : "Login"}
                 </button>
-                <a
-                  className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-                  href="#"
-                ></a>
               </div>
             </form>
           </div>

@@ -2,10 +2,12 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import course from "../../assets/image/course.png";
 import assingment from "../../assets/image/assignment.png";
-import logout from "../../assets/image/logout.png";
+import logoutPng from "../../assets/image/logout.png";
+import { useAuth } from "../../contexts/authentication";
 
 function Sidebar() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     const token = localStorage.getItem("token");
@@ -47,10 +49,14 @@ function Sidebar() {
             </Link>
             <div className="mt-[300px]">
               <button
-                onClick={handleLogout}
+                onClick={() => logout()}
                 className="w-[240px] h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200"
               >
-                <img src={logout} alt="Logout Icon" className="w-6 h-6 mr-4" />
+                <img
+                  src={logoutPng}
+                  alt="Logout Icon"
+                  className="w-6 h-6 mr-4"
+                />
                 Log out
               </button>
             </div>

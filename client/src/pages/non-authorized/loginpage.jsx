@@ -20,8 +20,6 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
     setState({ ...state, loading: true, error: "" });
     try {
       //Validate password
@@ -33,6 +31,7 @@ function Login() {
       }
       const user = await login({ email, password });
       setState({ ...state, loading: false, user });
+      navigate("/");
     } catch (error) {
       setState({
         ...state,
@@ -158,7 +157,6 @@ function Login() {
             <div className="container pb-2 md:font-medium text-black">
               <label htmlFor="password">Password</label>
               <p>
-                {" "}
                 <input
                   type="password"
                   id="password"
