@@ -1,5 +1,4 @@
-import { Routes, Route } from "react-router-dom";
-
+import { Routes, Route, Navigate } from "react-router-dom";
 import Userhomepage from "./authorized/user-homepage";
 import Usercourse from "./authorized/user-course";
 import UserMycourse from "./authorized/user-mycourse";
@@ -15,8 +14,18 @@ import CourselistUser from "../components/course/courselist-user";
 import UserMycourseCompleted from "./authorized/user-mycourse-completed";
 import UserMycourseInprogress from "./authorized/user-mycourse-inprogress";
 import UserMyHomework from "./authorized/user-myhomework";
+import CourseListAdmin from "./admin/courselist";
+import AddCourseAdmin from "./admin/addcourse-admin";
+import EditCourse from "./admin/editcourse";
+import AddSubLesson from "./admin/add-sublesson";
+import EditSubLesson from "./admin/edit-sublesson";
+import AddAssignment from "./admin/add-assignment";
+import AssignmentListAdmin from "./admin/assignmentlist";
+import EditAssignmentdetail from "./admin/editassignmentdetail";
 
 function AuthenticatedApp() {
+  const role = localStorage.getItem("role");
+
   return (
     <div className="App">
       <Routes>
@@ -41,7 +50,7 @@ function AuthenticatedApp() {
         <Route path="/userhomepage" element={<Userhomepage />} />
         <Route path="/usercourse" element={<Usercourse />} />
         <Route path="/user/profile" element={<UserProfile />} />
-        <Route path="/user/my_course/" element={<UserMycourse />} />
+        <Route path="/user/my_course" element={<UserMycourse />} />
         <Route
           path="/user/my_course/inprogress"
           element={<UserMycourseInprogress />}
@@ -52,6 +61,34 @@ function AuthenticatedApp() {
         />
         <Route path="/user/homework" element={<UserMyHomework />} />
         <Route path="*" element={<Userhomepage />} />
+
+        {/* Admin Routes - Only if authenticated and role is Admin */}
+        {role == "Admin" ? (
+          <>
+            <Route path="/admin/courselist" element={<CourseListAdmin />} />
+            <Route path="/admin/addcourse" element={<AddCourseAdmin />} />
+            <Route path="/admin/editcourse/:id" element={<EditCourse />} />
+            <Route
+              path="/admin/:courseId/addsublesson"
+              element={<AddSubLesson />}
+            />
+            <Route
+              path="/admin/:courseId/:lessonId/editsublesson"
+              element={<EditSubLesson />}
+            />
+            <Route path="/admin/addassignment" element={<AddAssignment />} />
+            <Route
+              path="/admin/editaddassignment/:id"
+              element={<EditAssignmentdetail />}
+            />
+            <Route
+              path="/admin/assignmentlist"
+              element={<AssignmentListAdmin />}
+            />
+          </>
+        ) : (
+          <Route path="/admin/*" element={<Navigate to="/" />} />
+        )}
       </Routes>
     </div>
   );
