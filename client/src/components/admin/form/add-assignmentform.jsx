@@ -5,6 +5,8 @@ import SubButton from "../button/sub-button";
 import CancelButton from "../button/cancel-button";
 import { useAuth } from "../../../contexts/authentication.jsx";
 import arrowback from "../../../assets/image/arrowback.png";
+import LoadingPageSvg from "../../shared/loading-page.jsx";
+import CustomSnackbar from "../../shared/custom-snackbar.jsx";
 
 function AddAssignmentForm() {
   const navigate = useNavigate();
@@ -19,6 +21,10 @@ function AddAssignmentForm() {
   const [assignmentDetail, setAssignmentDetail] = useState("");
   const [assignmentDuration, setAssignmentDuration] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [alert, setAlert] = useState({ message: "", severity: "" }); 
+  const [open, setOpen] = useState(false); 
+  const [loading, setLoading] = useState(true); 
 
   const fetchCourses = async () => {
     try {
@@ -74,17 +80,12 @@ function AddAssignmentForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (
-      !selectedCourse ||
-      !selectedLesson ||
-      !selectedSubLesson ||
-      !assignmentDetail
-    ) {
+  
+    if (!selectedCourse || !selectedLesson || !selectedSubLesson || !assignmentDetail) {
       setErrorMessage("All fields are required");
       return;
     }
-
+  
     try {
       const response = await axios.post(
         "https://project-courseflow-server.vercel.app/admin/assignments",
@@ -96,11 +97,10 @@ function AddAssignmentForm() {
           userId: UserIdFromLocalStorage,
         }
       );
-
+  
       if (response.status === 201) {
         console.log("Data sent:", response);
-        alert("Assignment created successfully");
-        navigate("/admin/assignmentlist");
+        setAlert({ message: "Assignments created successfully", severity: "success" });
         setSelectedCourse("");
         setSelectedLesson("");
         setSelectedSubLesson("");
@@ -108,12 +108,19 @@ function AddAssignmentForm() {
         setErrorMessage("");
       } else {
         setErrorMessage("Unexpected response status: " + response.status);
+        setAlert({ message: "Error creating assignment", severity: "error" });
       }
     } catch (error) {
-      const errorMessage = error.response
+      const errorMessage = error.response?.data?.error 
         ? `Failed to create assignment: ${error.response.data.error}`
         : `Failed to create assignment: ${error.message}`;
       setErrorMessage(errorMessage);
+      setAlert({ message: errorMessage, severity: "error" });
+    } finally {
+      setOpen(true);
+      setTimeout(() => {
+        navigate("/admin/assignmentlist");
+      }, 3000); 
     }
   };
 
@@ -125,6 +132,7 @@ function AddAssignmentForm() {
   );
 
   return (
+    <>
     <div className="w-full ">
       <nav className="order-b-2 py-2 border-gray-300 bg-white text-base text-slate-800 flex flex-row justify-center items-center">
       <div className="flex items-center space-x-2 ml-8 mb-2 md:mb-0 flex-1 ">
@@ -277,6 +285,12 @@ function AddAssignmentForm() {
         )}
       </form>
     </div>
+    <CustomSnackbar 
+        open={open}
+        alert={alert}
+      />
+    </>
+    
   );
 }
 
