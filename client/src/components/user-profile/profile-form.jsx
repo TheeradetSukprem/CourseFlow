@@ -5,7 +5,9 @@ import supabase from "../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import LoadingCircle from "./loading-circle";
-import { Alert, Snackbar, Skeleton } from "@mui/material"; // Import MUI components
+// import { Skeleton } from "@mui/material"; // Import MUI components
+import CustomSnackbar from "../shared/custom-snackbar";
+import LoadingPageSvg from "../shared/loading-page";
 
 function ProfileForm() {
   const [updating, setUpdating] = useState(false);
@@ -24,6 +26,8 @@ function ProfileForm() {
     name: "",
     educationalBackground: "",
   });
+
+  //=======For MUI alert and snackbar
   const [alert, setAlert] = useState({ message: "", severity: "" }); // Alert state
   const [open, setOpen] = useState(false); // Snackbar open state
   const [loading, setLoading] = useState(true); // Loading state
@@ -233,26 +237,7 @@ function ProfileForm() {
   return (
     <>
       {loading ? (
-        <div className="flex flex-col md:flex-row justify-center items-center md:gap-[3rem] mb-[1rem]">
-          <Skeleton
-            variant="rectangular"
-            width={343}
-            height={343}
-            className="rounded-lg"
-          />
-          <div className="w-[343px] h-[343px] text-black flex flex-col gap-5">
-            <Skeleton variant="text" height={56} />
-            <Skeleton variant="text" height={56} />
-            <Skeleton variant="text" height={56} />
-            <Skeleton variant="text" height={56} />
-            <Skeleton
-              variant="rectangular"
-              width="100%"
-              height={56}
-              className="rounded-xl"
-            />
-          </div>
-        </div>
+        <LoadingPageSvg text="Loading..." />
       ) : (
         <form
           className="flex flex-col md:flex-row justify-center items-center md:gap-[3rem] mb-[1rem]"
@@ -394,16 +379,11 @@ function ProfileForm() {
         </form>
       )}
 
-      <Snackbar
+      <CustomSnackbar //======Use Custom Snackbar
         open={open}
-        autoHideDuration={5000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert onClose={handleClose} severity={alert.severity}>
-          {alert.message}
-        </Alert>
-      </Snackbar>
+        handleClose={handleClose}
+        alert={alert}
+      />
     </>
   );
 }
