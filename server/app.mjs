@@ -10,6 +10,7 @@ import profileRouter from "./routes/profiles.mjs";
 import submissionRouter from "./routes/submission.mjs";
 import subscriptionRouter from "./routes/subscriptions.mjs";
 import assignmentRouter from "./routes/assignments.mjs";
+import authenticateToken from "./middlewares/authentication.mjs";
 
 const app = express();
 app.use(express.json());
@@ -78,6 +79,60 @@ app.post("/login/admin", async (req, res) => {
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Route to mark a video as watched
+// Route to mark a video as watched
+app.post("/videos/view", async (req, res) => {
+  const { sublessonid, userid, is_playing, is_ended } = req.body;
+
+  console.log("Received data:", { sublessonid, userid, is_playing, is_ended });
+
+  // Convert is_playing and is_ended to boolean
+  const isPlayingBoolean = is_playing === "true" || is_playing === true;
+  const isEndedBoolean = is_ended === "true" || is_ended === true;
+  console.log("Converted is_playing to boolean:", isPlayingBoolean);
+  console.log("Converted is_ended to boolean:", isEndedBoolean);
+
+  try {
+    const result = await connectionPool.query(
+      `INSERT INTO video_views (userid, sublessonid, is_playing, is_ended) 
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (userid, sublessonid) 
+       DO UPDATE SET is_playing = EXCLUDED.is_playing, is_ended = EXCLUDED.is_ended`,
+      [userid, sublessonid, isPlayingBoolean, isEndedBoolean]
+    );
+
+    if (result.rowCount > 0) {
+      res
+        .status(201)
+        .json({ message: "Video view state updated successfully" });
+    } else {
+      res
+        .status(200)
+        .json({ message: "Video view state updated successfully" });
+    }
+  } catch (err) {
+    console.error("Error updating video view state:", err.message, err.stack);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Route to get watched videos for a specific user
+app.get("/videos/watched/:userid", async (req, res) => {
+  const userid = parseInt(req.params.userid, 10); // Extract `userid` from URL params
+
+  try {
+    const result = await connectionPool.query(
+      `SELECT sublessonid, viewed_at FROM video_views WHERE userid = $1`,
+      [userid]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching watched videos:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

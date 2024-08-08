@@ -232,7 +232,7 @@ function SectionDesireCourseDetail() {
                   </div>
                   <p className="text-Body2 font-Body2 text-Gray-700">
                     {coursedetail.length > 0 &&
-                      truncateText(coursedetail[0].description, 6)}
+                      truncateText(coursedetail[0].description, 4)}
                   </p>
                 </div>
               </div>

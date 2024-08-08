@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import uploadfile from "../../../assets/image/uploadfile.png";
 import upload from "../../../assets/image/upload.png";
+import Uploadvideo from "../../../assets/image/Uploadvideo.png";
 import pdf from "../../../assets/image/pdf.png";
 import axios from "axios";
 import { useNavigate, useParams, Link } from "react-router-dom";
@@ -43,8 +45,7 @@ function EditCourseForm() {
     axios
       .get(`https://project-courseflow-server.vercel.app/courses/list/${id}`)
       .then((res) => {
-        // console.log("Response received:", res.data.data[0]);
-        // console.log(id);
+
         setInputData(res.data.data[0]);
       })
       .catch((err) => {
@@ -56,12 +57,7 @@ function EditCourseForm() {
     event.preventDefault();
     setLoading(true); // Start the spinner
     try {
-      // Check if required files are present
-      // if (!videoUrl || !imageUrl) {
-      //   alert("Please upload require file.");
-      //   setLoading(false);
-      //   return; // Stop execution if any file is missing
-      // }
+
 
       let imageUrl = inputData.imagefile;
       let videoUrl = inputData.videofile;
@@ -87,9 +83,7 @@ function EditCourseForm() {
         updateddate: new Date().toISOString(),
       };
 
-      console.log("Updated data being sent to backend:", updatedData);
 
-      console.log("Update data", updatedData);
       await axios.put(
         `https://project-courseflow-server.vercel.app/courses/${id}`,
         updatedData
@@ -156,10 +150,7 @@ function EditCourseForm() {
     };
     fileReader.readAsDataURL(selectedFile);
 
-    // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
+
   };
 
   const handlePdfFileChange = (e) => {
@@ -252,10 +243,7 @@ function EditCourseForm() {
     };
     fileReader.readAsDataURL(selectedFile);
 
-    // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
+
   };
 
   // Delete preview image
@@ -515,7 +503,7 @@ function EditCourseForm() {
                       className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                       id="drop"
                     >
-                      <img src={upload} alt="upload" />
+                      <img src={Uploadvideo} alt="upload" />
                       <input
                         type="file"
                         name="videofile"
@@ -557,7 +545,7 @@ function EditCourseForm() {
                   id="drop"
                 >
                   <span>
-                    <img src={upload} alt="upload" />
+                    <img src={uploadfile} alt="upload" />
                     <input
                       type="file"
                       name="pdffile"

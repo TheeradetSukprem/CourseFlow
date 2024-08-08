@@ -22,6 +22,7 @@ function NavbarCourseList({ search, onSearchChange }) {
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search..."
+              className=" bg-white"
             />
           </div>
           <Button text="+ Add course" onClick={handleAddCourseClick} />

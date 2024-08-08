@@ -1,22 +1,17 @@
+// Not use now
+
 import jwt from "jsonwebtoken";
 
-const authenticateJWT = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+const authenticateToken = (req, res, next) => {
+  const token =
+    req.headers["authorization"] && req.headers["authorization"].split(" ")[1];
+  if (!token) return res.sendStatus(401);
 
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
-
-    jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
-      if (err) {
-        return res.sendStatus(403);
-      }
-
-      req.user = user;
-      next();
-    });
-  } else {
-    res.sendStatus(401);
-  }
+  jwt.verify(token, "your_jwt_secret", (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.userId = user.userid;
+    next();
+  });
 };
 
-export default authenticateJWT;
+export default authenticateToken;

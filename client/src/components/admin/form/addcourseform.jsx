@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import uploadfile from "../../../assets/image/uploadfile.png";
 import upload from "../../../assets/image/upload.png";
+import Uploadvideo from "../../../assets/image/Uploadvideo.png";
 import pdf from "../../../assets/image/pdf.png";
 import AddCourseSubLessonTable from "../addcourse-sublesson";
 import axios from "axios";
@@ -131,7 +133,7 @@ function AddCourseFrom() {
         formData
       );
       const { courseid } = res.data.data[0];
-      console.log(res.data.data[0]); //log data
+
       collectCourseid = courseid;
 
       setCreateForm({
@@ -145,7 +147,7 @@ function AddCourseFrom() {
         pdffile: "",
       });
 
-      console.log(setCreateForm);
+
       alert("Course added successfully");
 
       // Navigate to the edit course page
@@ -163,7 +165,7 @@ function AddCourseFrom() {
     const res = await axios.delete(
       `https://project-courseflow-server.vercel.app/courses/${_id}`
     );
-    console.log(res);
+
 
     const newCourses = [...courses].filter((course) => {
       return course._id !== _id;
@@ -175,7 +177,7 @@ function AddCourseFrom() {
     let collectCourseid;
     if (formRef.current) {
       collectCourseid = formRef.current.requestSubmit(); // Trigger form submission
-      console.log(collectCourseid);
+
     }
     return collectCourseid || null;
   };
@@ -233,10 +235,7 @@ function AddCourseFrom() {
     };
     fileReader.readAsDataURL(selectedFile);
 
-    // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
+
   };
 
   //uplaod pdf file
@@ -285,7 +284,7 @@ function AddCourseFrom() {
 
     // Upload PDF file and set URL
     try {
-      console.log("Uploaded PDF URL:", pdfUrl);
+
     } catch (error) {
       console.error("PDF Upload Error:", error);
     }
@@ -299,9 +298,7 @@ function AddCourseFrom() {
     fileReader.readAsDataURL(selectedFile);
 
     // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
+
   };
 
   async function uploadVideoFile(file) {
@@ -353,9 +350,7 @@ function AddCourseFrom() {
     fileReader.readAsDataURL(selectedFile);
 
     // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
+
   };
 
   // Delete preview image
@@ -517,7 +512,7 @@ function AddCourseFrom() {
                   className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                   id="drop"
                 >
-                  <img src={upload} alt="upload" />
+                  <img src={Uploadvideo} alt="upload" />
                   <input
                     type="file"
                     name="videofile"
@@ -543,7 +538,7 @@ function AddCourseFrom() {
                   </Link>
                 ) : (
                   <span>
-                    <img src={upload} alt="upload" />
+                    <img src={uploadfile} alt="upload" />
                   </span>
                 )}
                 <input

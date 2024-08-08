@@ -9,11 +9,10 @@ function Sidebar() {
 
   const handleLogout = () => {
     const token = localStorage.getItem("token");
-    console.log("Current token:", token);
+
     localStorage.removeItem("token");
     const tokenAfterRemoval = localStorage.getItem("token");
-    console.log("Token after removal:", tokenAfterRemoval);
-    console.log("Navigating to /login/admin");
+
     navigate("/login/admin");
   };
 

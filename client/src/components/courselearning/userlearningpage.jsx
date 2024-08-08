@@ -82,15 +82,38 @@ const UserLearningPage = () => {
     }));
   };
 
-  const handlePlay = () => {
+  const handlePlay = async () => {
     setIsVideoPlaying(true);
+    setIsVideoEnded(false);
     setVideoStates((prevState) => ({
       ...prevState,
       [selectedSublesson]: { isPlaying: true, isEnded: false },
     }));
+
+    if (profile) {
+      try {
+        await axios.post(
+          "https://project-courseflow-server.vercel.app:4000/videos/view",
+          {
+            userid: profile.userid,
+            sublessonid: selectedSublesson,
+            is_playing: true, // Mark video as playing
+            is_ended: false, // Ensure is_ended is false
+          }
+        );
+        console.log("Video play state updated successfully.");
+      } catch (error) {
+        console.error(
+          "Error updating video play state:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    } else {
+      console.error("User profile not available.");
+    }
   };
 
-  const handleEnded = () => {
+  const handleEnded = async () => {
     setIsVideoPlaying(false);
     setIsVideoEnded(true);
     setProgress(100);
@@ -106,15 +129,39 @@ const UserLearningPage = () => {
       return newWatchedVideos;
     });
 
-    const { nextSublessonId, nextVideoUrl } = getNextVideoDetails();
-    if (nextVideoUrl) {
-      setSelectedSublesson(nextSublessonId);
-      setSelectedVideoUrl(nextVideoUrl);
-
-      // Optionally, reset progress to 0 and start playing the next video
-      setProgress(0);
-      setIsVideoPlaying(true);
+    if (profile) {
+      try {
+        await axios.post(
+          "https://project-courseflow-server.vercel.app:4000/videos/view",
+          {
+            userid: profile.userid,
+            sublessonid: selectedSublesson,
+            is_playing: true, // Mark video as not playing
+            is_ended: true, // Mark video as ended
+          }
+        );
+        console.log("Video view tracked successfully.");
+      } catch (error) {
+        console.error(
+          "Error tracking video view:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    } else {
+      console.error("User profile not available.");
     }
+
+    // Delay playback of the next video by 5 seconds
+    setTimeout(() => {
+      const { nextSublessonId, nextVideoUrl } = getNextVideoDetails();
+      if (nextVideoUrl) {
+        setSelectedSublesson(nextSublessonId);
+        setSelectedVideoUrl(nextVideoUrl);
+
+        setProgress(0);
+        setIsVideoPlaying(true);
+      }
+    }, 1000); // 5000 milliseconds = 5 seconds
   };
 
   const handlePreviousLesson = () => {
@@ -572,8 +619,8 @@ const UserLearningPage = () => {
       return;
     }
 
-    if (userAnswer.length < 20) {
-      alert("Please type at least 20 characters before submitting.");
+    if (userAnswer.length < 5) {
+      alert("Please type at least 5 characters before submitting.");
       return;
     }
 
@@ -608,6 +655,27 @@ const UserLearningPage = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchWatchedVideos = async () => {
+      if (profile) {
+        try {
+          const response = await axios.get(
+            `https://project-courseflow-server.vercel.app:4000/videos/watched/${profile.userid}`
+          );
+          const watched = response.data.map((video) => video.sublessonid);
+          setWatchedVideos(new Set(watched)); // Store watched sublesson IDs in a Set
+        } catch (error) {
+          console.error(
+            "Error fetching watched videos:",
+            error.response ? error.response.data : error.message
+          );
+        }
+      }
+    };
+
+    fetchWatchedVideos();
+  }, [profile]);
+
   return (
     <>
       <Navbarnonuser />
@@ -617,7 +685,9 @@ const UserLearningPage = () => {
           <div className="mb-6">
             <h2 className="text-sm font-bold text-orange-500">Course</h2>
             <h3 className="text-2xl font-bold mt-4">{coursename}</h3>
-            <p className="text-gray-600 text-base mt-2">{coursedescription}</p>
+            {coursedescription && coursedescription.length > 50
+              ? `${coursedescription.slice(0, 47)}...`
+              : coursedescription}
             <div className="mt-4">
               <span className="text-sm text-gray-600">
                 {progress.toFixed(0)}% Complete

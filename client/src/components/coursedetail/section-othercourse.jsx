@@ -26,12 +26,12 @@ function SectionOtherCourse() {
   }, []);
 
   const truncateText = (text, wordLimit) => {
-    const words = text.split(' ');
+    const words = text.split(" ");
     if (words.length <= wordLimit) {
       return text;
     }
-    const truncated = words.slice(0, wordLimit).join(' ');
-    return truncated + '...';
+    const truncated = words.slice(0, wordLimit).join(" ");
+    return truncated + "...";
   };
 
   return (
