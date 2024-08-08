@@ -1,3 +1,4 @@
+import CustomSnackbar from "../../shared/custom-snackbar";
 import { useState, useEffect } from "react";
 import uploadfile from "../../../assets/image/uploadfile.png";
 import upload from "../../../assets/image/upload.png";
@@ -20,6 +21,8 @@ import {
 } from "../../../utils/fileValidations";
 
 function EditCourseForm() {
+  const [alert, setAlert] = useState({ message: "", severity: "" }); // Alert state
+  const [open, setOpen] = useState(false); // Snackbar open state
   const [file, setFile] = useState("");
   const [pdfFile, setPdfFileUpload] = useState("");
   const [pdfFileName, setPdfFileName] = useState(""); // New state for PDF file name
@@ -89,7 +92,11 @@ function EditCourseForm() {
         updatedData
       );
       setLoading(false);
-      alert("Data Updated Successfully!");
+      setAlert({
+        message: "Course update successfully",
+        severity: "success",
+      });
+      setOpen(true);
       navigate("/admin/courselist");
     } catch (error) {
       console.error("Error updating data:", error);
@@ -132,7 +139,8 @@ function EditCourseForm() {
 
       return profileUrl;
     } catch (error) {
-      alert(error.message);
+      setAlert({ message: error.message, severity: "error" });
+      setOpen(true);
       throw error;
     }
   }
@@ -193,7 +201,8 @@ function EditCourseForm() {
       const pdfUrl = data.publicUrl;
       return pdfUrl;
     } catch (error) {
-      alert(error.message);
+      setAlert({ message: error.message, severity: "error" });
+      setOpen(true);
       throw error;
     }
   }
@@ -225,7 +234,8 @@ function EditCourseForm() {
 
       return videoUrl;
     } catch (error) {
-      alert(error.message);
+      setAlert({ message: error.message, severity: "error" });
+      setOpen(true);
       throw error;
     }
   }
@@ -298,9 +308,16 @@ function EditCourseForm() {
       return data;
     } catch (error) {
       console.error("Error deleting file:", error);
-      alert("Error deleting file.");
+      setAlert({ message: "Error delete file", severity: "error" });
+      setOpen(true);
     }
-  }
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   return (
     <div>
@@ -562,6 +579,11 @@ function EditCourseForm() {
         </div>
       </div>
       <EditCourseSubLessonTable courseId={id} />
+      <CustomSnackbar //======Use Custom Snackbar
+        open={open}
+        handleClose={handleClose}
+        alert={alert}
+      />
     </div>
   );
 }

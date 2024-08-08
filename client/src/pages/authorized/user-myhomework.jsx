@@ -8,10 +8,12 @@ import { useAuth } from "../../contexts/authentication";
 import { useParams } from "react-router-dom";
 import emptyFolder from "../../assets/image/empty-folder.png";
 import Background from "../../components/user-profile/background";
+import LoadingPageSvg from "../../components/shared/loading-page";
 
 function UserMyHomework() {
   const [submissions, setSubmissions] = useState([]);
   const [filter, setFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
 
   const userId = useAuth();
   const assignmentId = useParams();
@@ -26,6 +28,8 @@ function UserMyHomework() {
       setSubmissions(result.data);
     } catch (error) {
       console.error("Error Fetching", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,6 +54,10 @@ function UserMyHomework() {
     if (filter === "all") return true;
     return item.status === filter;
   });
+
+  if (loading) {
+    return <LoadingPageSvg text="Loading..." />;
+  }
 
   return (
     <>

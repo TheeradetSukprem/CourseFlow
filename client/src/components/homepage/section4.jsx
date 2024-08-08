@@ -12,10 +12,18 @@ function Section4() {
 
   const navigate = useNavigate();
 
-  const handleNavigate = () => {
-    navigate("/courselist");
-    window.scrollTo(0, 0); 
-  };
+  const handleClick = () => {
+    const Token = localStorage.getItem('token'); 
+    if (Token) {
+      navigate('/courselistuser');
+    } else {
+      navigate('/courselist');
+    }
+
+    setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 0);
+};
 
   return (
     <section>
@@ -39,7 +47,7 @@ function Section4() {
               Want to start learning?
             </h1>
             <button
-              onClick={handleNavigate}
+              onClick={handleClick}
               className="cursor-pointer sm:mt-[24px] sm:text-orange-500 sm:bg-white sm:mx-[51px] sm:py-[18px] sm:rounded-xl sm:border-orange-500 sm:border-[1px] sm:font-bold sm:text-4 md:w-[241px] md:h-[60px] xl:w-[241px] xl:h-[60px]"
             >
               <span className="mt-6">Check out our courses</span>

@@ -7,7 +7,14 @@ function Navbarnonuser() {
 
   const handleNavigate = () => {
     navigate("/courselist");
-    window.scrollTo(0, 0);
+    setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+};
+
+
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -22,6 +29,7 @@ function Navbarnonuser() {
               src={logo}
               alt="Logo"
               className="sm:pl-[16px] md:pl-[100px] xl:pl-[160px]"
+              onClick={handleLogoClick}
             />
           </Link>
           <div className="menu sm:flex sm:flex-row sm:mr-[16px] md:w-[291px] md:h-[88px] md:flex md:flex-row md:items-center md:justify-center md:mr-[160px] md:gap-[32px] xl:w-[291px] xl:h-[88px] xl:flex xl:flex-row xl:items-center xl:justify-center xl:mr-[160px] xl:gap-[32px]">

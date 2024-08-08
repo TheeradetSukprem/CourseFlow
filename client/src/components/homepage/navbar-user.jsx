@@ -39,8 +39,15 @@ function NavbarUser() {
   }, []);
 
   const handleNavigate = () => {
-    navigate("/courselist");
-    window.scrollTo(0, 0);
+    navigate("/courselistuser");
+    setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+};
+
+
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -54,15 +61,15 @@ function NavbarUser() {
             src={logo}
             alt="Logo"
             className="sm:pl-[16px] md:pl-[100px] xl:pl-[160px]"
+            onClick={handleLogoClick}
           />
         </Link>
 
         <div className="menu flex items-center sm:mr-[16px] md:mr-[160px] xl:mr-[160px]">
-          <Link to="/courselistuser">
-            <h1 className="sm:font-bold sm:text-sm sm:mx-[16px] sm:my-[16px] xl:font-bold xl:text-base sm:text-black cursor-pointer">
+            <h1 className="sm:font-bold sm:text-sm sm:mx-[16px] sm:my-[16px] xl:font-bold xl:text-base sm:text-black cursor-pointer"
+            onClick={handleNavigate}>
               Our Courses
             </h1>
-          </Link>
 
           <div className="relative ml-4">
             <div
