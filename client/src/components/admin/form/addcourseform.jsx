@@ -99,7 +99,7 @@ function AddCourseFrom() {
       return false;
     }
     if (!description.trim()) {
-      setAlert({message: "Course description name is required", severity: "warning"});
+      setAlert({message: "Course description is required", severity: "warning"});
       setOpen(true);
       return false;
     }
@@ -340,7 +340,8 @@ function AddCourseFrom() {
 
       return videoUrl;
     } catch (error) {
-      setAlert(error.message);
+      setAlert({ message: error.message, severity: "error" });
+      setOpen(true);
       throw error;
     }
   }
