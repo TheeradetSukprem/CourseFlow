@@ -1,82 +1,46 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import CustomSnackbar from "../../components/shared/custom-snackbar";
 import { useAuth } from "../../contexts/authentication";
-import { jwtDecode } from "jwt-decode"; // Ensure this is imported correctly
 
 function LoginAdmin() {
   const navigate = useNavigate();
-
-  const [alert, setAlert] = useState({ message: "", severity: "" });
-  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const { adminLogin } = useAuth();
 
   const [state, setState] = useState({
-    loading: null,
+    loading: false,
     error: null,
     user: null,
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setState({ ...state, loading: true, error: "" });
+    setState({ ...state, loading: true, error: null });
 
     try {
-      // Validate password length
       if (password.length < 12) {
         return setState({
           ...state,
+          loading: false,
           error: "Password should be 12 characters or more",
         });
       }
 
-      const result = await axios.post(
-        "https://project-courseflow-server.vercel.app/users/login",
-        { email, password }
-      );
+      await adminLogin({ email, password });
 
-      const token = result.data.token;
-      const userData = jwtDecode(token);
-
-      // Check if the role is Admin
-      if (userData.role !== "Admin") {
-        setState({
-          ...state,
-          loading: false,
-          error: "Access denied. Admins only.",
-        });
-        return;
-      }
-
-      // If Admin, proceed with login
-      localStorage.setItem("token", token);
-      localStorage.setItem("userData", JSON.stringify(userData));
-
-      setState({ ...state, loading: false, user: userData });
-      navigate("/admin/courselist");
+      // If adminLogin is successful, user will be redirected to /admin/courselist
     } catch (error) {
       setState({
         ...state,
         loading: false,
-        error: "Incorrect email or password",
+        error: error.message || "An error occurred",
       });
     }
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
-  };
-
   return (
     <>
-      <CustomSnackbar open={open} handleClose={handleClose} alert={alert} />
-
       <section className="bg-gradient-to-r from-blue-700 to-blue-400 h-screen overflow-hidden flex items-center justify-center">
         <div className="max-w-[566px] w-full md:max-w-[568px] p-6 shadow-lg bg-white rounded-md">
           <div>
@@ -119,7 +83,9 @@ function LoginAdmin() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 {state.error && (
-                  <div className="text-red-500 text-sm">{state.error}</div>
+                  <div className="text-red-500 text-sm flex justify-start items-start pt-4 pl-8">
+                    {state.error}
+                  </div>
                 )}
               </div>
               <div className="flex items-center justify-between">

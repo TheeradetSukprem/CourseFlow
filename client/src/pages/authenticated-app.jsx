@@ -24,11 +24,16 @@ import AssignmentListAdmin from "./admin/assignmentlist";
 import EditAssignmentdetail from "./admin/editassignmentdetail";
 
 function AuthenticatedApp() {
-  const role = localStorage.getItem("role");
+  // Retrieve userData from localStorage
+  const userDataString = localStorage.getItem("userData");
+
+  // Determine role based on userData in localStorage
+  const role = userDataString ? JSON.parse(userDataString).role : null;
 
   return (
     <div className="App">
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Userhomepage />} />
         <Route path="/courselist" element={<Course />} />
         <Route path="/courselistuser" element={<CourselistUser />} />
@@ -63,7 +68,7 @@ function AuthenticatedApp() {
         <Route path="*" element={<Userhomepage />} />
 
         {/* Admin Routes - Only if authenticated and role is Admin */}
-        {role == "Admin" ? (
+        {role === "Admin" && (
           <>
             <Route path="/admin/courselist" element={<CourseListAdmin />} />
             <Route path="/admin/addcourse" element={<AddCourseAdmin />} />
@@ -78,7 +83,7 @@ function AuthenticatedApp() {
             />
             <Route path="/admin/addassignment" element={<AddAssignment />} />
             <Route
-              path="/admin/editaddassignment/:id"
+              path="/admin/editassignment/:id"
               element={<EditAssignmentdetail />}
             />
             <Route
@@ -86,8 +91,6 @@ function AuthenticatedApp() {
               element={<AssignmentListAdmin />}
             />
           </>
-        ) : (
-          <Route path="/admin/*" element={<Navigate to="/" />} />
         )}
       </Routes>
     </div>
