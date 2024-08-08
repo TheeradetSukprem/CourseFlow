@@ -1,3 +1,4 @@
+import CustomSnackbar from "../../shared/custom-snackbar";
 import { useState, useEffect, useRef } from "react";
 import uploadfile from "../../../assets/image/uploadfile.png";
 import upload from "../../../assets/image/upload.png";
@@ -20,6 +21,8 @@ import {
 } from "../../../utils/fileValidations";
 
 function AddCourseFrom() {
+  const [alert, setAlert] = useState({ message: "", severity: "" }); // Alert state
+  const [open, setOpen] = useState(false); // Snackbar open state
   const navigate = useNavigate();
   const [file, setFile] = useState("");
   const [pdfFile, setPdfFileUpload] = useState(" ");
@@ -76,23 +79,28 @@ function AddCourseFrom() {
     } = createForm;
 
     if (!coursename.trim()) {
-      alert("Course name is required");
+      setAlert({message: "Course name is required", severity: "warning"});
+      setOpen(true);
       return false;
     }
     if (!price.trim()) {
-      alert("Price is required");
+      setAlert({message: "Price is required", severity: "warning"});
+      setOpen(true);
       return false;
     }
     if (!courselearningtime.trim()) {
-      alert("Total learning time is required");
+      setAlert({message: "Course learning time is required", severity: "warning"});
+      setOpen(true);
       return false;
     }
     if (!coursesummary.trim()) {
-      alert("Course summary is required");
+      setAlert({message: "Course summary is required", severity: "warning"});
+      setOpen(true);
       return false;
     }
     if (!description.trim()) {
-      alert("Course detail is required");
+      setAlert({message: "Course description name is required", severity: "warning"});
+      setOpen(true);
       return false;
     }
 
@@ -111,7 +119,8 @@ function AddCourseFrom() {
     try {
       // Check if required files are present
       if (!file || !videoFile) {
-        alert("Please upload require file.");
+        setAlert({message: "Please upload require file", severity: "warning"});
+        setOpen(true);
         setLoading(false);
         return; // Stop execution if any file is missing
       }
@@ -147,14 +156,18 @@ function AddCourseFrom() {
         pdffile: "",
       });
 
-
-      alert("Course added successfully");
+      setAlert({
+        message: "Course added successfully",
+        severity: "success",
+      });
+      setOpen(true);
 
       // Navigate to the edit course page
       //navigate(`/admin/editcourse/${courseid}`);
     } catch (error) {
       console.error("Error creating course:", error);
-      alert("Failed to create course. Please try again.");
+      setAlert({ message: "Failed to create course. Please try again.", severity: "error" });
+      setOpen(true);
     } finally {
       setLoading(false); // Stop the spinner
     }
@@ -166,7 +179,6 @@ function AddCourseFrom() {
       `https://project-courseflow-server.vercel.app/courses/${_id}`
     );
 
-
     const newCourses = [...courses].filter((course) => {
       return course._id !== _id;
     });
@@ -177,7 +189,6 @@ function AddCourseFrom() {
     let collectCourseid;
     if (formRef.current) {
       collectCourseid = formRef.current.requestSubmit(); // Trigger form submission
-
     }
     return collectCourseid || null;
   };
@@ -217,7 +228,8 @@ function AddCourseFrom() {
 
       return profileUrl;
     } catch (error) {
-      alert(error.message);
+      setAlert({ message: error.message, severity: "error" });
+      setOpen(true);
       throw error;
     }
   }
@@ -234,8 +246,6 @@ function AddCourseFrom() {
       setPreviewUrl(fileReader.result);
     };
     fileReader.readAsDataURL(selectedFile);
-
-
   };
 
   //uplaod pdf file
@@ -268,7 +278,8 @@ function AddCourseFrom() {
       const pdfUrl = data.publicUrl;
       return pdfUrl;
     } catch (error) {
-      alert(error.message);
+      setAlert({ message: error.message, severity: "error" });
+      setOpen(true);
       throw error;
     }
   }
@@ -284,7 +295,6 @@ function AddCourseFrom() {
 
     // Upload PDF file and set URL
     try {
-
     } catch (error) {
       console.error("PDF Upload Error:", error);
     }
@@ -298,7 +308,6 @@ function AddCourseFrom() {
     fileReader.readAsDataURL(selectedFile);
 
     // Logging file details
-
   };
 
   async function uploadVideoFile(file) {
@@ -331,7 +340,7 @@ function AddCourseFrom() {
 
       return videoUrl;
     } catch (error) {
-      alert(error.message);
+      setAlert(error.message);
       throw error;
     }
   }
@@ -350,7 +359,6 @@ function AddCourseFrom() {
     fileReader.readAsDataURL(selectedFile);
 
     // Logging file details
-
   };
 
   // Delete preview image
@@ -369,6 +377,13 @@ function AddCourseFrom() {
   const deleteVideoFile = () => {
     setCreateForm({ ...createForm, videofile: "" });
     setVideoPreviewUrl("");
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -569,6 +584,11 @@ function AddCourseFrom() {
         </div>
       </div>
       <AddCourseSubLessonTable createCourse={createCourse} />
+      <CustomSnackbar //======Use Custom Snackbar
+        open={open}
+        handleClose={handleClose}
+        alert={alert}
+      />
     </div>
   );
 }
