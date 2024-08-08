@@ -92,12 +92,15 @@ const UserLearningPage = () => {
 
     if (profile) {
       try {
-        await axios.post("http://localhost:4000/videos/view", {
-          userid: profile.userid,
-          sublessonid: selectedSublesson,
-          is_playing: true, // Mark video as playing
-          is_ended: false, // Ensure is_ended is false
-        });
+        await axios.post(
+          "https://project-courseflow-server.vercel.app:4000/videos/view",
+          {
+            userid: profile.userid,
+            sublessonid: selectedSublesson,
+            is_playing: true, // Mark video as playing
+            is_ended: false, // Ensure is_ended is false
+          }
+        );
         console.log("Video play state updated successfully.");
       } catch (error) {
         console.error(
@@ -128,12 +131,15 @@ const UserLearningPage = () => {
 
     if (profile) {
       try {
-        await axios.post("http://localhost:4000/videos/view", {
-          userid: profile.userid,
-          sublessonid: selectedSublesson,
-          is_playing: true, // Mark video as not playing
-          is_ended: true, // Mark video as ended
-        });
+        await axios.post(
+          "https://project-courseflow-server.vercel.app:4000/videos/view",
+          {
+            userid: profile.userid,
+            sublessonid: selectedSublesson,
+            is_playing: true, // Mark video as not playing
+            is_ended: true, // Mark video as ended
+          }
+        );
         console.log("Video view tracked successfully.");
       } catch (error) {
         console.error(
@@ -654,7 +660,7 @@ const UserLearningPage = () => {
       if (profile) {
         try {
           const response = await axios.get(
-            `http://localhost:4000/videos/watched/${profile.userid}`
+            `https://project-courseflow-server.vercel.app:4000/videos/watched/${profile.userid}`
           );
           const watched = response.data.map((video) => video.sublessonid);
           setWatchedVideos(new Set(watched)); // Store watched sublesson IDs in a Set
