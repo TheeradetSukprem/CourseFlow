@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../contexts/authentication";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -6,40 +6,34 @@ import { Link } from "react-router-dom";
 function UserProfileCard() {
   const [userData, setUserData] = useState({});
   const [countCourseStatus, setCountCourseStatus] = useState({});
-
   const userId = useAuth();
 
-  //===============Get course count
-  const getCountCourseStatus = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const result = await axios.get(
-        `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/count/`
-      );
-      // Assuming the response is an array with a single object
-      const data = result.data[0] || {}; // Handle the case where result.data might be empty
-      setCountCourseStatus(data);
-    } catch (error) {
-      console.error("Error Fetching", error);
-    }
-  };
+      const [userResult, courseCountResult] = await Promise.all([
+        axios.get(
+          `https://project-courseflow-server.vercel.app/profiles/${userId.UserIdFromLocalStorage}`
+        ),
+        axios.get(
+          `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/count/`
+        ),
+      ]);
 
-  const getUserData = async () => {
-    try {
-      const result = await axios.get(
-        `https://project-courseflow-server.vercel.app/profiles/${userId.UserIdFromLocalStorage}`
-      );
-      setUserData(result.data);
+      setUserData(userResult.data);
+      setCountCourseStatus(courseCountResult.data[0] || {});
     } catch (error) {
       console.error("Error Fetching", error);
     }
-  };
+  }, [userId.UserIdFromLocalStorage]);
 
   useEffect(() => {
-    getUserData(), getCountCourseStatus();
-  }, []);
+    if (userId?.UserIdFromLocalStorage) {
+      fetchData();
+    }
+  }, [userId, fetchData]);
 
   return (
-    <div className="shadow-xl w-full h-[8rem] bg-white flex flex-col justify-center items-center pb-3  bottom-0 lg:left-[16rem] lg:top-0 lg:w-[357px] lg:h-[389px] lg:rounded-xl">
+    <div className="shadow-xl w-full h-[8rem] bg-white flex flex-col justify-center items-center pb-3 bottom-0 lg:left-[16rem] lg:top-0 lg:w-[357px] lg:h-[389px] lg:rounded-xl">
       <Link to="/user/profile">
         <div className="flex gap-3 pr-[110px] mr-8 lg:flex-col lg:justify-center lg:items-center lg:pr-0 lg:mr-0 lg:mb-5">
           {userData.profilepicture ? (
