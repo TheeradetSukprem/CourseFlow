@@ -77,7 +77,7 @@ function AddSubLessonFrom() {
         }
       );
       alert("Add Lesson and SubLesson Successfully");
-      // navigate("/admin/courselist");
+      navigate("/admin/courselist");
       reset();
     } catch (error) {
       console.error(
