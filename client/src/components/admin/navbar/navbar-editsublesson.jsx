@@ -69,7 +69,7 @@ function NavbarEditSubLesson({ text, handleSubmit }) {
           <CancelButton
             text="Cancel"
             onClick={() => {
-              navigate("/admin/addcourse");
+              navigate("/admin/courselist");
             }}
           />
           <SubButton onClick={handleSubmit} text={text} />
