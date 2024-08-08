@@ -44,24 +44,20 @@ function AuthProvider(props) {
       );
 
       const token = result.data.token;
-      localStorage.setItem("token", token);
       const userDataFromToken = jwtDecode(token);
 
-      // Check if the user has the Admin role
-      if (userDataFromToken.role === "Admin") {
-        localStorage.setItem("userData", JSON.stringify(userDataFromToken));
-        setState({ loading: false, user: userDataFromToken, error: null });
-        navigate("/admin/courselist");
-      } else {
-        // Handle the case where the user is not an Admin
-        setState({
-          ...state,
-          loading: false,
-          error: "Unauthorized access. Admins only.",
-        });
+      if (userDataFromToken.role !== "Admin") {
+        throw new Error("Unauthorized access. Admins only.");
       }
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("userData", JSON.stringify(userDataFromToken));
+      setState({ loading: false, user: userDataFromToken, error: null });
+      navigate("/admin/courselist");
     } catch (error) {
-      setState({ ...state, error: error.message });
+      const errorMsg = error.response?.data?.message || error.message;
+      setState({ loading: false, error: errorMsg });
+      throw new Error(errorMsg); // Throw error to be caught by the component
     }
   };
 
