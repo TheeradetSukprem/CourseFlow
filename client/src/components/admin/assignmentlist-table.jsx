@@ -5,12 +5,14 @@ import edit from "../../assets/image/edit.png";
 import bin from "../../assets/image/Bin.png";
 import NavbarAssignmentList from "./navbar/navbar-assignmentlist";
 import ConfirmationModal from "./modal/delete-course-confirmation";
+import LoadingPageSvg from "../shared/loading-page";
 
 function AssignmentListTable() {
   const [assignments, setAssignments] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const formatToBangkokTime = (isoTime) => {
@@ -47,14 +49,16 @@ function AssignmentListTable() {
   }, []);
 
   const fetchAssignments = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(
         "https://project-courseflow-server.vercel.app/admin/assignments"
       );
-
       setAssignments(res.data);
     } catch (error) {
       console.error("Error fetching assignments:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,83 +91,92 @@ function AssignmentListTable() {
   };
 
   return (
-    <div>
-      <NavbarAssignmentList search={search} onSearchChange={setSearch} />
-      <div className="m-10 ">
-        <table className="text-slate-600 text-sm rounded-xl w-full">
-          <thead className="w-[100px] h-[41px] bg-Gray-400 ">
-            <tr className="font-thin ">
-              <th className="w-[200px] text-left pl-10 rounded-tl-lg">
-                Assignment detail
-              </th>
-              <th className="w-[200px] text-left">Course</th>
-              <th className="w-[200px] text-left">Lesson</th>
-              <th className="w-[200px] text-left">Sub-lesson</th>
-              <th className="w-[200px] text-left">Created date</th>
-              <th className="w-[120px] text-center rounded-tr-lg">Actions</th>
-            </tr>
-          </thead>
-        </table>
-        <div className="overflow-y-scroll max-h-[550px]">
-          <table className="text-black text-sm rounded-xl w-full">
-            <tbody>
-              {assignments
-                .filter((item) => {
-                  if (search.trim() === "") {
-                    return true;
-                  }
-                  const searchText = search.toLowerCase();
-                  return (
-                    (item.detail &&
-                      item.detail.toLowerCase().includes(searchText)) ||
-                    (item.title &&
-                      item.title.toLowerCase().includes(searchText)) ||
-                    (item.modulename &&
-                      item.modulename.toLowerCase().includes(searchText)) ||
-                    (item.sublessonname &&
-                      item.sublessonname.toLowerCase().includes(searchText))
-                  );
-                })
-                .map((item, index) => (
-                  <tr
-                    key={`${item.assignmentid}-${index}`}
-                    className="bg-white border-b border-Gray-400 w-[1120px] h-[88px]"
-                  >
-                    <td className="w-[200px] text-left pl-10">
-                      {truncateText(item.title, 20)}
-                    </td>
-                    <td className="w-[200px] text-left">
-                      {truncateText(item.coursename, 20)}
-                    </td>
-                    <td className="w-[200px] text-left">
-                      {truncateText(item.modulename, 20)}
-                    </td>
-                    <td className="w-[200px] text-left">
-                      {truncateText(item.sublessonname, 20)}
-                    </td>
-                    <td className="w-[200px] text-left">
-                      {formatToBangkokTime(item.createddate)}
-                    </td>
-                    <td className="w-[120px] text-center">
-                      <button
-                        onClick={() => handleOpenModal(item.assignmentid)}
+    <>
+      {loading ? (
+        <LoadingPageSvg text="Loading..." />
+      ) : (
+        <div>
+          <NavbarAssignmentList search={search} onSearchChange={setSearch} />
+          <div className="m-10 ">
+            <table className="text-slate-600 text-sm rounded-xl w-full">
+              <thead className="w-[100px] h-[41px] bg-Gray-400 ">
+                <tr className="font-thin ">
+                  <th className="w-[200px] text-left pl-10 rounded-tl-lg">
+                    Assignment detail
+                  </th>
+                  <th className="w-[200px] text-left">Course</th>
+                  <th className="w-[200px] text-left">Lesson</th>
+                  <th className="w-[200px] text-left">Sub-lesson</th>
+                  <th className="w-[200px] text-left">Created date</th>
+                  <th className="w-[120px] text-center rounded-tr-lg">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+            </table>
+            <div className="overflow-y-scroll max-h-[550px]">
+              <table className="text-black text-sm rounded-xl w-full">
+                <tbody>
+                  {assignments
+                    .filter((item) => {
+                      if (search.trim() === "") {
+                        return true;
+                      }
+                      const searchText = search.toLowerCase();
+                      return (
+                        (item.detail &&
+                          item.detail.toLowerCase().includes(searchText)) ||
+                        (item.title &&
+                          item.title.toLowerCase().includes(searchText)) ||
+                        (item.modulename &&
+                          item.modulename.toLowerCase().includes(searchText)) ||
+                        (item.sublessonname &&
+                          item.sublessonname.toLowerCase().includes(searchText))
+                      );
+                    })
+                    .map((item, index) => (
+                      <tr
+                        key={`${item.assignmentid}-${index}`}
+                        className="bg-white border-b border-Gray-400 w-[1120px] h-[88px]"
                       >
-                        <img src={bin} alt="delete" className="pl-8" />
-                      </button>
-                      <button>
-                        <Link
-                          to={`/admin/editaddassignment/${item.assignmentid}`}
-                        >
-                          <img src={edit} alt="edit" className="pl-4" />
-                        </Link>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+                        <td className="w-[200px] text-left pl-10">
+                          {truncateText(item.title, 20)}
+                        </td>
+                        <td className="w-[200px] text-left">
+                          {truncateText(item.coursename, 20)}
+                        </td>
+                        <td className="w-[200px] text-left">
+                          {truncateText(item.modulename, 20)}
+                        </td>
+                        <td className="w-[200px] text-left">
+                          {truncateText(item.sublessonname, 20)}
+                        </td>
+                        <td className="w-[200px] text-left">
+                          {formatToBangkokTime(item.createddate)}
+                        </td>
+                        <td className="w-[120px] text-center">
+                          <button
+                            onClick={() => handleOpenModal(item.assignmentid)}
+                            aria-label="Delete assignment"
+                          >
+                            <img src={bin} alt="delete" className="pl-8" />
+                          </button>
+                          <button aria-label="Edit assignment">
+                            <Link
+                              to={`/admin/editaddassignment/${item.assignmentid}`}
+                            >
+                              <img src={edit} alt="edit" className="pl-4" />
+                            </Link>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
       <ConfirmationModal
         text="Are you sure you want to delete this assignment?"
         textname="Yes, I want to delete"
@@ -171,7 +184,7 @@ function AssignmentListTable() {
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </>
   );
 }
 
