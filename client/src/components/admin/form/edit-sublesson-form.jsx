@@ -9,6 +9,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import supabase from "../../../utils/supabaseClient";
 import ConfirmationModal from "../../../components/admin/modal/delete-course-confirmation";
 import PendingSvg from "../../shared/pending-svg";
+import CustomSnackbar from "../../shared/custom-snackbar";
 
 function EditSubLessonFrom() {
   const [lessons, setLessons] = useState([]);
@@ -20,6 +21,10 @@ function EditSubLessonFrom() {
   const [videoPreviewUrls, setVideoPreviewUrls] = useState([]);
   const params = useParams();
   const navigate = useNavigate();
+  //=======For MUI alert and snackbar
+  const [alert, setAlert] = useState({ message: "", severity: "" }); // Alert state
+  const [open, setOpen] = useState(false); // Snackbar open state
+
   const getLesson = async () => {
     try {
       const result = await axios.get(
@@ -159,9 +164,18 @@ function EditSubLessonFrom() {
       } catch (error) {
         console.log("Error putLessonAndSublesson", error);
       }
-      alert("Add Lesson and SubLesson Successfully");
+      setAlert({
+        message: "Edit Lesson and SubLesson Successfully",
+        severity: "success",
+      });
+      setOpen(true);
       navigate("/admin/courselist");
     } catch (error) {
+      setAlert({
+        message: "You must select a video to upload.",
+        severity: "error",
+      });
+      setOpen(true);
       console.error(
         "There was an error adding the lesson and sublesson:",
         error
@@ -171,10 +185,11 @@ function EditSubLessonFrom() {
     }
   };
 
-  async function uploadVideoFile(file) {
+  async function uploadVideoFile(file, index) {
     try {
+      console.log(file);
       if (!file) {
-        throw new Error("You must select a video to upload.");
+        throw "You must select a video to upload.";
       }
       if (typeof file === "string") {
         return file;
@@ -215,7 +230,12 @@ function EditSubLessonFrom() {
     // Validate file size (max 20 MB)
     const maxSizeInBytes = 20 * 1024 * 1024; // 20 MB in bytes
     if (selectedFile.size > maxSizeInBytes) {
-      alert("File size should not exceed 20 MB");
+      setAlert({
+        message: "File size should not exceed 20 MB",
+        severity: "error",
+      });
+      setOpen(true);
+      // alert("File size should not exceed 20 MB");
       return;
     }
     const newVideoFiles = [...videoFiles];
@@ -243,13 +263,19 @@ function EditSubLessonFrom() {
     ]);
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
   return (
     <div className="flex flex-col justify-between w-full h-full">
       {/* Loading Section */}
       {loading && <PendingSvg text="Editing Lesson and Sublesson..." />}
-      <nav >
-        <NavbarEditSubLesson text="Edit"
-        handleSubmit={onSubmit} />
+      <nav>
+        <NavbarEditSubLesson text="Edit" handleSubmit={onSubmit} />
       </nav>
       <div
         className={`mt-[50px] mx-8 w-[1120px] h-fit bg-white rounded-[16px] border-[1px] mb-[80px]`}
@@ -410,6 +436,11 @@ function EditSubLessonFrom() {
         open={openModal}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}
+      />
+      <CustomSnackbar //======Use Custom Snackbar
+        open={open}
+        handleClose={handleClose}
+        alert={alert}
       />
     </div>
   );
