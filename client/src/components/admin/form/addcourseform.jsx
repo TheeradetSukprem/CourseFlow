@@ -164,6 +164,7 @@ function AddCourseFrom() {
 
       // Navigate to the edit course page
       //navigate(`/admin/editcourse/${courseid}`);
+      navigate(`/admin/courselist`);
     } catch (error) {
       console.error("Error creating course:", error);
       setAlert({ message: "Failed to create course. Please try again.", severity: "error" });
