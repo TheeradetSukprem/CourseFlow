@@ -22,6 +22,7 @@ import EditSubLesson from "./admin/edit-sublesson";
 import AddAssignment from "./admin/add-assignment";
 import AssignmentListAdmin from "./admin/assignmentlist";
 import EditAssignmentdetail from "./admin/editassignmentdetail";
+import NotFoundPage from "./notfoundpage";
 
 function AuthenticatedApp() {
   // Retrieve userData from localStorage
@@ -65,6 +66,7 @@ function AuthenticatedApp() {
           element={<UserMycourseCompleted />}
         />
         <Route path="/user/homework" element={<UserMyHomework />} />
+        <Route path="/admin/*" element={<NotFoundPage />} />
         <Route path="*" element={<Userhomepage />} />
 
         {/* Admin Routes - Only if authenticated and role is Admin */}
