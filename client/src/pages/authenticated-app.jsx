@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Userhomepage from "./authorized/user-homepage";
 import Usercourse from "./authorized/user-course";
 import UserMycourse from "./authorized/user-mycourse";
-import Modal from "../components/coursedetail/modalcoursedetail-mobile";
+import ModalCoursedetailmobile from "../components/coursedetail/modalcoursedetail-mobile";
 import SubscribeCourse from "./authorized/user-subscribe";
 import UserDesireCoursedetail from "./authorized/user-desirecoursedetail";
 import StartLearning from "./authorized/user-courselearning";
@@ -51,7 +51,7 @@ function AuthenticatedApp() {
           path="/users/startlearning/:courseid"
           element={<StartLearning />}
         />
-        <Route path="/modal/:Id" element={<Modal />} />
+        <Route path="/modal/:Id" element={<ModalCoursedetailmobile />} />
         <Route path="/userhomepage" element={<Userhomepage />} />
         <Route path="/usercourse" element={<Usercourse />} />
         <Route path="/user/profile" element={<UserProfile />} />

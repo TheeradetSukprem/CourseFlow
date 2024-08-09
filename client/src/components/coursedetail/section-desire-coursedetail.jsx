@@ -4,7 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/authentication";
 import axios from "axios";
-import ModalCoursedetail from "../../components/coursedetail/modacoursedetaill.desktop";
+import ModalCoursedetaildesktop  from "../../components/coursedetail/modacoursedetaill.desktop";
+import CustomSnackbar from "../shared/custom-snackbar";
 
 function SectionDesireCourseDetail() {
   const navigate = useNavigate();
@@ -14,8 +15,10 @@ function SectionDesireCourseDetail() {
   const [modules, setModules] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
-  const [expandedModuleId, setExpandedModuleId] = useState(null); // State to track expanded module
-  const [subscribedCourses, setSubscribedCourses] = useState([]); // State to track subscribed courses // State to track expanded module
+  const [expandedModuleId, setExpandedModuleId] = useState(null);
+  const [subscribedCourses, setSubscribedCourses] = useState([]);
+  const [alert, setAlert] = useState({ message: "", severity: "" }); 
+  const [open, setOpen] = useState(false); 
 
   useEffect(() => {
     const getCourses = async () => {
@@ -34,7 +37,6 @@ function SectionDesireCourseDetail() {
       const result = await axios.get(
         `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
       );
-      console.log(result);
       setSubscribedCourses(result.data);
     };
     getCourses();
@@ -52,7 +54,6 @@ function SectionDesireCourseDetail() {
     event.preventDefault();
     deleteDesireCourse();
   };
-
   const postSubscribe = async () => {
     await axios.post(
       `https://project-courseflow-server.vercel.app/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`
@@ -68,9 +69,12 @@ function SectionDesireCourseDetail() {
       (course) => course.courseid
     );
     const uniqueSubscribedCourseIds = [...new Set(subscribedCourseIds)];
-
     if (uniqueSubscribedCourseIds.includes(Number(params.Id))) {
-      alert("You have already subscribed to this course.");
+      setAlert({
+        message: "You have already subscribed to this course.",
+        severity: "error",
+      });
+      setOpen(true);
     } else {
       postSubscribe();
     }
@@ -83,20 +87,17 @@ function SectionDesireCourseDetail() {
     setSelectedCourseId(id);
     setOpenModal(true);
   };
-
   const toggleModuleDetails = (moduleId) => {
     setExpandedModuleId((prevModuleId) =>
       prevModuleId === moduleId ? null : moduleId
     );
   };
-
   const handleBackClick = () => {
     navigate("/user/desire");
   };
 
   // Sort modules by moduleid and generate sequential numbers
   const sortedModules = [...modules].sort((a, b) => a.moduleid - b.moduleid);
-
   const truncateText = (text, wordLimit) => {
     if (!text) return "";
     const words = text.split(" ");
@@ -106,7 +107,13 @@ function SectionDesireCourseDetail() {
     const truncated = words.slice(0, wordLimit).join(" ");
     return truncated + "...";
   };
-
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+  
   return (
     <div>
       <section
@@ -255,13 +262,18 @@ function SectionDesireCourseDetail() {
               </div>
             </div>
           </aside>
-          <ModalCoursedetail
+          <ModalCoursedetaildesktop 
             open={openModal}
             onClose={handleCloseModal}
             onConfirm={handleConfirmSubscribe}
           />
         </div>
       </section>
+      <CustomSnackbar
+        open={open}
+        handleClose={handleClose}
+        alert={alert}
+      />
     </div>
   );
 }

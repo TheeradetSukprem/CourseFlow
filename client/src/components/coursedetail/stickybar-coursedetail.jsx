@@ -3,6 +3,7 @@ import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/authentication";
 import axios from "axios";
+import CustomSnackbar from "../shared/custom-snackbar";
 
 function StickybarCoursedetail() {
   const navigate = useNavigate();
@@ -10,6 +11,9 @@ function StickybarCoursedetail() {
   const userId = useAuth();
   const [coursedetail, setCoursedetail] = useState([]);
   const [isCoursevisible, setIsCourseVisible] = useState(false);
+  const [desireCourse, setDesireCourse] = useState([]);
+  const [alert, setAlert] = useState({ message: "", severity: "" });
+  const [open, setOpen] = useState(false);
 
   const toggleCourse = () => {
     setIsCourseVisible(!isCoursevisible);
@@ -22,7 +26,14 @@ function StickybarCoursedetail() {
       );
       setCoursedetail(result.data.data);
     };
+    const getDesirecourse = async () => {
+      const result = await axios.get(
+        `https://project-courseflow-server.vercel.app/courses/desire`
+      );
+      setDesireCourse(result.data);
+    };
     getCourses();
+    getDesirecourse();
   }, []);
 
   const postDesireCourse = async () => {
@@ -34,9 +45,22 @@ function StickybarCoursedetail() {
   };
   const handlePostDesire = (event) => {
     event.preventDefault();
-    postDesireCourse();
+    if (!userId.UserIdFromLocalStorage) {
+      navigate("/login");
+    }
+    const desireCourseIds = desireCourse.map((course) => course.courseid);
+    const uniqueDesireCourseIds = [...new Set(desireCourseIds)];
+    if (uniqueDesireCourseIds.includes(Number(params.Id))) {
+      setAlert({
+        message: "You have already get in desire course.",
+        severity: "error",
+      });
+      setOpen(true);
+    } else {
+      postDesireCourse();
+    }
   };
-
+  
   const truncateText = (text, wordLimit) => {
     if (!text) return "";
     const words = text.split(" ");
@@ -45,6 +69,12 @@ function StickybarCoursedetail() {
     }
     const truncated = words.slice(0, wordLimit).join(" ");
     return truncated + "...";
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -104,6 +134,11 @@ function StickybarCoursedetail() {
           </div>
         </div>
       </footer>
+      <CustomSnackbar
+        open={open}
+        handleClose={handleClose}
+        alert={alert}
+      />
     </div>
   );
 }

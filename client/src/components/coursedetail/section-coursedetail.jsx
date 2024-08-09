@@ -4,7 +4,8 @@ import arrow_back from "../../assets/icons/coursedetail/arrow_back.png";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
-import ModalCoursedetail from "../../components/coursedetail/modacoursedetaill.desktop";
+import ModalCoursedetaildesktop from "./modacoursedetaill.desktop";
+import CustomSnackbar from "../shared/custom-snackbar";
 
 function SectionCourseDetail() {
   const navigate = useNavigate();
@@ -16,6 +17,9 @@ function SectionCourseDetail() {
   const [expandedModuleId, setExpandedModuleId] = useState(null);
   const [subscribedCourses, setSubscribedCourses] = useState([]);
   const [desireCourse, setDesireCourse] = useState([]);
+  const [alert, setAlert] = useState({ message: "", severity: "" });
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
     const getCourses = async () => {
       const result = await axios.get(
@@ -29,7 +33,6 @@ function SectionCourseDetail() {
       );
       setModules(result.data.data);
     };
-
     const subscribedCourses = async () => {
       const result = await axios.get(
         `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
@@ -63,7 +66,11 @@ function SectionCourseDetail() {
     const desireCourseIds = desireCourse.map((course) => course.courseid);
     const uniqueDesireCourseIds = [...new Set(desireCourseIds)];
     if (uniqueDesireCourseIds.includes(Number(params.Id))) {
-      alert("You have already get in desire course.");
+      setAlert({
+        message: "You have already get in desire course.",
+        severity: "error",
+      });
+      setOpen(true);
     } else {
       postDesireCourse();
     }
@@ -82,9 +89,12 @@ function SectionCourseDetail() {
       (course) => course.courseid
     );
     const uniqueSubscribedCourseIds = [...new Set(subscribedCourseIds)];
-
     if (uniqueSubscribedCourseIds.includes(Number(params.Id))) {
-      alert("You have already subscribed to this course.");
+      setAlert({
+        message: "You have already subscribed to this course.",
+        severity: "error",
+      });
+      setOpen(true);
     } else {
       postSubscribe();
     }
@@ -93,20 +103,17 @@ function SectionCourseDetail() {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-
   const handleOpenModal = () => {
     if (!userId.UserIdFromLocalStorage) {
       navigate("/login");
     }
     setOpenModal(true);
   };
-
   const toggleModuleDetails = (moduleId) => {
     setExpandedModuleId((prevModuleId) =>
       prevModuleId === moduleId ? null : moduleId
     );
   };
-
   const handleBackClick = () => {
     if (userId.UserIdFromLocalStorage) {
       navigate("/courselistuser");
@@ -116,7 +123,6 @@ function SectionCourseDetail() {
   };
 
   const sortedModules = [...modules].sort((a, b) => a.moduleid - b.moduleid);
-
   const truncateText = (text, wordLimit) => {
     if (!text) return "";
     const words = text.split(" ");
@@ -125,6 +131,12 @@ function SectionCourseDetail() {
     }
     const truncated = words.slice(0, wordLimit).join(" ");
     return truncated + "...";
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -275,13 +287,18 @@ function SectionCourseDetail() {
               </div>
             </div>
           </aside>
-          <ModalCoursedetail
+          <ModalCoursedetaildesktop
             open={openModal}
             onClose={handleCloseModal}
             onConfirm={handleConfirmSubscribe}
           />
         </div>
       </section>
+      <CustomSnackbar
+        open={open}
+        handleClose={handleClose}
+        alert={alert}
+      />
     </div>
   );
 }

@@ -55,7 +55,6 @@ function StickybarStartLearning() {
                   <img className="w-[24px] h-[24px]" src={arrow_drop}></img>
                 </button>
               </div>
-
               <h1
                 className={`${
                   isCoursevisible ? "block" : "hidden"

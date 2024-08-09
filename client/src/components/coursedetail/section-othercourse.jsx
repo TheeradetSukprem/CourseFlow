@@ -2,12 +2,11 @@ import othercourselesson1 from "../../assets/icons/coursedetail/othercourselesso
 import othercourselesson2 from "../../assets/icons/coursedetail/othercourselesson2.png";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function SectionOtherCourse() {
   const [otherCourse, setOtherCourse] = useState([]);
   const params = useParams();
-  const navigate = useNavigate();
   const specificIDs = [params.Id];
 
   const getOtherCourse = async () => {
@@ -20,7 +19,6 @@ function SectionOtherCourse() {
     let results = [filteredCourses[0], filteredCourses[1], filteredCourses[2]];
     setOtherCourse(results);
   };
-
   useEffect(() => {
     getOtherCourse();
   }, []);
