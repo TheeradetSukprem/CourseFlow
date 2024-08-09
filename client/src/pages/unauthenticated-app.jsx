@@ -18,7 +18,7 @@ function UnauthenticatedApp() {
         <Route path="/coursedetail/:Id" element={<Coursedetail />} />
 
         <Route path="/login/admin" element={<LoginAdmin />} />
-
+        <Route path="/admin/*" element={<NotFoundPage />} />
         <Route path="*" element={<Login />} />
       </Routes>
     </div>

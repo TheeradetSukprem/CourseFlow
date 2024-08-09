@@ -75,6 +75,7 @@ function AuthProvider(props) {
     localStorage.removeItem("userData");
     localStorage.removeItem("token");
     setState({ ...state, user: null, error: null });
+    navigate("/");
   };
 
   //=========Access value of userId from storage

@@ -9,14 +9,14 @@ function Sidebar() {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const handleLogout = () => {
-    const token = localStorage.getItem("token");
+  // const handleLogout = () => {
+  //   const token = localStorage.getItem("token");
 
-    localStorage.removeItem("token");
-    const tokenAfterRemoval = localStorage.getItem("token");
+  //   localStorage.removeItem("token");
+  //   const tokenAfterRemoval = localStorage.getItem("token");
 
-    navigate("/login/admin");
-  };
+  //   navigate("/login/admin");
+  // };
 
   return (
     <div>
