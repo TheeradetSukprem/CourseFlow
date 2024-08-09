@@ -61,6 +61,7 @@ const UserLearningPage = () => {
     useState("Pending");
   const [submissionAnswer, setSubmissionAnswer] = useState("");
   const [submissionDetails, setSubmissionDetails] = useState({});
+  const [profile, setProfile] = useState(null);
 
   const navigate = useNavigate();
 
@@ -82,87 +83,369 @@ const UserLearningPage = () => {
     }));
   };
 
-  const handlePlay = async () => {
-    setIsVideoPlaying(true);
-    setIsVideoEnded(false);
-    setVideoStates((prevState) => ({
-      ...prevState,
-      [selectedSublesson]: { isPlaying: true, isEnded: false },
-    }));
+  // Fetch Profile
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
-    if (profile) {
-      try {
-        await axios.post(
-          "https://project-courseflow-server.vercel.app:4000/videos/view",
-          {
-            userid: profile.userid,
-            sublessonid: selectedSublesson,
-            is_playing: true, // Mark video as playing
-            is_ended: false, // Ensure is_ended is false
-          }
-        );
-        console.log("Video play state updated successfully.");
-      } catch (error) {
-        console.error(
-          "Error updating video play state:",
-          error.response ? error.response.data : error.message
-        );
-      }
-    } else {
-      console.error("User profile not available.");
+  const fetchProfile = async () => {
+    const token = localStorage.getItem("token");
+    let userDataFromToken = null; // Initialize userDataFromToken
+
+    if (token) {
+      userDataFromToken = jwtDecode(token);
+      setProfile(userDataFromToken);
     }
+
+    // console.log("token " + token);
+    console.log("userDataFromToken ", userDataFromToken); // Fix the variable name and log properly
   };
 
-  const handleEnded = async () => {
-    setIsVideoPlaying(false);
-    setIsVideoEnded(true);
-    setProgress(100);
+  // Fetch the progress bar
+  // useEffect(() => {
+  //   if (profile && courseid) {
+  //     const fetchProgress = async () => {
+  //       try {
+  //         const response = await axios.get(
+  //           `http://localhost:4000/progress/${profile.userid}/${courseid}`
+  //         );
+  //         console.log("Fetched progress:", response.data.progress);
+  //         setProgress(response.data.progress);
+  //       } catch (error) {
+  //         console.error("Error fetching progress:", error);
+  //       }
+  //     };
 
-    setVideoStates((prevState) => ({
-      ...prevState,
-      [selectedSublesson]: { isPlaying: false, isEnded: true },
-    }));
+  //     fetchProgress();
+  //   }
+  // }, [profile, courseid]);
 
-    setWatchedVideos((prevWatchedVideos) => {
-      const newWatchedVideos = new Set(prevWatchedVideos);
-      newWatchedVideos.add(selectedVideoUrl);
-      return newWatchedVideos;
-    });
-
+  // Fetch the video state when the profile is set
+  useEffect(() => {
     if (profile) {
-      try {
-        await axios.post(
-          "https://project-courseflow-server.vercel.app:4000/videos/view",
-          {
-            userid: profile.userid,
-            sublessonid: selectedSublesson,
-            is_playing: true, // Mark video as not playing
-            is_ended: true, // Mark video as ended
+      const fetchVideoState = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/videos/watched/${profile.userid}`,
+            { sublessonid: selectedSublesson } // No need to send userid again in the body
+          );
+          const videoState = response.data.find(
+            (video) => video.sublessonid === selectedSublesson
+          );
+          console.log("videoState is ", videoState);
+          if (videoState) {
+            setIsVideoPlaying(videoState.is_playing);
+            setIsVideoEnded(videoState.is_ended);
+            setVideoStates((prevState) => ({
+              ...prevState,
+              [selectedSublesson]: {
+                isPlaying: videoState.is_playing,
+                isEnded: videoState.is_ended,
+              },
+            }));
           }
-        );
-        console.log("Video view tracked successfully.");
-      } catch (error) {
-        console.error(
-          "Error tracking video view:",
-          error.response ? error.response.data : error.message
-        );
-      }
-    } else {
-      console.error("User profile not available.");
+        } catch (error) {
+          console.error("Error fetching video state:", error);
+        }
+      };
+
+      fetchVideoState();
     }
+  }, [profile, selectedSublesson]);
 
-    // Delay playback of the next video by 5 seconds
-    setTimeout(() => {
-      const { nextSublessonId, nextVideoUrl } = getNextVideoDetails();
-      if (nextVideoUrl) {
-        setSelectedSublesson(nextSublessonId);
-        setSelectedVideoUrl(nextVideoUrl);
+  useEffect(() => {
+    if (profile) {
+      const fetchAllVideoStates = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/videos/watched/${profile.userid}`
+          );
 
-        setProgress(0);
+          const updatedStates = response.data.reduce((acc, video) => {
+            acc[video.sublessonid] = {
+              isPlaying: video.is_playing,
+              isEnded: video.is_ended,
+            };
+            return acc;
+          }, {});
+
+          setVideoStates(updatedStates);
+        } catch (error) {
+          console.error("Error fetching video states:", error);
+        }
+      };
+
+      fetchAllVideoStates();
+    }
+  }, [profile]);
+
+  // const handlePlay = async () => {
+  //   if (stateLock) return; // Prevent repeated state changes
+  //   stateLock = true;
+
+  //   if (!profile) {
+  //     console.error(`User profile not available`);
+  //     stateLock = false;
+  //     return;
+  //   }
+
+  //   try {
+  //     // Fetch the current state of the video
+  //     const response = await axios.get(
+  //       `http://localhost:4000/videos/watched/${profile.userid}`
+  //     );
+  //     const videoState = response.data.find(
+  //       (video) => video.sublessonid === selectedSublesson
+  //     );
+
+  //     console.log("Fetched video state:", videoState);
+
+  //     // Check if the video has already ended
+  //     if (videoState && videoState.is_ended === true) {
+  //       console.log("Video has already ended. Not updating the play state.");
+  //       stateLock = false;
+  //       return;
+  //     }
+
+  //     // If video hasn't ended, proceed with updating the play state
+  //     await axios.post(`http://localhost:4000/videos/view`, {
+  //       userid: profile.userid,
+  //       sublessonid: selectedSublesson,
+  //       is_playing: true,
+  //       is_ended: false,
+  //       courseid: courseid,
+  //     });
+
+  //     console.log("Video play state updated on server.");
+
+  //     // Update local state only after server update succeeds
+  //     setIsVideoPlaying(true);
+  //     setIsVideoEnded(false);
+  //     setVideoStates((prevState) => ({
+  //       ...prevState,
+  //       [selectedSublesson]: { isPlaying: true, isEnded: false },
+  //     }));
+
+  //     console.log("Local state updated successfully.");
+  //   } catch (error) {
+  //     console.error(
+  //       `Error updating video play state:`,
+  //       error.response ? error.response.data : error.message
+  //     );
+  //   } finally {
+  //     stateLock = false;
+  //   }
+  // };
+
+  // const handleEnded = async () => {
+  //   setIsVideoPlaying(false);
+  //   setIsVideoEnded(true);
+  //   // setProgress(100);
+
+  //   setVideoStates((prevState) => ({
+  //     ...prevState,
+  //     [selectedSublesson]: { isPlaying: false, isEnded: true },
+  //   }));
+
+  //   setWatchedVideos((prevWatchedVideos) => {
+  //     const newWatchedVideos = new Set(prevWatchedVideos);
+  //     newWatchedVideos.add(selectedVideoUrl);
+  //     return newWatchedVideos;
+  //   });
+
+  //   if (profile) {
+  //     try {
+  //       await axios.post(`http://localhost:4000/videos/view`, {
+  //         userid: profile.userid,
+  //         sublessonid: selectedSublesson,
+  //         is_playing: false,
+  //         is_ended: true,
+  //         courseid: courseid,
+  //       });
+  //       console.log("Video play state updated successfully.");
+
+  //       // Fetch the updated progress after marking video as ended
+  //       const progressResponse = await axios.get(
+  //         `http://localhost:4000/progress/${profile.userid}/${courseid}`
+  //       );
+  //       setProgress(progressResponse.data.progress);
+  //     } catch (error) {
+  //       console.error(
+  //         `Error updating video play state:`,
+  //         error.response ? error.response.data : error.message
+  //       );
+  //     }
+  //   } else {
+  //     console.eror(`User profile not available`);
+  //   }
+
+  //   setTimeout(() => {
+  //     const { nextSublessonId, nextVideoUrl } = getNextVideoDetails();
+  //     if (nextVideoUrl) {
+  //       setSelectedSublesson(nextSublessonId);
+  //       setSelectedVideoUrl(nextVideoUrl);
+  //       // setProgress(0);
+  //       setIsVideoPlaying(true);
+  //     }
+  //   }, 1000); // 1000 milliseconds = 1 second
+  // };
+
+  const getVideoIcon = (submoduleid) => {
+    const state = videoStates[submoduleid] || {
+      isPlaying: false,
+      isEnded: false,
+    };
+    if (state.isEnded) return <FinishedIcon />;
+    if (state.isPlaying) return <PlayingIcon />;
+    return <NotPlayingIcon />;
+  };
+
+  // useEffect Hooks
+  let stateLock = false;
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    let hasFetchedProgress = false; // Flag to track if progress has been fetched
+
+    const updateProgress = async () => {
+      try {
+        if (!hasFetchedProgress) {
+          const response = await axios.get(
+            `http://localhost:4000/progress/${profile.userid}/${courseid}`
+          );
+          console.log("Fetched progress:", response.data.progress);
+          setProgress(response.data.progress);
+          hasFetchedProgress = true; // Set the flag to true after fetching progress
+        }
+      } catch (error) {
+        console.error("Error fetching progress:", error);
+      }
+    };
+
+    const handlePlay = async () => {
+      if (stateLock) return; // Prevent repeated state changes
+      stateLock = true;
+
+      if (!profile) {
+        console.error(`User profile not available`);
+        stateLock = false;
+        return;
+      }
+
+      try {
+        // Fetch the current state of the video
+        const response = await axios.get(
+          `http://localhost:4000/videos/watched/${profile.userid}`
+        );
+        const videoState = response.data.find(
+          (video) => video.sublessonid === selectedSublesson
+        );
+
+        console.log("Fetched video state:", videoState);
+
+        // Check if the video has already ended
+        if (videoState && videoState.is_ended === true) {
+          console.log("Video has already ended. Not updating the play state.");
+          stateLock = false;
+          return;
+        }
+
+        // If video hasn't ended, proceed with updating the play state
+        await axios.post(`http://localhost:4000/videos/view`, {
+          userid: profile.userid,
+          sublessonid: selectedSublesson,
+          is_playing: true,
+          is_ended: false,
+          courseid: courseid,
+        });
+
+        console.log("Video play state updated on server.");
+
+        // Update local state only after server update succeeds
         setIsVideoPlaying(true);
+        setIsVideoEnded(false);
+        setVideoStates((prevState) => ({
+          ...prevState,
+          [selectedSublesson]: { isPlaying: true, isEnded: false },
+        }));
+
+        console.log("Local state updated successfully.");
+      } catch (error) {
+        console.error(
+          `Error updating video play state:`,
+          error.response ? error.response.data : error.message
+        );
+      } finally {
+        stateLock = false;
       }
-    }, 1000); // 5000 milliseconds = 5 seconds
-  };
+    };
+
+    const handleEnded = async () => {
+      setIsVideoPlaying(false);
+      setIsVideoEnded(true);
+      // setProgress(100);
+
+      setVideoStates((prevState) => ({
+        ...prevState,
+        [selectedSublesson]: { isPlaying: false, isEnded: true },
+      }));
+
+      setWatchedVideos((prevWatchedVideos) => {
+        const newWatchedVideos = new Set(prevWatchedVideos);
+        newWatchedVideos.add(selectedVideoUrl);
+        return newWatchedVideos;
+      });
+
+      if (profile) {
+        try {
+          await axios.post(`http://localhost:4000/videos/view`, {
+            userid: profile.userid,
+            sublessonid: selectedSublesson,
+            is_playing: false,
+            is_ended: true,
+            courseid: courseid,
+          });
+          console.log("Video play state updated successfully.");
+
+          // Fetch the updated progress after marking video as ended
+          const progressResponse = await axios.get(
+            `http://localhost:4000/progress/${profile.userid}/${courseid}`
+          );
+          setProgress(progressResponse.data.progress);
+        } catch (error) {
+          console.error(
+            `Error updating video play state:`,
+            error.response ? error.response.data : error.message
+          );
+        }
+      } else {
+        console.eror(`User profile not available`);
+      }
+
+      setTimeout(() => {
+        const { nextSublessonId, nextVideoUrl } = getNextVideoDetails();
+        if (nextVideoUrl) {
+          setSelectedSublesson(nextSublessonId);
+          setSelectedVideoUrl(nextVideoUrl);
+          // setProgress(0);
+          setIsVideoPlaying(true);
+        }
+      }, 1000); // 1000 milliseconds = 1 second
+    };
+
+    updateProgress();
+
+    videoElement.addEventListener("play", handlePlay);
+    videoElement.addEventListener("ended", handleEnded);
+    videoElement.addEventListener("timeupdate", updateProgress);
+
+    return () => {
+      videoElement.removeEventListener("play", handlePlay);
+      videoElement.removeEventListener("ended", handleEnded);
+      videoElement.removeEventListener("timeupdate", updateProgress);
+    };
+  }, [selectedVideoUrl]);
 
   const handlePreviousLesson = () => {
     const { previousSublessonId, previousVideoUrl } = getPreviousVideoDetails();
@@ -181,31 +464,6 @@ const UserLearningPage = () => {
       setIsVideoPlaying(true);
     }
   };
-
-  // useEffect Hooks
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    if (!videoElement) return;
-
-    const updateProgress = () => {
-      if (videoElement.duration > 0) {
-        const progress =
-          (videoElement.currentTime / videoElement.duration) * 100;
-        // Realtime Update with video time
-        // setProgress(progress);
-      }
-    };
-
-    videoElement.addEventListener("play", handlePlay);
-    videoElement.addEventListener("ended", handleEnded);
-    videoElement.addEventListener("timeupdate", updateProgress);
-
-    return () => {
-      videoElement.removeEventListener("play", handlePlay);
-      videoElement.removeEventListener("ended", handleEnded);
-      videoElement.removeEventListener("timeupdate", updateProgress);
-    };
-  }, [selectedVideoUrl]);
 
   useEffect(() => {
     if (sidebarData.modules) {
@@ -287,67 +545,6 @@ const UserLearningPage = () => {
       }
     }
   }, [selectedSublesson, sidebarData]);
-
-  // Fetch Assignment
-  // useEffect(() => {
-  //   const fetchAssignmentData = async (assignmentid) => {
-  //     try {
-  //       console.log(`Fetching assignment data for ID: ${assignmentid}`);
-  //       const response = await axios.get(
-  //         `https://project-courseflow-server.vercel.app/users/assignment/${assignmentid}`
-  //       );
-  //       const assignmentData = response.data;
-
-  //       if (Array.isArray(assignmentData) && assignmentData.length > 0) {
-  //         console.log("Assignment data fetched:", assignmentData);
-  //         setAssignment(assignmentData[0]);
-  //       } else {
-  //         console.log("No assignment data found.");
-  //         setAssignment(null);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching assignment data:", error);
-  //       setAssignment(null); // Handle the error by clearing assignment
-  //     }
-  //   };
-
-  //   const findSelectedSublessonData = () => {
-  //     if (selectedSublesson && sidebarData) {
-  //       const selectedModule = sidebarData.modules.find((module) =>
-  //         module.sublessons.some(
-  //           (sublesson) => sublesson.sublessonid === selectedSublesson
-  //         )
-  //       );
-
-  //       if (selectedModule) {
-  //         const selectedSublessonData = selectedModule.sublessons.find(
-  //           (sublesson) => sublesson.sublessonid === selectedSublesson
-  //         );
-
-  //         if (selectedSublessonData) {
-  //           console.log("Selected Sublesson Data:", selectedSublessonData);
-  //           setSelectedVideoUrl(selectedSublessonData.videofile);
-  //           setCurrentModuleName(selectedModule.modulename);
-  //           setCurrentSubmoduleName(selectedSublessonData.sublessonname);
-
-  //           if (selectedSublessonData.assignmentid) {
-  //             fetchAssignmentData(selectedSublessonData.assignmentid);
-  //           } else {
-  //             setAssignment(null);
-  //           }
-  //         } else {
-  //           console.log("No matching sublesson data found.");
-  //           setAssignment(null);
-  //         }
-  //       } else {
-  //         console.log("No matching module found.");
-  //         setAssignment(null);
-  //       }
-  //     }
-  //   };
-
-  //   findSelectedSublessonData();
-  // }, [selectedSublesson, sidebarData]);
 
   // Helper Functions
   const getNextVideoDetails = () => {
@@ -443,31 +640,6 @@ const UserLearningPage = () => {
     }));
   };
 
-  const handleSendAssignmentClick = async () => {
-    // if (assignment) {
-    //   try {
-    //     await axios.post(`https://project-courseflow-server.vercel.app/users/submit-assignment`, {
-    //       assignmentId: assignment.assignmentid,
-    //       userAnswer: userAnswer,
-    //     });
-    //     alert("Assignment submitted successfully!");
-    //   } catch (error) {
-    //     console.error("Error submitting assignment:", error);
-    //   }
-    // }
-    setAssignmentStatus("Submitted");
-  };
-
-  const getVideoIcon = (submoduleid) => {
-    const state = videoStates[submoduleid] || {
-      isPlaying: false,
-      isEnded: false,
-    };
-    if (state.isEnded) return <FinishedIcon />;
-    if (state.isPlaying) return <PlayingIcon />;
-    return <NotPlayingIcon />;
-  };
-
   const getPaddedModuleId = (module, modules) => {
     const courseModules = modules.filter((m) => m.courseId === module.courseId);
     const index = courseModules.findIndex(
@@ -482,26 +654,6 @@ const UserLearningPage = () => {
   const selectedSubmoduleData = sidebarData.modules
     ?.flatMap((module) => module.sublessons)
     .find((sublesson) => sublesson.sublessonid === selectedSublesson);
-
-  // Fetch Profile
-  const [profile, setProfile] = useState(null);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const token = localStorage.getItem("token");
-      let userDataFromToken = null; // Initialize userDataFromToken
-
-      if (token) {
-        userDataFromToken = jwtDecode(token);
-        setProfile(userDataFromToken);
-      }
-
-      // console.log("token " + token);
-      console.log("userDataFromToken ", userDataFromToken); // Fix the variable name and log properly
-    };
-
-    fetchProfile();
-  }, []);
 
   // Fetch Submission
   useEffect(() => {
@@ -655,27 +807,6 @@ const UserLearningPage = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchWatchedVideos = async () => {
-      if (profile) {
-        try {
-          const response = await axios.get(
-            `https://project-courseflow-server.vercel.app:4000/videos/watched/${profile.userid}`
-          );
-          const watched = response.data.map((video) => video.sublessonid);
-          setWatchedVideos(new Set(watched)); // Store watched sublesson IDs in a Set
-        } catch (error) {
-          console.error(
-            "Error fetching watched videos:",
-            error.response ? error.response.data : error.message
-          );
-        }
-      }
-    };
-
-    fetchWatchedVideos();
-  }, [profile]);
-
   return (
     <>
       <Navbarnonuser />
@@ -685,9 +816,11 @@ const UserLearningPage = () => {
           <div className="mb-6">
             <h2 className="text-sm font-bold text-orange-500">Course</h2>
             <h3 className="text-2xl font-bold mt-4">{coursename}</h3>
-            {coursedescription && coursedescription.length > 50
-              ? `${coursedescription.slice(0, 47)}...`
-              : coursedescription}
+            <p className="text-gray-600 text-base mt-2">
+              {coursedescription && coursedescription.length > 50
+                ? coursedescription.substring(0, 50) + "..."
+                : coursedescription}
+            </p>
             <div className="mt-4">
               <span className="text-sm text-gray-600">
                 {progress.toFixed(0)}% Complete
