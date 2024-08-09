@@ -371,6 +371,13 @@ const UserLearningPage = () => {
         }));
 
         console.log("Local state updated successfully.");
+
+        // Update the subscription status
+        await axios.post(`http://localhost:4000/subscriptions/update-status`, {
+          userid: profile.userid,
+          courseid: courseid,
+        });
+        console.log("Subscription status updated successfully.");
       } catch (error) {
         console.error(
           `Error updating video play state:`,
@@ -407,6 +414,16 @@ const UserLearningPage = () => {
             courseid: courseid,
           });
           console.log("Video play state updated successfully.");
+
+          // Update the subscription status
+          await axios.post(
+            `http://localhost:4000/subscriptions/update-status`,
+            {
+              userid: profile.userid,
+              courseid: courseid,
+            }
+          );
+          console.log("Subscription status updated successfully.");
 
           // Fetch the updated progress after marking video as ended
           const progressResponse = await axios.get(
