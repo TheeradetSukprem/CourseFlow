@@ -14,7 +14,11 @@ import authenticateToken from "./middlewares/authentication.mjs";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://project-courseflow.vercel.app/",
+  })
+);
 const port = process.env.PORT || 4000;
 
 //Connection test
