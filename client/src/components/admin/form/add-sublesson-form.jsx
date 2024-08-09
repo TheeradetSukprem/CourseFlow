@@ -164,8 +164,8 @@ function AddSubLessonFrom() {
     const newVideoPreviewUrls = [...videoPreviewUrls];
 
     // Remove the file and preview URL
-    newVideoFiles.splice(index, 1, "");
-    newVideoPreviewUrls.splice(index, 1, "");
+    newVideoFiles.splice(index, 1);
+    newVideoPreviewUrls.splice(index, 1);
 
     setVideoFiles(newVideoFiles);
     setVideoPreviewUrls(newVideoPreviewUrls);
@@ -303,8 +303,13 @@ function AddSubLessonFrom() {
                     ) : (
                       <button
                         type="button"
-                        onClick={() =>
-                          alert("Sublesson must have at least 0ne")
+                        onClick={() => {
+                          setAlert({
+                            message: "Sublesson must have at least 0ne",
+                            severity: "error",
+                          });
+                          setOpen(true);
+                        }
                         }
                       >
                         Delete

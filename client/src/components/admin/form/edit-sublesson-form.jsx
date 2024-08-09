@@ -61,7 +61,6 @@ function EditSubLessonFrom() {
     handleCloseModal();
   };
   const deleteSublesson = async (sublessonid) => {
-    console.log(sublessonid);
     try {
       await axios.delete(
         `https://project-courseflow-server.vercel.app/admin/sublesson/${sublessonid}`
@@ -71,6 +70,7 @@ function EditSubLessonFrom() {
       console.log("Error deleteSublesson", error);
     }
   };
+
   const handleOpenModal = (sublessonid) => {
     setSelectedCourseId(sublessonid);
     setOpenModal(true);
@@ -125,10 +125,6 @@ function EditSubLessonFrom() {
     itemClone[dragItem.current] = itemClone[draggedOverItem.current];
     itemClone[draggedOverItem.current] = temp;
 
-    console.log(itemClone);
-    console.log(temp);
-    console.log(temp2);
-
     const videoClone = [...videoFiles];
     const tempvideoClone = videoClone[dragItem.current];
     videoClone[dragItem.current] = videoClone[draggedOverItem.current];
@@ -156,14 +152,12 @@ function EditSubLessonFrom() {
       // Send data to backend
       const editLesson = lessons;
       const editSublesson = subLessons;
-      try {
-        await axios.put(
-          `https://project-courseflow-server.vercel.app/admin/sublesson/${params.lessonId}`,
+      
+       const result = await axios.put(
+          `http://localhost:4000/admin/sublesson/${params.lessonId}`,
           [editLesson, editSublesson, videoUrls]
         );
-      } catch (error) {
-        console.log("Error putLessonAndSublesson", error);
-      }
+     
       setAlert({
         message: "Edit Lesson and SubLesson Successfully",
         severity: "success",
@@ -187,7 +181,6 @@ function EditSubLessonFrom() {
 
   async function uploadVideoFile(file, index) {
     try {
-      console.log(file);
       if (!file) {
         throw "You must select a video to upload.";
       }
@@ -401,7 +394,11 @@ function EditSubLessonFrom() {
                         <button
                           onClick={(e) => {
                             e.preventDefault();
-                            alert("Cannot delete sub-lesson");
+                            setAlert({
+                              message: "Sublesson must have at least 0ne.",
+                              severity: "error",
+                            });
+                            setOpen(true);
                           }}
                         >
                           Delete
