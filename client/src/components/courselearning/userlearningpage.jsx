@@ -22,6 +22,8 @@ import {
 } from "../../assets/icons/videoicon/status-icon";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import LoadingPageSvg from "../shared/loading-page";
+import CustomSnackbar from "../shared/custom-snackbar";
 
 const UserLearningPage = () => {
   // State and Hooks
@@ -62,6 +64,14 @@ const UserLearningPage = () => {
   const [submissionAnswer, setSubmissionAnswer] = useState("");
   const [submissionDetails, setSubmissionDetails] = useState({});
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true); // State to manage loading screen visibility
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for snackbar visibility
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // State for snackbar message
+  const [alert, setAlert] = useState({
+    severity: "info",
+    message: "",
+    variant: "filled",
+  });
 
   const navigate = useNavigate();
 
@@ -83,6 +93,16 @@ const UserLearningPage = () => {
     }));
   };
 
+  // Helper function to show snackbar
+  const showSnackbar = (message, severity = "info", variant) => {
+    setAlert({ severity, message, variant });
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   // Fetch Profile
   useEffect(() => {
     fetchProfile();
@@ -96,29 +116,8 @@ const UserLearningPage = () => {
       userDataFromToken = jwtDecode(token);
       setProfile(userDataFromToken);
     }
-
-    // console.log("token " + token);
     console.log("userDataFromToken ", userDataFromToken); // Fix the variable name and log properly
   };
-
-  // Fetch the progress bar
-  // useEffect(() => {
-  //   if (profile && courseid) {
-  //     const fetchProgress = async () => {
-  //       try {
-  //         const response = await axios.get(
-  //           `http://localhost:4000/progress/${profile.userid}/${courseid}`
-  //         );
-  //         console.log("Fetched progress:", response.data.progress);
-  //         setProgress(response.data.progress);
-  //       } catch (error) {
-  //         console.error("Error fetching progress:", error);
-  //       }
-  //     };
-
-  //     fetchProgress();
-  //   }
-  // }, [profile, courseid]);
 
   // Fetch the video state when the profile is set
   useEffect(() => {
@@ -127,7 +126,7 @@ const UserLearningPage = () => {
         try {
           const response = await axios.get(
             `http://localhost:4000/videos/watched/${profile.userid}`,
-            { sublessonid: selectedSublesson } // No need to send userid again in the body
+            { sublessonid: selectedSublesson }
           );
           const videoState = response.data.find(
             (video) => video.sublessonid === selectedSublesson
@@ -146,6 +145,8 @@ const UserLearningPage = () => {
           }
         } catch (error) {
           console.error("Error fetching video state:", error);
+        } finally {
+          setLoading(false); // Set loading to false after data is fetched
         }
       };
 
@@ -172,123 +173,14 @@ const UserLearningPage = () => {
           setVideoStates(updatedStates);
         } catch (error) {
           console.error("Error fetching video states:", error);
+        } finally {
+          setLoading(false); // Set loading to false after data is fetched
         }
       };
 
       fetchAllVideoStates();
     }
   }, [profile]);
-
-  // const handlePlay = async () => {
-  //   if (stateLock) return; // Prevent repeated state changes
-  //   stateLock = true;
-
-  //   if (!profile) {
-  //     console.error(`User profile not available`);
-  //     stateLock = false;
-  //     return;
-  //   }
-
-  //   try {
-  //     // Fetch the current state of the video
-  //     const response = await axios.get(
-  //       `http://localhost:4000/videos/watched/${profile.userid}`
-  //     );
-  //     const videoState = response.data.find(
-  //       (video) => video.sublessonid === selectedSublesson
-  //     );
-
-  //     console.log("Fetched video state:", videoState);
-
-  //     // Check if the video has already ended
-  //     if (videoState && videoState.is_ended === true) {
-  //       console.log("Video has already ended. Not updating the play state.");
-  //       stateLock = false;
-  //       return;
-  //     }
-
-  //     // If video hasn't ended, proceed with updating the play state
-  //     await axios.post(`http://localhost:4000/videos/view`, {
-  //       userid: profile.userid,
-  //       sublessonid: selectedSublesson,
-  //       is_playing: true,
-  //       is_ended: false,
-  //       courseid: courseid,
-  //     });
-
-  //     console.log("Video play state updated on server.");
-
-  //     // Update local state only after server update succeeds
-  //     setIsVideoPlaying(true);
-  //     setIsVideoEnded(false);
-  //     setVideoStates((prevState) => ({
-  //       ...prevState,
-  //       [selectedSublesson]: { isPlaying: true, isEnded: false },
-  //     }));
-
-  //     console.log("Local state updated successfully.");
-  //   } catch (error) {
-  //     console.error(
-  //       `Error updating video play state:`,
-  //       error.response ? error.response.data : error.message
-  //     );
-  //   } finally {
-  //     stateLock = false;
-  //   }
-  // };
-
-  // const handleEnded = async () => {
-  //   setIsVideoPlaying(false);
-  //   setIsVideoEnded(true);
-  //   // setProgress(100);
-
-  //   setVideoStates((prevState) => ({
-  //     ...prevState,
-  //     [selectedSublesson]: { isPlaying: false, isEnded: true },
-  //   }));
-
-  //   setWatchedVideos((prevWatchedVideos) => {
-  //     const newWatchedVideos = new Set(prevWatchedVideos);
-  //     newWatchedVideos.add(selectedVideoUrl);
-  //     return newWatchedVideos;
-  //   });
-
-  //   if (profile) {
-  //     try {
-  //       await axios.post(`http://localhost:4000/videos/view`, {
-  //         userid: profile.userid,
-  //         sublessonid: selectedSublesson,
-  //         is_playing: false,
-  //         is_ended: true,
-  //         courseid: courseid,
-  //       });
-  //       console.log("Video play state updated successfully.");
-
-  //       // Fetch the updated progress after marking video as ended
-  //       const progressResponse = await axios.get(
-  //         `http://localhost:4000/progress/${profile.userid}/${courseid}`
-  //       );
-  //       setProgress(progressResponse.data.progress);
-  //     } catch (error) {
-  //       console.error(
-  //         `Error updating video play state:`,
-  //         error.response ? error.response.data : error.message
-  //       );
-  //     }
-  //   } else {
-  //     console.eror(`User profile not available`);
-  //   }
-
-  //   setTimeout(() => {
-  //     const { nextSublessonId, nextVideoUrl } = getNextVideoDetails();
-  //     if (nextVideoUrl) {
-  //       setSelectedSublesson(nextSublessonId);
-  //       setSelectedVideoUrl(nextVideoUrl);
-  //       // setProgress(0);
-  //       setIsVideoPlaying(true);
-  //     }
-  //   }, 1000); // 1000 milliseconds = 1 second
-  // };
 
   const getVideoIcon = (submoduleid) => {
     const state = videoStates[submoduleid] || {
@@ -320,6 +212,8 @@ const UserLearningPage = () => {
         }
       } catch (error) {
         console.error("Error fetching progress:", error);
+      } finally {
+        setLoading(false); // Set loading to false after data is fetched
       }
     };
 
@@ -435,6 +329,8 @@ const UserLearningPage = () => {
             `Error updating video play state:`,
             error.response ? error.response.data : error.message
           );
+        } finally {
+          setLoading(false); // Set loading to false after data is fetched
         }
       } else {
         console.eror(`User profile not available`);
@@ -493,11 +389,11 @@ const UserLearningPage = () => {
     }
   }, [sidebarData]);
 
-  useEffect(() => {
-    if (totalVideos > 0) {
-      setProgress((watchedVideos.size / totalVideos) * 100);
-    }
-  }, [watchedVideos, totalVideos]);
+  // useEffect(() => {
+  //   if (totalVideos > 0) {
+  //     setProgress((watchedVideos.size / totalVideos) * 100);
+  //   }
+  // }, [watchedVideos, totalVideos]);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -525,6 +421,8 @@ const UserLearningPage = () => {
         setOpenSections(initialOpenSections);
       } catch (error) {
         console.error("Error fetching course data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after data is fetched
       }
     };
 
@@ -712,6 +610,8 @@ const UserLearningPage = () => {
       }
     } catch (error) {
       console.error("Error fetching user submissions:", error);
+    } finally {
+      setLoading(false); // Set loading to false after data is fetched
     }
   };
 
@@ -730,6 +630,8 @@ const UserLearningPage = () => {
     } catch (error) {
       console.error("Error fetching assignment data:", error);
       setAssignment(null); // Handle the error by clearing assignment
+    } finally {
+      setLoading(false); // Set loading to false after data is fetched
     }
   };
 
@@ -784,12 +686,16 @@ const UserLearningPage = () => {
     const currentAnswer = submissionDetails[assignment.assignmentid]?.answer;
 
     if (currentStatus === "Submitted" && currentAnswer) {
-      alert("You already submitted this assignment.");
+      showSnackbar("You already submitted this assignment.");
       return;
     }
 
     if (userAnswer.length < 5) {
-      alert("Please type at least 5 characters before submitting.");
+      showSnackbar(
+        "Please type at least 5 characters before submitting.",
+        "warning",
+        "filled"
+      );
       return;
     }
 
@@ -817,15 +723,34 @@ const UserLearningPage = () => {
         }));
 
         setUserAnswer(""); // Clear the userAnswer input after submission
-        alert("Assignment submitted successfully.");
+        showSnackbar("Assignment submitted successfully.", "success", "filled");
       }
     } catch (error) {
       console.error("Error submitting assignment:", error);
     }
   };
 
+  const handleCompleteClick = () => {
+    if (progress === 100) {
+      // Show the Snackbar with a success message
+      showSnackbar("Lesson completed successfully!", "success", "filled");
+
+      // Wait for 3 seconds (3000 milliseconds) before navigating
+      setTimeout(() => {
+        navigate("/");
+      }, 5000);
+    } else {
+      handleNextLesson();
+    }
+  };
+
   return (
     <>
+      {loading && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 z-50 flex items-center justify-center">
+          <LoadingPageSvg />
+        </div>
+      )}
       <Navbarnonuser />
       <div className="flex flex-col md:flex-row mx-4 lg:mx-20 xl:mx-40 mt-[128px] md:mt-[188px] min-h-screen">
         {/* Sidebar */}
@@ -1042,17 +967,19 @@ const UserLearningPage = () => {
         </button>
         <button
           className="bg-[#2F5FAC] mr-4 md:mr-14 my-2 md:my-5 text-white font-bold py-2 px-4 rounded-lg"
-          onClick={() =>
-            progress === 100
-              ? (alert("Complete lesson"), navigate("/"))
-              : handleNextLesson()
-          }
+          onClick={handleCompleteClick}
         >
           {progress === 100 ? "Complete Lesson" : "Next Lesson"}
         </button>
       </footer>
       {/* General Footer */}
       <GeneralFooter />
+      {/* Snackbar Component */}
+      <CustomSnackbar
+        open={snackbarOpen}
+        handleClose={handleCloseSnackbar}
+        alert={alert}
+      />
     </>
   );
 };
