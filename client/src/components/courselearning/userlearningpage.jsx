@@ -125,7 +125,7 @@ const UserLearningPage = () => {
       const fetchVideoState = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:4000/videos/watched/${profile.userid}`,
+            `https://project-courseflow-server.vercel.app/videos/watched/${profile.userid}`,
             { sublessonid: selectedSublesson }
           );
           const videoState = response.data.find(
@@ -159,7 +159,7 @@ const UserLearningPage = () => {
       const fetchAllVideoStates = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:4000/videos/watched/${profile.userid}`
+            `https://project-courseflow-server.vercel.app/videos/watched/${profile.userid}`
           );
 
           const updatedStates = response.data.reduce((acc, video) => {
@@ -204,7 +204,7 @@ const UserLearningPage = () => {
       try {
         if (!hasFetchedProgress) {
           const response = await axios.get(
-            `http://localhost:4000/progress/${profile.userid}/${courseid}`
+            `https://project-courseflow-server.vercel.app/progress/${profile.userid}/${courseid}`
           );
           console.log("Fetched progress:", response.data.progress);
           setProgress(response.data.progress);
@@ -230,7 +230,7 @@ const UserLearningPage = () => {
       try {
         // Fetch the current state of the video
         const response = await axios.get(
-          `http://localhost:4000/videos/watched/${profile.userid}`
+          `https://project-courseflow-server.vercel.app/videos/watched/${profile.userid}`
         );
         const videoState = response.data.find(
           (video) => video.sublessonid === selectedSublesson
@@ -246,13 +246,16 @@ const UserLearningPage = () => {
         }
 
         // If video hasn't ended, proceed with updating the play state
-        await axios.post(`http://localhost:4000/videos/view`, {
-          userid: profile.userid,
-          sublessonid: selectedSublesson,
-          is_playing: true,
-          is_ended: false,
-          courseid: courseid,
-        });
+        await axios.post(
+          `https://project-courseflow-server.vercel.app/videos/view`,
+          {
+            userid: profile.userid,
+            sublessonid: selectedSublesson,
+            is_playing: true,
+            is_ended: false,
+            courseid: courseid,
+          }
+        );
 
         console.log("Video play state updated on server.");
 
@@ -267,10 +270,13 @@ const UserLearningPage = () => {
         console.log("Local state updated successfully.");
 
         // Update the subscription status
-        await axios.post(`http://localhost:4000/subscriptions/update-status`, {
-          userid: profile.userid,
-          courseid: courseid,
-        });
+        await axios.post(
+          `https://project-courseflow-server.vercel.app/subscriptions/update-status`,
+          {
+            userid: profile.userid,
+            courseid: courseid,
+          }
+        );
         console.log("Subscription status updated successfully.");
       } catch (error) {
         console.error(
@@ -300,18 +306,21 @@ const UserLearningPage = () => {
 
       if (profile) {
         try {
-          await axios.post(`http://localhost:4000/videos/view`, {
-            userid: profile.userid,
-            sublessonid: selectedSublesson,
-            is_playing: false,
-            is_ended: true,
-            courseid: courseid,
-          });
+          await axios.post(
+            `https://project-courseflow-server.vercel.app/videos/view`,
+            {
+              userid: profile.userid,
+              sublessonid: selectedSublesson,
+              is_playing: false,
+              is_ended: true,
+              courseid: courseid,
+            }
+          );
           console.log("Video play state updated successfully.");
 
           // Update the subscription status
           await axios.post(
-            `http://localhost:4000/subscriptions/update-status`,
+            `https://project-courseflow-server.vercel.app/subscriptions/update-status`,
             {
               userid: profile.userid,
               courseid: courseid,
@@ -321,7 +330,7 @@ const UserLearningPage = () => {
 
           // Fetch the updated progress after marking video as ended
           const progressResponse = await axios.get(
-            `http://localhost:4000/progress/${profile.userid}/${courseid}`
+            `https://project-courseflow-server.vercel.app/progress/${profile.userid}/${courseid}`
           );
           setProgress(progressResponse.data.progress);
         } catch (error) {

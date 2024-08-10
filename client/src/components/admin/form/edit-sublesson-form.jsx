@@ -152,12 +152,12 @@ function EditSubLessonFrom() {
       // Send data to backend
       const editLesson = lessons;
       const editSublesson = subLessons;
-      
-       const result = await axios.put(
-          `http://localhost:4000/admin/sublesson/${params.lessonId}`,
-          [editLesson, editSublesson, videoUrls]
-        );
-     
+
+      const result = await axios.put(
+        `https://project-courseflow-server.vercel.app/admin/sublesson/${params.lessonId}`,
+        [editLesson, editSublesson, videoUrls]
+      );
+
       setAlert({
         message: "Edit Lesson and SubLesson Successfully",
         severity: "success",
