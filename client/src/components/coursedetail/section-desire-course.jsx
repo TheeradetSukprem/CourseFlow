@@ -10,7 +10,6 @@ function SectionDesireCourses() {
     const result = await axios.get(
       `https://project-courseflow-server.vercel.app/courses/desire`
     );
-    console.log(result);
     setDesireCourse(result.data);
   };
   useEffect(() => {
@@ -24,7 +23,6 @@ function SectionDesireCourses() {
           Desired Courses
         </h1>
       </div>
-
       <section
         id="course"
         className=" mt-10 sm:w-full sm:h-auto sm:rounded-lg flex flex-wrap justify-center xl:w-[1119px] xl:flex xl:flex-wrap xl:justify-center xl:pb-[187px] xl:mx-auto "
@@ -37,7 +35,6 @@ function SectionDesireCourses() {
           >
             <img
               src={item.imagefile}
-              // alt={item.imagefile}
               className="w-[343px] h-[190px] sm:object-cover md:object-cover xl:object-cover rounded-lg "
             />
             <div className="sm:w-[343px] sm:h-[140px] sm:p-4 ">

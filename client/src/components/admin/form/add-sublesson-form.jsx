@@ -9,6 +9,7 @@ import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import PendingSvg from "../../shared/pending-svg";
+import CustomSnackbar from "../../shared/custom-snackbar";
 
 function AddSubLessonFrom() {
   const [videoFiles, setVideoFiles] = useState([]);
@@ -26,8 +27,9 @@ function AddSubLessonFrom() {
     control,
     name: "subLessons",
   });
-
-  console.log(fields);
+  //=======For MUI alert and snackbar
+  const [alert, setAlert] = useState({ message: "", severity: "" }); // Alert state
+  const [open, setOpen] = useState(false); // Snackbar open state
 
   //////////Drag and Drop
   const dragItem = useRef(null);
@@ -65,9 +67,7 @@ function AddSubLessonFrom() {
         ...subLesson,
         videoUrl: videoUrls[index] || "", // Ensure there's no undefined
       }));
-      console.log(data);
       // Send data to backend
-
       await axios.post(
         `https://project-courseflow-server.vercel.app/admin/${params.courseId}/lesson`,
         {
@@ -76,10 +76,19 @@ function AddSubLessonFrom() {
           videos: data.subLessons.map((subLesson) => subLesson.videoUrl),
         }
       );
-      alert("Add Lesson and SubLesson Successfully");
+      setAlert({
+        message: "Add Lesson and SubLesson Successfully",
+        severity: "success",
+      });
+      setOpen(true);
       navigate("/admin/courselist");
       reset();
     } catch (error) {
+      setAlert({
+        message: "You must select a video to upload.",
+        severity: "error",
+      });
+      setOpen(true);
       console.error(
         "There was an error adding the lesson and sublesson:",
         error
@@ -92,7 +101,7 @@ function AddSubLessonFrom() {
   async function uploadVideoFile(file) {
     try {
       if (!file) {
-        throw new Error("You must select a video to upload.");
+        throw "You must select a video to upload.";
       }
       const fileExt = file.name.split(".").pop();
       const fileName = `${uuidv4()}.${fileExt}`;
@@ -129,7 +138,11 @@ function AddSubLessonFrom() {
     // Validate file size (max 20 MB)
     const maxSizeInBytes = 20 * 1024 * 1024; // 20 MB in bytes
     if (selectedFile.size > maxSizeInBytes) {
-      alert("File size should not exceed 20 MB");
+      setAlert({
+        message: "File size should not exceed 20 MB",
+        severity: "error",
+      });
+      setOpen(true);
       return;
     }
 
@@ -151,11 +164,18 @@ function AddSubLessonFrom() {
     const newVideoPreviewUrls = [...videoPreviewUrls];
 
     // Remove the file and preview URL
-    newVideoFiles.splice(index, 1, "");
-    newVideoPreviewUrls.splice(index, 1, "");
+    newVideoFiles.splice(index, 1);
+    newVideoPreviewUrls.splice(index, 1);
 
     setVideoFiles(newVideoFiles);
     setVideoPreviewUrls(newVideoPreviewUrls);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -283,8 +303,13 @@ function AddSubLessonFrom() {
                     ) : (
                       <button
                         type="button"
-                        onClick={() =>
-                          alert("Sublesson must have at least 0ne")
+                        onClick={() => {
+                          setAlert({
+                            message: "Sublesson must have at least 0ne",
+                            severity: "error",
+                          });
+                          setOpen(true);
+                        }
                         }
                       >
                         Delete
@@ -308,6 +333,11 @@ function AddSubLessonFrom() {
           </form>
         </div>
       </div>
+      <CustomSnackbar //======Use Custom Snackbar
+        open={open}
+        handleClose={handleClose}
+        alert={alert}
+      />
     </div>
   );
 }

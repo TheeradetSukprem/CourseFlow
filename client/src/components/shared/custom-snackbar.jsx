@@ -10,7 +10,11 @@ const CustomSnackbar = ({ open, handleClose, alert }) => {
       onClose={handleClose}
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
     >
-      <Alert onClose={handleClose} severity={alert.severity} variant="filled">
+      <Alert
+        onClose={handleClose}
+        severity={alert.severity}
+        variant={alert.variant} // Use variant from alert object
+      >
         {alert.message}
       </Alert>
     </Snackbar>

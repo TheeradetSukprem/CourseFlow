@@ -33,7 +33,6 @@ function StickybarRemoveDesire() {
     event.preventDefault();
     deleteDesireCourse();
   };
-
   const truncateText = (text, wordLimit) => {
     if (!text) return "";
     const words = text.split(" ");
@@ -69,7 +68,6 @@ function StickybarRemoveDesire() {
                       <img className="w-[24px] h-[24px]" src={arrow_drop}></img>
                     </button>
                   </div>
-
                   <p
                     className={`${
                       isCoursevisible ? "block" : "hidden"

@@ -14,7 +14,11 @@ import authenticateToken from "./middlewares/authentication.mjs";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    // origin: "https://project-courseflow.vercel.app/",
+  })
+);
 const port = process.env.PORT || 4000;
 
 //Connection test
@@ -83,11 +87,16 @@ app.post("/login/admin", async (req, res) => {
 });
 
 // Route to mark a video as watched
-// Route to mark a video as watched
 app.post("/videos/view", async (req, res) => {
-  const { sublessonid, userid, is_playing, is_ended } = req.body;
+  const { sublessonid, userid, courseid, is_playing, is_ended } = req.body;
 
-  console.log("Received data:", { sublessonid, userid, is_playing, is_ended });
+  console.log("Received data:", {
+    sublessonid,
+    userid,
+    courseid,
+    is_playing,
+    is_ended,
+  });
 
   // Convert is_playing and is_ended to boolean
   const isPlayingBoolean = is_playing === "true" || is_playing === true;
@@ -97,11 +106,13 @@ app.post("/videos/view", async (req, res) => {
 
   try {
     const result = await connectionPool.query(
-      `INSERT INTO video_views (userid, sublessonid, is_playing, is_ended) 
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (userid, sublessonid) 
-       DO UPDATE SET is_playing = EXCLUDED.is_playing, is_ended = EXCLUDED.is_ended`,
-      [userid, sublessonid, isPlayingBoolean, isEndedBoolean]
+      `INSERT INTO video_views (userid, sublessonid, courseid, is_playing, is_ended) 
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (userid, sublessonid, courseid) 
+       DO UPDATE SET 
+         is_playing = EXCLUDED.is_playing,
+         is_ended = CASE WHEN video_views.is_ended = FALSE THEN EXCLUDED.is_ended ELSE video_views.is_ended END`,
+      [userid, sublessonid, courseid, isPlayingBoolean, isEndedBoolean]
     );
 
     if (result.rowCount > 0) {
@@ -125,13 +136,121 @@ app.get("/videos/watched/:userid", async (req, res) => {
 
   try {
     const result = await connectionPool.query(
-      `SELECT sublessonid, viewed_at FROM video_views WHERE userid = $1`,
+      `SELECT sublessonid, viewed_at, is_playing, is_ended FROM video_views WHERE userid = $1`,
       [userid]
     );
 
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching watched videos:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Route to get update progress bar
+app.get("/progress/:userid/:courseid", async (req, res) => {
+  const { userid, courseid } = req.params;
+
+  try {
+    // Query to get total number of sublessons for a course
+    const totalSublessonsQuery = `
+      SELECT COUNT(*)
+      FROM sublesson s
+      INNER JOIN modules m ON s.moduleid = m.moduleid
+      WHERE m.courseid = $1;
+    `;
+    const totalSublessonsResult = await connectionPool.query(
+      totalSublessonsQuery,
+      [courseid]
+    );
+    const totalSublessons = parseInt(totalSublessonsResult.rows[0].count, 10);
+
+    // Query to get number of watched sublessons by the user for a course
+    const watchedSublessonsQuery = `
+      SELECT COUNT(DISTINCT s.sublessonid) 
+      FROM video_views vv
+      JOIN sublesson s ON vv.sublessonid = s.sublessonid
+      INNER JOIN modules m ON s.moduleid = m.moduleid
+      WHERE vv.userid = $1 AND m.courseid = $2 AND vv.is_ended = true;
+    `;
+    const watchedSublessonsResult = await connectionPool.query(
+      watchedSublessonsQuery,
+      [userid, courseid]
+    );
+    const watchedSublessons = parseInt(
+      watchedSublessonsResult.rows[0].count,
+      10
+    );
+
+    // Calculate progress percentage
+    const progress =
+      totalSublessons > 0 ? (watchedSublessons / totalSublessons) * 100 : 0;
+
+    res.json({ progress });
+  } catch (err) {
+    console.error("Error fetching progress:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Route to update subscription status
+app.post("/subscriptions/update-status", async (req, res) => {
+  const { userid, courseid } = req.body;
+
+  try {
+    // Query to get total number of sublessons for a course
+    const totalSublessonsQuery = `
+      SELECT COUNT(*)
+      FROM sublesson s
+      INNER JOIN modules m ON s.moduleid = m.moduleid
+      WHERE m.courseid = $1;
+    `;
+    const totalSublessonsResult = await connectionPool.query(
+      totalSublessonsQuery,
+      [courseid]
+    );
+    const totalSublessons = parseInt(totalSublessonsResult.rows[0].count, 10);
+
+    // Query to get number of watched sublessons by the user for a course
+    const watchedSublessonsQuery = `
+      SELECT COUNT(DISTINCT s.sublessonid) 
+      FROM video_views vv
+      JOIN sublesson s ON vv.sublessonid = s.sublessonid
+      INNER JOIN modules m ON s.moduleid = m.moduleid
+      WHERE vv.userid = $1 AND m.courseid = $2 AND vv.is_ended = true;
+    `;
+    const watchedSublessonsResult = await connectionPool.query(
+      watchedSublessonsQuery,
+      [userid, courseid]
+    );
+    const watchedSublessons = parseInt(
+      watchedSublessonsResult.rows[0].count,
+      10
+    );
+
+    // Calculate progress percentage
+    const progress =
+      totalSublessons > 0 ? (watchedSublessons / totalSublessons) * 100 : 0;
+
+    // Determine status based on progress
+    let status; // Default status
+    if (progress === 100) {
+      status = "completed";
+    } else if (progress >= 0) {
+      status = "inprogress";
+    }
+
+    // Update subscription status
+    await connectionPool.query(
+      `UPDATE subscriptions
+       SET status = $1
+       WHERE userid = $2 AND courseid = $3`,
+      [status, userid, courseid]
+    );
+
+    res.json({ message: "Subscription status updated successfully" });
+  } catch (err) {
+    console.error("Error updating subscription status:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

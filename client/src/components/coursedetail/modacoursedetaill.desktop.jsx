@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "@mui/material";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
-const ModalCoursedetail = ({ open, onClose, onConfirm }) => {
-  
+function ModalCoursedetaildesktop({ open, onClose, onConfirm })  {
+  const [courses, setCourses] = useState([]);
+  const params = useParams();
+  useEffect(() => {
+    const getCourses = async () => {
+      const result = await axios.get(
+        `https://project-courseflow-server.vercel.app/courses/list/${params.Id}`
+      );
+      setCourses(result.data.data[0]);
+    };
+    getCourses();
+  }, []);
+
   return (
     <Modal open={open} onClose={onClose}>
       <div className="flex items-center justify-center h-screen bg-[rgba(0,0,0,0.5)]">
@@ -15,7 +28,7 @@ const ModalCoursedetail = ({ open, onClose, onConfirm }) => {
           </div>
           <div className="sm:w-[343px] sm:h-[248px] pl-[16px] pr-[16px] xl:w-[528px] xl:pl-[24px] xl:pr-[24px]">
             <h1 className="text-Body2 font-Body2 text-[#646D89] pt-[24px] pb-[24px]">
-              Do you sure to subscribe Service Design Essentials Course?
+              Do you sure to subscribe {courses.coursename} Course?
             </h1>
             <div className="border-solid border-1 sm:w-[311px] sm:h-[128px] flex flex-col gap-[16px] xl:w-[528px] xl:flex-row">
               <button
@@ -38,4 +51,4 @@ const ModalCoursedetail = ({ open, onClose, onConfirm }) => {
   );
 };
 
-export default ModalCoursedetail;
+export default ModalCoursedetaildesktop;

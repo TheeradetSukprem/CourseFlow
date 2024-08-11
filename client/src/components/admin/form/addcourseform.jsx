@@ -34,14 +34,14 @@ function AddCourseFrom() {
   const [videoFile, setVideoFileState] = useState("");
   const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
   const [createForm, setCreateForm] = useState({
-    coursename: " ",
-    price: " ",
-    description: " ",
-    coursesummary: " ",
-    courselearningtime: " ",
-    videofile: " ",
-    imagefile: " ",
-    pdfFile: " ",
+    coursename: "",
+    price: "",
+    description: "",
+    coursesummary: "",
+    courselearningtime: "",
+    videofile: "",
+    imagefile: "",
+    pdfFile: "",
   });
 
   const formRef = useRef(null);
@@ -79,27 +79,33 @@ function AddCourseFrom() {
     } = createForm;
 
     if (!coursename.trim()) {
-      setAlert({message: "Course name is required", severity: "warning"});
+      setAlert({ message: "Course name is required", severity: "warning" });
       setOpen(true);
       return false;
     }
     if (!price.trim()) {
-      setAlert({message: "Price is required", severity: "warning"});
+      setAlert({ message: "Price is required", severity: "warning" });
       setOpen(true);
       return false;
     }
     if (!courselearningtime.trim()) {
-      setAlert({message: "Course learning time is required", severity: "warning"});
+      setAlert({
+        message: "Course learning time is required",
+        severity: "warning",
+      });
       setOpen(true);
       return false;
     }
     if (!coursesummary.trim()) {
-      setAlert({message: "Course summary is required", severity: "warning"});
+      setAlert({ message: "Course summary is required", severity: "warning" });
       setOpen(true);
       return false;
     }
     if (!description.trim()) {
-      setAlert({message: "Course description is required", severity: "warning"});
+      setAlert({
+        message: "Course description is required",
+        severity: "warning",
+      });
       setOpen(true);
       return false;
     }
@@ -119,7 +125,10 @@ function AddCourseFrom() {
     try {
       // Check if required files are present
       if (!file || !videoFile) {
-        setAlert({message: "Please upload require file", severity: "warning"});
+        setAlert({
+          message: "Please upload require file",
+          severity: "warning",
+        });
         setOpen(true);
         setLoading(false);
         return; // Stop execution if any file is missing
@@ -164,9 +173,13 @@ function AddCourseFrom() {
 
       // Navigate to the edit course page
       //navigate(`/admin/editcourse/${courseid}`);
+      navigate(`/admin/courselist`);
     } catch (error) {
       console.error("Error creating course:", error);
-      setAlert({ message: "Failed to create course. Please try again.", severity: "error" });
+      setAlert({
+        message: "Failed to create course. Please try again.",
+        severity: "error",
+      });
       setOpen(true);
     } finally {
       setLoading(false); // Stop the spinner

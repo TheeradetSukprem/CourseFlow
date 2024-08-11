@@ -73,7 +73,6 @@ adminRouter.post("/:courseid/lesson", async (req, res) => {
       returning *`,
       [courseId, req.body.modulename]
     );
-    console.log(req.body);
     req.body.sublessonname.forEach(async (value, i) => {
       try {
         await connectionPool.query(
@@ -193,7 +192,6 @@ adminRouter.put("/sublesson/:lessonid", async (req, res) => {
   const editLesson = req.body[0];
   const editSublesson = req.body[1];
   const video = req.body[2];
-  console.log(video);
   try {
     await connectionPool.query(
       `update modules
@@ -203,7 +201,6 @@ adminRouter.put("/sublesson/:lessonid", async (req, res) => {
       [lessonId, editLesson.modulename]
     );
     editSublesson.forEach(async (value, i) => {
-      console.log(value);
       try {
         await connectionPool.query(
           `insert into sublesson (sublessonid, moduleid, sublessonname, videofile, sublessondate)
@@ -261,10 +258,8 @@ adminRouter.post("/sublesson/:lessonid", async (req, res) => {
 adminRouter.put("/sublessondrag/:lessonid", async (req, res) => {
   const lessonId = req.params.lessonid;
   const editSublesson = req.body[0];
-  console.log(editSublesson);
 
   editSublesson.forEach(async (value, i) => {
-    console.log(value);
     try {
       await connectionPool.query(
         `update sublesson 
@@ -514,7 +509,6 @@ adminRouter.post("/:courseid/lesson", async (req, res) => {
       returning *`,
       [courseId, req.body.modulename]
     );
-    console.log(req.body);
     req.body.sublessonname.forEach(async (value, i) => {
       try {
         await connectionPool.query(
@@ -528,23 +522,6 @@ adminRouter.post("/:courseid/lesson", async (req, res) => {
         console.log(error);
       }
     });
-
-    // await connectionPool.query(
-    //   `
-    //   with lesson as (
-    //   insert into modules (courseid, modulename) values ($1,$2)
-    //   returning *)
-    //   insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
-    //   select lesson.moduleid, $3, $4, $5 from lesson
-    //   `,
-    //   [
-    //     courseId,
-    //     lesson.modulename,
-    //     lesson.sublessonname,
-    //     lesson.videofile,
-    //     lesson.sublessondate,
-    //   ]
-    // );
     return res.status(201).json({
       message: "Lesson created successfully",
     });
@@ -601,7 +578,6 @@ adminRouter.delete("/assignments/:id", async (req, res) => {
 //Get Sub lesson list with module id
 adminRouter.get("/sublessonlist/:id", async (req, res) => {
   const courseid = req.params.id;
-  console.log(courseid);
   try {
     const result = await connectionPool.query(
       `SELECT 
@@ -630,11 +606,8 @@ adminRouter.get("/sublessonlist/:id", async (req, res) => {
 adminRouter.put("/moduleorderlist/:id", async (req, res) => {
   const editmodule = [...req.body];
   const courseid = req.params.id;
-  console.log(editmodule);
-  console.log(courseid);
   try {
     editmodule.forEach((value, index) => {
-      console.log(value.moduleid);
       connectionPool.query(
         `update modules set moduleorder = $1 where moduleid = $2`,
         [index, value.moduleid]

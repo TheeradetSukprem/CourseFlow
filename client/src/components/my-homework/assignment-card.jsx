@@ -38,7 +38,7 @@ function AssignmentCard({
     event.preventDefault(); // Prevent default form submission
     setIsSubmitting(true);
 
-    if (currentAnswer.length < 5) {
+    if (currentAnswer === null || currentAnswer.length < 5) {
       setAlert({
         message: "Please type at least 5 characters before submitting.",
         severity: "warning",

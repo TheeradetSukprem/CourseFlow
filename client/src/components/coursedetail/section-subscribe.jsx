@@ -4,17 +4,15 @@ import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useAuth } from "../../contexts/authentication";
 
 function UserSectionSubscribe() {
   const navigate = useNavigate();
-  const userId = useAuth();
   const params = useParams();
   const [coursedetail, setCoursedetail] = useState([]);
   const [modules, setModules] = useState([]);
   const [expandedModuleId, setExpandedModuleId] = useState(null);
   const [pdfFile, setPdfFile] = useState([]);
-  const [pdfFileSizeMB, setPdfFileSizeMB] = useState(null); // State to store PDF size in MB
+  const [pdfFileSizeMB, setPdfFileSizeMB] = useState(null);
 
   useEffect(() => {
     const getCourses = async () => {
@@ -67,7 +65,6 @@ function UserSectionSubscribe() {
 
   // Sort modules by moduleid and generate sequential numbers
   const sortedModules = [...modules].sort((a, b) => a.moduleid - b.moduleid);
-
   const truncateText = (text, wordLimit) => {
     if (!text) return "";
     const words = text.split(" ");
