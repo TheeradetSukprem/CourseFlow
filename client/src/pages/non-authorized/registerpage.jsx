@@ -10,7 +10,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/en-gb";
 import { useAuth } from "../../contexts/authentication";
 import NavbarNonUser from "../../components/homepage/navbar-nonuser";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
@@ -23,6 +23,7 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("Student");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { register } = useAuth();
 
@@ -32,15 +33,23 @@ function Register() {
   const [ageFormatError, setAgeFormatError] = useState("");
   const [ageInvalidError, setAgeInvalidError] = useState("");
   const [ageMinimumError, setAgeMinimumError] = useState("");
+  const [educationError, setEducationError] = useState("");
   const [emailFormatError, setEmailFormatError] = useState("");
   const [emailExistError, setEmailExistError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  // Success message
+  // Success message and countdown timer
   const [successMessage, setSuccessMessage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [countdown, setCountdown] = useState(5); // Initialize the countdown to 5 seconds
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Start submitting
+    setIsSubmitting(true);
 
     // Reset error message
     setErrorMessage("");
@@ -48,6 +57,7 @@ function Register() {
     setAgeFormatError("");
     setAgeInvalidError("");
     setAgeMinimumError("");
+    setEducationError("");
     setEmailFormatError("");
     setEmailExistError("");
     setPasswordError("");
@@ -55,22 +65,27 @@ function Register() {
     // register(data);
 
     // All required field validation
-    if (
-      !fullname ||
-      !selectedDate ||
-      !educationalbackground ||
-      !email ||
-      !password
-    ) {
-      return setErrorMessage("All fields are required.");
-    }
-    /*
+    // if (
+    //   !fullname ||
+    //   !selectedDate ||
+    //   !educationalbackground ||
+    //   !email ||
+    //   !password
+    // ) {
+    //   return setErrorMessage("All fields are required.");
+    // }
+
     // Fullname condition
     const nameRegex = /^[A-Za-z'-]+(?:\s[A-Za-z'-]+)*$/;
-    if (!nameRegex.test(fullname)) {
-      return setFullnameError(
-        `Special characters and numbers are not allowed.`
-      );
+
+    if (!fullname.trim()) {
+      setFullnameError(`Name is required.`);
+      setIsSubmitting(false);
+      return;
+    } else if (!nameRegex.test(fullname)) {
+      setFullnameError(`Special characters and numbers are not allowed.`);
+      setIsSubmitting(false);
+      return;
     }
 
     // Age condition
@@ -83,29 +98,50 @@ function Register() {
     );
 
     if (isNaN(dateOfBirth)) {
-      return setAgeFormatError(`Invalid date format for age.`);
+      setAgeFormatError(`Invalid date format for age.`);
+      setIsSubmitting(false);
+      return;
     }
 
     if (dateOfBirth > currentDate) {
-      return setAgeInvalidError(`Please provide a valid date of birth.`);
+      setAgeInvalidError(`Please provide a valid date of birth.`);
+      setIsSubmitting(false);
+      return;
     }
     if (dateOfBirth > minimumAge) {
-      return setAgeMinimumError(
-        `You must be at least 6 years old to register.`
-      );
+      setAgeMinimumError(`You must be at least 6 years old to register.`);
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Educational condition
+    if (!educationalbackground.trim()) {
+      setEducationError(`Educational Background is required.`);
+      setIsSubmitting(false);
+      return;
     }
 
     // Email condition
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return setEmailFormatError(`Invalid email format`);
+      setEmailFormatError(`Invalid email format`);
+      setIsSubmitting(false);
+      return;
     }
 
     // Password condition
-    if (password.length < 12) {
-      return setPasswordError(`Password must be longer than 12 characters.`);
+    if (!password.trim()) {
+      setPasswordError(`Password is required.`);
+      setIsSubmitting(false);
+      return;
     }
-*/
+
+    if (password.length < 12) {
+      setPasswordError(`Password must be longer than 12 characters.`);
+      setIsSubmitting(false);
+      return;
+    }
+
     const values = {
       fullname,
       age: selectedDate.format("YYYY-MM-DD"),
@@ -123,10 +159,18 @@ function Register() {
 
       // If the request is successful
       if (response.status === 201) {
-        setSuccessMessage(`Registration successful!`);
-        setErrorMessage("");
+        setModalVisible(true);
+        const countdownInterval = setInterval(() => {
+          setCountdown((prevCountdown) => {
+            if (prevCountdown <= 1) {
+              clearInterval(countdownInterval);
+              setModalVisible(false);
+              navigate("/login");
+            }
+            return prevCountdown - 1;
+          });
+        }, 1000); // Decrease countdown every second
       }
-      // console.log(response.data);
     } catch (error) {
       if (error.response && error.response.data) {
         const { message } = error.response.data;
@@ -140,48 +184,20 @@ function Register() {
         } else if (message.includes("age")) {
           setAgeInvalidError(message);
         } else if (message.includes("educationalbackground")) {
-          setEducationErrorMessage(message);
+          setEducationError(message);
         } else if (message.includes("email")) {
           setEmailExistError(message);
         } else if (message.includes("password")) {
           setPasswordError(message);
         }
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <>
-      {/* <section>
-        <nav className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-            <div className="relative flex items-center justify-between h-16">
-              <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex-shrink-0">
-                  <a href="#" className="text-blue-600 text-xl font-bold">
-                    Course<span className="text-blue-900">Flow</span>
-                  </a>
-                </div>
-              </div>
-              <div className="absolute inset-y-0 right-0 flex items-center space-x-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <a
-                  href="#"
-                  className="text-gray-900 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Our Courses
-                </a>
-                <a
-                  href="#"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
-                >
-                  Log in
-                </a>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </section> */}
-      {/* Nav bar รอเอาของแก๊งมาใส่ */}
       <NavbarNonUser />
       {/* Background */}
       <div className="-z-10">
@@ -359,6 +375,9 @@ function Register() {
                   setEducation(e.target.value);
                 }}
               />
+              {educationError && (
+                <p className="text-red-500">{educationError}</p>
+              )}
             </div>
             <div className="mb-4">
               <label
@@ -406,9 +425,17 @@ function Register() {
             <div>
               <button
                 type="submit"
-                className="w-full bg-Blue-500 text-white py-2 px-4 mb-3 rounded-md shadow-sm hover:bg-Blue-400"
+                className="w-full bg-blue-500 text-white py-2 px-4 mb-3 rounded-md shadow-sm hover:bg-blue-400 focus:outline-none"
               >
-                Register
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center my-2">
+                    <span className="dot-flashing"></span>
+                    <span className="dot-flashing"></span>
+                    <span className="dot-flashing"></span>
+                  </span>
+                ) : (
+                  "Register"
+                )}
               </button>
               {errorMessage && <p className="text-red-500">{errorMessage}</p>}
               {successMessage && (
@@ -426,6 +453,34 @@ function Register() {
               Log in
             </Link>
           </p>
+          {modalVisible && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg text-center relative">
+                <div className="flex flex-col items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="w-12 h-12 text-green-500 mb-4"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <h3 className="text-2xl font-semibold text-black">Success</h3>
+                  <p className="text-gray-600 mt-2">
+                    Check your email for a booking confirmation. We’ll see you
+                    soon!
+                  </p>
+                  <p className="text-gray-400 text-sm mt-1">
+                    The window will disappear in {countdown} seconds...
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </>
