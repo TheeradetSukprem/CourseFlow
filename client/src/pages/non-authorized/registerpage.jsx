@@ -471,8 +471,7 @@ function Register() {
                   </svg>
                   <h3 className="text-2xl font-semibold text-black">Success</h3>
                   <p className="text-gray-600 mt-2">
-                    Check your email for a booking confirmation. We’ll see you
-                    soon!
+                    We're excited to have you start learning with us soon!
                   </p>
                   <p className="text-gray-400 text-sm mt-1">
                     The window will disappear in {countdown} seconds...
