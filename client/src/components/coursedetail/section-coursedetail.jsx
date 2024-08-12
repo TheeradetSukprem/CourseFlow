@@ -6,6 +6,7 @@ import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
 import ModalCoursedetaildesktop from "./modacoursedetaill.desktop";
 import CustomSnackbar from "../shared/custom-snackbar";
+import PendingSvg from "../shared/pending-svg";
 
 function SectionCourseDetail() {
   const navigate = useNavigate();
@@ -19,13 +20,19 @@ function SectionCourseDetail() {
   const [desireCourse, setDesireCourse] = useState([]);
   const [alert, setAlert] = useState({ message: "", severity: "" });
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getCourses = async () => {
-      const result = await axios.get(
-        `https://project-courseflow-server.vercel.app/courses/${params.Id}`
-      );
-      setCoursedetail(result.data.data);
+      setLoading(true); // Start the spinner
+      try {
+        const result = await axios.get(
+          `https://project-courseflow-server.vercel.app/courses/${params.Id}`
+        );
+        setCoursedetail(result.data.data);
+      } finally {
+        setLoading(false); // Stop the spinner
+      }
     };
     const getModules = async () => {
       const result = await axios.get(
@@ -141,6 +148,8 @@ function SectionCourseDetail() {
 
   return (
     <div>
+      {/* Loading Section */}
+      {loading && <PendingSvg text="Loading..." />}
       <section
         className={`h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]`}
       >
@@ -294,11 +303,7 @@ function SectionCourseDetail() {
           />
         </div>
       </section>
-      <CustomSnackbar
-        open={open}
-        handleClose={handleClose}
-        alert={alert}
-      />
+      <CustomSnackbar open={open} handleClose={handleClose} alert={alert} />
     </div>
   );
 }

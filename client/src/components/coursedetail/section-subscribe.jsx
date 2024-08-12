@@ -4,6 +4,7 @@ import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import PendingSvg from "../shared/pending-svg";
 
 function UserSectionSubscribe() {
   const navigate = useNavigate();
@@ -13,13 +14,19 @@ function UserSectionSubscribe() {
   const [expandedModuleId, setExpandedModuleId] = useState(null);
   const [pdfFile, setPdfFile] = useState([]);
   const [pdfFileSizeMB, setPdfFileSizeMB] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getCourses = async () => {
-      const result = await axios.get(
-        `https://project-courseflow-server.vercel.app/courses/${params.Id}`
-      );
-      setCoursedetail(result.data.data);
+      setLoading(true); // Start the spinner
+      try {
+        const result = await axios.get(
+          `https://project-courseflow-server.vercel.app/courses/${params.Id}`
+        );
+        setCoursedetail(result.data.data);
+      } finally {
+        setLoading(false); // Stop the spinner
+      }
     };
     const getModules = async () => {
       const result = await axios.get(
@@ -77,6 +84,8 @@ function UserSectionSubscribe() {
 
   return (
     <div>
+      {/* Loading Section */}
+      {loading && <PendingSvg text="Loading..." />}
       <section className="h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
         <div>
           <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px] xl:mb-[100px] sm:mb-[70px] md:mb-[0px]">

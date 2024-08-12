@@ -6,14 +6,10 @@ import Footer from "../../components/homepage/footer";
 function UserDesireCoursedetail() {
   return (
     <div>
-      <nav className="sticky top-0 bg-white z-10">
-        <NavbarUser />
-      </nav>
+      <NavbarUser />
       <SectionDesireCourseDetail />
       <Footer />
-      <div className="sticky bottom-0">
-        <StickybarRemoveDesire />
-      </div>
+      <StickybarRemoveDesire />
     </div>
   );
 }
