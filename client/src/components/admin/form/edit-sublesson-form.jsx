@@ -140,10 +140,34 @@ function EditSubLessonFrom() {
     setVideoFiles(videoClone);
     setVideoPreviewUrls(videoPreviewClone);
   };
-
+  console.log(lessons);
+  console.log(subLessons);
   ///VDO
   const onSubmit = async (data) => {
     setLoading(true); // Start the spinner
+    // Check if lessons and subLessons are provided
+    if (!lessons.modulename) {
+      setAlert({
+        message: "Please fill in the lesson name.",
+        severity: "error",
+      });
+      setOpen(true);
+      setLoading(false);
+      return; // Stop the submission
+    }
+
+    // ตรวจสอบว่า subLessons แต่ละตัวมี name หรือไม่
+    for (let subLesson of subLessons) {
+      if (!subLesson.sublessonname) {
+        setAlert({
+          message: "Please fill in all sub-lesson names.",
+          severity: "error",
+        });
+        setOpen(true);
+        setLoading(false);
+        return;
+      }
+    }
     try {
       // Upload videos and get URLs
       const videoUrls = await Promise.all(
@@ -166,7 +190,7 @@ function EditSubLessonFrom() {
       navigate("/admin/courselist");
     } catch (error) {
       setAlert({
-        message: "You must select a video to upload.",
+        message: "Please select a video to upload.",
         severity: "error",
       });
       setOpen(true);
