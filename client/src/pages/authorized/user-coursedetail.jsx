@@ -7,15 +7,11 @@ import Footer from "../../components/homepage/footer";
 function UserCoursedetail() {
   return (
     <div>
-      <nav className="sticky top-0 bg-white z-10">
-        <NavbarUser />
-      </nav>
+      <NavbarUser />
       <SectionCourseDetail />
       <SectionOtherCourse />
       <Footer />
-      <div className="sticky bottom-0">
-        <StickybarCoursedetail />
-      </div>
+      <StickybarCoursedetail />
     </div>
   );
 }
