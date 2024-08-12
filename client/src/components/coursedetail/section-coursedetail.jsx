@@ -151,7 +151,7 @@ function SectionCourseDetail() {
       {/* Loading Section */}
       {loading && <PendingSvg text="Loading..." />}
       <section
-        className={`h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]`}
+        className={`h-fit flex flex-row justify-center pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]`}
       >
         <div>
           <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px] xl:mb-[100px] sm:mb-[70px] md:mb-[0px]">
