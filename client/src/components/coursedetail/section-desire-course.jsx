@@ -11,16 +11,16 @@ function SectionDesireCourses() {
   const [desireCourse, setDesireCourse] = useState([]);
   const [loading, setLoading] = useState(false);
   const userId = useAuth();
-  
+
   console.log(desireCourse);
 
   const getDesirecourse = async () => {
     setLoading(true); // Start the spinner
     try {
       const result = await axios.get(
-        `http://localhost:4000/courses/list/${userId.UserIdFromLocalStorage}/desire`
+        `https://project-courseflow-server.vercel.app/courses/list/${userId.UserIdFromLocalStorage}/desire`
       );
-      console.log(result)
+      console.log(result);
       setDesireCourse(result.data);
     } finally {
       setLoading(false); // Stop the spinner
