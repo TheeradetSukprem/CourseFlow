@@ -163,7 +163,7 @@ function AssignmentListTable() {
                           </button>
                           <button aria-label="Edit assignment">
                             <Link
-                              to={`/admin/editaddassignment/${item.assignmentid}`}
+                              to={`/admin/editassignment/${item.assignmentid}`}
                             >
                               <img src={edit} alt="edit" className="pl-4" />
                             </Link>
