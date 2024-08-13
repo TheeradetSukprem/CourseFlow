@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import NavbarNonUser from "../../components/homepage/navbar-nonuser";
 import { useAuth } from "../../contexts/authentication";
+import logo from "/src/assets/icons/logo.png";
 
 function Login() {
   const navigate = useNavigate();
@@ -17,6 +18,17 @@ function Login() {
     error: "",
     user: null,
   });
+
+  const handleNavigate = () => {
+    navigate("/courselist");
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+  };
+
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,11 +55,42 @@ function Login() {
 
   return (
     <>
-      <NavbarNonUser />
-
-      <div className="flex flex-col justify-center items-center h-screen  bg-Gray-100 relative overflow-hidden">
+      <div className="flex flex-col justify-center items-center bg-gray-100 h-screen overflow-hidden">
+        <div className="navbar  top-0 z-50 bg-white w-screen absolute">
+          <section
+            style={{ boxShadow: "2px 2px 12px 0px rgba(64, 50, 133, 0.12)" }}
+            className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between "
+          >
+            <Link to="/">
+              <img
+                src={logo}
+                alt="Logo"
+                className="sm:pl-[16px] md:pl-[100px] xl:pl-[160px]"
+                onClick={handleLogoClick}
+              />
+            </Link>
+            <div className="menu sm:flex sm:flex-row sm:mr-[16px] md:w-[291px] md:h-[88px] md:flex md:flex-row md:items-center md:justify-center md:mr-[160px] md:gap-[32px] xl:w-[291px] xl:h-[88px] xl:flex xl:flex-row xl:items-center xl:justify-center xl:mr-[160px] xl:gap-[32px]">
+              <h1
+                onClick={handleNavigate}
+                className="sm:font-bold sm:text-sm sm:mx-[16px] sm:my-[16px] xl:font-bold xl:text-base sm:text-black cursor-pointer"
+              >
+                Our Courses
+              </h1>
+              <Link
+                to="/login"
+                className="bg-Blue-500 cursor-pointer sm:my-[8px] sm:rounded-xl md:py-[18px] xl:py-[18px]"
+              >
+                <button className=" justify-center align-middle sm:pt-1 md:pt-0 xl:p-0">
+                  <span className="text-white sm:my-[8px] sm:mx-[16px] md:font-bold md:text-center md:text-base md:px-[16px] xl:font-bold xl:text-center xl:text-base xl:px-[16px]">
+                    Log in
+                  </span>
+                </button>
+              </Link>
+            </div>
+          </section>
+        </div>
         {/* Background */}
-        <div className="absolute right-0 top-9 md:top-2  ">
+        <div className="absolute right-0 top-9 md:top-2">
           <svg
             className="md:w-[133px] md:h-[500px]"
             width="33"
@@ -130,11 +173,11 @@ function Login() {
               strokeLinecap="round"
             />
           </svg>
-        </div>{" "}
+        </div>
         {/* Background */}
-        <form onSubmit={handleSubmit} className=" z-50 bg-Gray-100 ">
+        <form onSubmit={handleSubmit} className="z-50 bg-gray-100">
           <div className="flex flex-col gap-7 w-[22rem] md:w-[30rem] md:gap-8 text-black">
-            <h1 className="text-[#22269E] text-3xl font-medium pb-2  md:text-4xl">
+            <h1 className="text-[#22269E] text-3xl font-medium pb-2 md:text-4xl">
               Welcome back!
             </h1>
             <div className="container md:font-medium">
@@ -182,7 +225,7 @@ function Login() {
               {state.loading ? "Logging in..." : "Log in"}
             </button>
             <p className="pt-6 text-black">
-              Don't have an account?{" "}
+              Don't have an account?
               <Link
                 to="/register"
                 target="_blank"

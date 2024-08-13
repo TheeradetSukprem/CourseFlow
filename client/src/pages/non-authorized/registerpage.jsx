@@ -198,10 +198,10 @@ function Register() {
 
   return (
     <>
-      <NavbarNonUser />
-      {/* Background */}
-      <div className="-z-10">
-        <div className="absolute top-[12rem] right-0 md:top-2 -z-10">
+      <div className="bg-gray-100 h-screen -z-30">
+        <NavbarNonUser />
+        {/* Background */}
+        <div className="absolute right-0 top-9 md:top-2">
           <svg
             className="md:w-[133px] md:h-[500px]"
             width="33"
@@ -216,7 +216,7 @@ function Register() {
             />
           </svg>
         </div>
-        <div className="absolute left-0 bottom-[5rem] n md:left-[-2rem] -z-10 ">
+        <div className="absolute left-0 bottom-0 n md:left-[-2rem] ">
           <svg
             className="md:w-[100px] md:h-[400px]"
             width="29"
@@ -231,7 +231,7 @@ function Register() {
             />
           </svg>
         </div>
-        <div className="absolute -z-10 top-[21.5rem] right-[1.5rem] md:top-[470px] md:right-10">
+        <div className="absolute top-[320px] right-[60rem] md:top-[470px] md:right-10 z-10">
           <svg
             className="md:w-[50px] md:h-auto stroke-[3px] md:stroke-[0.5px]"
             width="11"
@@ -246,9 +246,8 @@ function Register() {
             />
           </svg>
         </div>
-        <div className="absolute -z-10 left-[-15px] top-[13.5rem]  md:left-[4rem] md:top-[8rem] ">
+        <div className="absolute left-[-40px] top-[20px] md:left-[4rem] md:top-[8rem] ">
           <svg
-            className="w-[29px] h-[29px]"
             width="74"
             height="74"
             viewBox="0 0 74 74"
@@ -264,7 +263,7 @@ function Register() {
             />
           </svg>
         </div>
-        <div className="absolute -z-10 -top-[10rem] md:top-[15rem] md:left-[10rem]">
+        <div className="absolute -top-[10rem] md:top-[15rem] lg:left-[10rem] ">
           <svg
             width="23"
             height="23"
@@ -275,213 +274,223 @@ function Register() {
             <path
               d="M13.843 1.99998L8.83754 20.6805"
               stroke="#2FAC61"
-              stroke-width="3"
-              stroke-linecap="round"
+              strokeWidth="3"
+              strokeLinecap="round"
             />
             <path
               d="M1.99986 8.83751L20.6804 13.8429"
               stroke="#2FAC61"
-              stroke-width="3"
-              stroke-linecap="round"
+              strokeWidth="3"
+              strokeLinecap="round"
             />
           </svg>
         </div>
-      </div>
-      {/* Background */}
-      <section className="flex flex-col justify-start mt-5 flex-1 items-center pb-40 max-[375px]:w-[80%] z-40">
-        <div className="bg-none p-2 rounded-lg  w-full max-w-md">
-          <h2 className="text-2xl font-semibold text-blue-800 mb-6">
-            Register to start learning!
-          </h2>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Enter Name and Lastname"
-                className="bg-white text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={fullname}
-                onChange={(e) => {
-                  setFullname(e.target.value);
-                }}
-              />
-              {fullnameError && <p className="text-red-500">{fullnameError}</p>}
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="dob"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Date of Birth
-              </label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  className="bg-white rounded-lg"
-                  value={selectedDate}
-                  onChange={(newValue) => setSelectedDate(newValue)}
-                  format="DD/MM/YYYY"
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      sx: {
-                        "& .MuiOutlinedInput-root": {
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#C8CCDB",
-                          },
-                        },
-                        "& .MuiInputBase-input": {
-                          padding: "8px 14px",
-                          color: "#555",
-                          background: "#FFFFFF",
-                          borderRadius: "0.5rem",
-                        },
-                      },
-                    },
+        {/* Background */}
+        <section className="flex flex-col justify-start mt-5 flex-1 items-center max-[375px]:w-[80%] z-20 bg-gray-100 ">
+          <div className="bg-none p-2 rounded-lg  w-full max-w-md">
+            <h2 className="text-2xl font-semibold text-blue-800 mb-6">
+              Register to start learning!
+            </h2>
+            <form onSubmit={handleSubmit} className="bg-gray-100 z-30">
+              <div className="mb-4">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Enter Name and Lastname"
+                  className="bg-white text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={fullname}
+                  onChange={(e) => {
+                    setFullname(e.target.value);
                   }}
                 />
-              </LocalizationProvider>
-              {ageFormatError && (
-                <p className="text-red-500">{ageFormatError}</p>
-              )}
-              {ageInvalidError && (
-                <p className="text-red-500">{ageInvalidError}</p>
-              )}
-              {ageMinimumError && (
-                <p className="text-red-500">{ageMinimumError}</p>
-              )}
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="education"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Educational Background
-              </label>
-              <input
-                type="text"
-                id="education"
-                name="education"
-                placeholder="Enter Educational Background"
-                className="bg-white text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={educationalbackground}
-                onChange={(e) => {
-                  setEducation(e.target.value);
-                }}
-              />
-              {educationError && (
-                <p className="text-red-500">{educationError}</p>
-              )}
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter Email"
-                className="bg-white text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {emailFormatError && (
-                <p className="text-red-500">{emailFormatError}</p>
-              )}
-              {emailExistError && (
-                <p className="text-red-500">{emailExistError}</p>
-              )}
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter password"
-                className="bg-white text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-              {passwordError && <p className="text-red-500">{passwordError}</p>}
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="w-full bg-blue-500 text-white py-2 px-4 mb-3 rounded-md shadow-sm hover:bg-blue-400 focus:outline-none"
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center justify-center my-2">
-                    <span className="dot-flashing"></span>
-                    <span className="dot-flashing"></span>
-                    <span className="dot-flashing"></span>
-                  </span>
-                ) : (
-                  "Register"
+                {fullnameError && (
+                  <p className="text-red-500">{fullnameError}</p>
                 )}
-              </button>
-              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-              {successMessage && (
-                <p className="mb-4 text-sm text-green-600">{successMessage}</p>
-              )}
-            </div>
-          </form>
-          <p className="pt-6 text-black">
-            Already have an account?
-            <Link
-              to="/login"
-              target="_blank"
-              className="font-semibold text-Blue-500 pl-3 hover:text-orange-500 hover:underline"
-            >
-              Log in
-            </Link>
-          </p>
-          {modalVisible && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg text-center relative">
-                <div className="flex flex-col items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    class="w-12 h-12 text-green-500 mb-4"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                  <h3 className="text-2xl font-semibold text-black">Success</h3>
-                  <p className="text-gray-600 mt-2">
-                    We're excited to have you start learning with us soon!
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="dob"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Date of Birth
+                </label>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    className="bg-white rounded-lg"
+                    value={selectedDate}
+                    onChange={(newValue) => setSelectedDate(newValue)}
+                    format="DD/MM/YYYY"
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        sx: {
+                          "& .MuiOutlinedInput-root": {
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#C8CCDB",
+                            },
+                          },
+                          "& .MuiInputBase-input": {
+                            padding: "8px 14px",
+                            color: "#555",
+                            background: "#FFFFFF",
+                            borderRadius: "0.5rem",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+                {ageFormatError && (
+                  <p className="text-red-500">{ageFormatError}</p>
+                )}
+                {ageInvalidError && (
+                  <p className="text-red-500">{ageInvalidError}</p>
+                )}
+                {ageMinimumError && (
+                  <p className="text-red-500">{ageMinimumError}</p>
+                )}
+              </div>
+              <div className="mb-4 z-40">
+                <label
+                  htmlFor="education"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Educational Background
+                </label>
+                <input
+                  type="text"
+                  id="education"
+                  name="education"
+                  placeholder="Enter Educational Background"
+                  className="bg-white text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={educationalbackground}
+                  onChange={(e) => {
+                    setEducation(e.target.value);
+                  }}
+                />
+                {educationError && (
+                  <p className="text-red-500">{educationError}</p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter Email"
+                  className="bg-white text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {emailFormatError && (
+                  <p className="text-red-500">{emailFormatError}</p>
+                )}
+                {emailExistError && (
+                  <p className="text-red-500">{emailExistError}</p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter password"
+                  className="bg-white text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+                {passwordError && (
+                  <p className="text-red-500">{passwordError}</p>
+                )}
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="w-full bg-Blue-500 text-white py-2 px-4 mb-3 rounded-md shadow-sm hover:bg-Blue-400 focus:outline-none transition duration-250 ease-in-out"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center my-2">
+                      <span className="dot-flashing"></span>
+                      <span className="dot-flashing"></span>
+                      <span className="dot-flashing"></span>
+                    </span>
+                  ) : (
+                    "Register"
+                  )}
+                </button>
+                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+                {successMessage && (
+                  <p className="mb-4 text-sm text-green-600">
+                    {successMessage}
+
                   </p>
-                  <p className="text-gray-400 text-sm mt-1">
-                    The window will disappear in {countdown} seconds...
-                  </p>
+                )}
+              </div>
+            </form>
+            <p className="pt-6 text-black">
+              Already have an account?
+              <Link
+                to="/login"
+                target="_blank"
+                className="font-semibold text-Blue-500 pl-3 hover:text-orange-500 hover:underline"
+              >
+                Log in
+              </Link>
+            </p>
+            {modalVisible && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg text-center relative">
+                  <div className="flex flex-col items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="w-12 h-12 text-green-500 mb-4"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <h3 className="text-2xl font-semibold text-black">
+                      Success
+                    </h3>
+                    <p className="text-gray-600 mt-2">
+                      Check your email for a booking confirmation. We’ll see you
+                      soon!
+                    </p>
+                    <p className="text-gray-400 text-sm mt-1">
+                      The window will disappear in {countdown} seconds...
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      </section>
+            )}
+          </div>
+        </section>
+      </div>
     </>
   );
 }

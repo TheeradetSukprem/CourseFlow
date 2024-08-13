@@ -21,7 +21,6 @@ function SectionDesireCourseDetail() {
   const [alert, setAlert] = useState({ message: "", severity: "" }); 
   const [open, setOpen] = useState(false); 
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     setLoading(true) // Start the spinner
     const getCourses = async () => {
