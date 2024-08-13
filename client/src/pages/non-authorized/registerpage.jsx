@@ -288,7 +288,7 @@ function Register() {
         </div>
       </div>
       {/* Background */}
-      <section className="flex flex-col justify-start mt-5 flex-1 items-center pb-40 max-[375px]:w-[80%] z-40">
+      <section className="flex flex-col justify-start mt-5 flex-1 items-center max-[375px]:w-[80%] z-40">
         <div className="bg-none p-2 rounded-lg  w-full max-w-md">
           <h2 className="text-2xl font-semibold text-blue-800 mb-6">
             Register to start learning!
