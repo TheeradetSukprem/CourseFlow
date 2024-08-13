@@ -213,6 +213,26 @@ courseRouter.get("/desire", async (req, res) => {
   }
 });
 
+//========Get desire by user
+courseRouter.get("/list/:userid/desire", async(req,res) => {
+  const userId = req.params.userid;
+  let result
+  try{
+    result = await connectionPool.query(
+      `select courses.coursename, courses.description,courses.price,
+       courses.coursesummary, courses.courselearningtime, courses.videofile, 
+       courses.imagefile, courses.pdffile, desirecourses.courseid, desirecourses.userid
+      from courses
+      inner join desirecourses on courses.courseid = desirecourses.courseid
+      where desirecourses.userid = $1`,
+       [userId]
+    )
+    res.status(200).json(result.rows);
+  }catch {
+    res.status(500).json({ message: `Internal server error` });
+  }
+})
+
 //===========Post
 courseRouter.post("/:userid/:id/desire", async (req, res) => {
   const desire = {

@@ -5,17 +5,22 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import emptyFolder from "../../assets/image/empty-folder.png";
 import PendingSvg from "../shared/pending-svg";
+import { useAuth } from "../../contexts/authentication";
 
 function SectionDesireCourses() {
   const [desireCourse, setDesireCourse] = useState([]);
   const [loading, setLoading] = useState(false);
+  const userId = useAuth();
+  
+  console.log(desireCourse);
 
   const getDesirecourse = async () => {
     setLoading(true); // Start the spinner
-    try{
+    try {
       const result = await axios.get(
-        `https://project-courseflow-server.vercel.app/courses/desire`
+        `http://localhost:4000/courses/list/${userId.UserIdFromLocalStorage}/desire`
       );
+      console.log(result)
       setDesireCourse(result.data);
     } finally {
       setLoading(false); // Stop the spinner
