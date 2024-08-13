@@ -7,36 +7,32 @@ import Footer from "../../components/homepage/footer";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
 import emptyFolder from "../../assets/image/empty-folder.png";
+import LoadingPageSvg from "../../components/shared/loading-page";
 
 function UserMycourse() {
   const userId = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  //=============Get all user subscribed courses
   const getAllCourses = async () => {
     try {
       const result = await axios.get(
         `https://project-courseflow-server.vercel.app/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
       );
-      console.log(result.data);
       setCourses(result.data);
     } catch (error) {
       console.error("Error Fetching", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      await getAllCourses();
-      setLoading(false);
-    };
-
-    fetchData();
+    getAllCourses();
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingPageSvg text="Loading..." />;
   }
 
   return (
