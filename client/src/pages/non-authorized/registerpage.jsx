@@ -443,6 +443,7 @@ function Register() {
                 {successMessage && (
                   <p className="mb-4 text-sm text-green-600">
                     {successMessage}
+
                   </p>
                 )}
               </div>

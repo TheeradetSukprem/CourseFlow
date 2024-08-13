@@ -6,6 +6,8 @@ import SubButton from "../button/sub-button";
 import ConfirmationModal from "../modal/delete-course-confirmation";
 import arrowback from "../../../assets/image/arrowback.png";
 import PendingSvg from "../../shared/pending-svg";
+import CustomSnackbar from "../../shared/custom-snackbar";
+import LoadingPageSvg from "../../shared/loading-page.jsx";
 
 function EditAssignmentForm() {
   const navigate = useNavigate();
@@ -21,17 +23,18 @@ function EditAssignmentForm() {
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [alert, setAlert] = useState({ message: "", severity: "" }); 
+  const [open, setOpen] = useState(false); 
 
   const { id } = useParams();
 
   const fetchAssignment = async () => {
+    setLoading(true);
     try {
       const result = await axios.get(
         `https://project-courseflow-server.vercel.app/admin/assignments/${id}`
       );
-      console.log(result);
       const assignmentData = result.data.data;
-      console.log(assignmentData);
       setAssignment(assignmentData);
       setSelectedCourse(assignmentData.courseid);
       setSelectedLesson(assignmentData.moduleid);
@@ -40,8 +43,11 @@ function EditAssignmentForm() {
     } catch (error) {
       console.error("Error fetching assignment:", error);
       setErrorMessage("Failed to fetch assignment details.");
+    } finally {
+      setLoading(false);
     }
   };
+
   const fetchCourses = async () => {
     try {
       const result = await axios.get(
@@ -97,33 +103,40 @@ function EditAssignmentForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      const updatedAssignment = {
-        course: selectedCourse,
-        lesson: selectedLesson,
-        sub_lesson: selectedSubLesson,
-        title: assignmentDetail,
-      };
+        const updatedAssignment = {
+            course: selectedCourse,
+            lesson: selectedLesson,
+            sub_lesson: selectedSubLesson,
+            title: assignmentDetail,
+        };
 
-      console.log("Payload:", updatedAssignment);
+        console.log("Payload:", updatedAssignment);
 
-      const response = await axios.put(
-        `https://project-courseflow-server.vercel.app/admin/assignments/${id}`,
-        updatedAssignment
-      );
+        const response = await axios.put(
+            `https://project-courseflow-server.vercel.app/admin/assignments/${id}`,
+            updatedAssignment
+        );
 
-      if (response.status === 200) {
-        alert("Assignment updated successfully");
-        navigate("/admin/assignmentlist");
-      } else {
-        setErrorMessage("Unexpected response status");
-      }
+        if (response.status === 200) {
+            setAlert({ message: "Edit Assignments successfully", severity: "success" });
+            setOpen(true);
+            setTimeout(() => {
+                navigate("/admin/assignmentlist");
+            }, 3000);
+        } else {
+            setErrorMessage("Unexpected response status");
+            setAlert({ message: "Error editing assignment", severity: "error" });
+            setOpen(true);
+        }
     } catch (error) {
-      console.error("Error updating assignment:", error);
-      setErrorMessage("Failed to update assignment.");
+        console.error("Error updating assignment:", error);
+        setErrorMessage("Failed to update assignment.");
+        setAlert({ message: "Error updating assignment", severity: "error" });
+        setOpen(true);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   const filteredLessons = lessons.filter(
     (lesson) => lesson.courseid === parseInt(selectedCourse)
@@ -137,10 +150,22 @@ function EditAssignmentForm() {
       await axios.delete(
         `https://project-courseflow-server.vercel.app/admin/assignments/${id}`
       );
-      navigate("/admin/assignmentlist");
+      setAlert({
+        message: "Assignment deleted successfully!",
+        severity: "success",
+      });
+      setOpen(true);
+      setTimeout(() => {
+        navigate("/admin/assignmentlist");
+      }, 3000);
       setOpenModal(false);
     } catch (error) {
       console.error("Error deleting assignment:", error);
+      setAlert({
+        message: "Failed to delete assignment. Please try again.",
+        severity: "error",
+      });
+      setOpen(true);
     }
   };
 
@@ -336,6 +361,7 @@ function EditAssignmentForm() {
           onConfirm={handleConfirmDelete}
         />
       </div>
+      <CustomSnackbar open={open} alert={alert} onClose={() => setOpen(false)} />
     </>
   );
 }
