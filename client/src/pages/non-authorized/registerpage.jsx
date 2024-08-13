@@ -231,7 +231,7 @@ function Register() {
             />
           </svg>
         </div>
-        <div className="absolute top-[320px] right-[6rem] md:top-[470px] md:right-10">
+        <div className="absolute top-[320px] right-[60rem] md:top-[470px] md:right-10 z-10">
           <svg
             className="md:w-[50px] md:h-auto stroke-[3px] md:stroke-[0.5px]"
             width="11"
@@ -263,7 +263,7 @@ function Register() {
             />
           </svg>
         </div>
-        <div className="absolute -top-[10rem] md:top-[15rem] md:left-[10rem]">
+        <div className="absolute -top-[10rem] md:top-[15rem] lg:left-[10rem] ">
           <svg
             width="23"
             height="23"
@@ -286,12 +286,12 @@ function Register() {
           </svg>
         </div>
         {/* Background */}
-        <section className="flex flex-col justify-start mt-5 flex-1 items-center max-[375px]:w-[80%] z-40">
+        <section className="flex flex-col justify-start mt-5 flex-1 items-center max-[375px]:w-[80%] z-20 bg-gray-100 ">
           <div className="bg-none p-2 rounded-lg  w-full max-w-md">
             <h2 className="text-2xl font-semibold text-blue-800 mb-6">
               Register to start learning!
             </h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="bg-gray-100 z-30">
               <div className="mb-4">
                 <label
                   htmlFor="name"
@@ -357,7 +357,7 @@ function Register() {
                   <p className="text-red-500">{ageMinimumError}</p>
                 )}
               </div>
-              <div className="mb-4">
+              <div className="mb-4 z-40">
                 <label
                   htmlFor="education"
                   className="block text-sm font-medium text-gray-700"
