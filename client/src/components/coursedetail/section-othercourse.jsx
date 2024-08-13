@@ -35,7 +35,7 @@ function SectionOtherCourse() {
   return (
     <div>
       <section className="h-[1410px] bg-Gray-100 pl-[16px] pr-[16px] xl:h-[792px] mb-[50px]">
-        <div className="flex flex-col items-center w-[100%] xl:mt-[121px]">
+        <div className="flex flex-col items-center w-[100%] xl:mt-[121px] ">
           <h1 className="text-black text-Headline3 font-Headline3 mt-4 xl:mt-[140px] mb-6 xl:text-Headline2 xl:font-Headline2 xl:mb-[40px]">
             Other Interesting Course
           </h1>
@@ -44,7 +44,7 @@ function SectionOtherCourse() {
               return (
                 <article
                   key={index}
-                  className="hover:scale-105 hover:shadow-2xl shadow-md rounded-[8px] flex flex-col justify-between mb-10 xl:h-[475px]"
+                  className="hover:scale-105 hover:shadow-2xl shadow-md rounded-[8px] flex flex-col justify-between mb-10 xl:h-[475px] bg-white"
                 >
                   <button
                     onClick={() => {
